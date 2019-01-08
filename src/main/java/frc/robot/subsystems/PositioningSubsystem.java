@@ -28,6 +28,10 @@ public class PositioningSubsystem extends Subsystem {
     private Hashtable<TalonSRX,ArrayList<Double>> encPoss;
     private double robotAngle;
 
+    public void keepTrackOf(TalonSRX talon){
+        encPoss.put(talon,new ArrayList<Double>());
+    }
+
     public PositioningSubsystem() {
         middleLeftMotor  = Robot.autoSubsystem.lm;
         middleRightMotor = Robot.autoSubsystem.rm;
@@ -42,8 +46,8 @@ public class PositioningSubsystem extends Subsystem {
 
         encPoss = new Hashtable<TalonSRX,ArrayList<Double>>();
 
-        encPoss.put(frontLeftMotor);
-        encPoss.put(frontRightMotor);
+        keepTrackOf(frontLeftMotor);
+        keepTrackOf(frontRightMotor);
         
         ORIGINAL_ANGLE = Robot.autoSubsystem.getPigeonAngle();
         robotAngle = ORIGINAL_ANGLE;
