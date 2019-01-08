@@ -13,15 +13,12 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class PositioningSubsystem extends Subsystem {
 
     public final double TICKS_PER_ROTATION = 4096;
-    public final double WHEEL_RADIUS = 3.; // (0.25) 3 inches over 12 inches is wheel radius in feet
-    public final double ENC_WHEEL_RATIO = (4. / 25.) * (1. / 1.2); // (0.16) 4 rotations of the wheel is 25 rotations of
-                                                                   // the encoder
-    public final double ROBOT_RADIUS = 15.945;
+    public final double WHEEL_RADIUS = 3.; // In inches
+    public final double ENC_WHEEL_RATIO = (4. / 25.) * (1. / 1.2); // 4 rotations of the wheel is 25 rotations of the encoder
+    public final double ROBOT_RADIUS = 15.945; // Half the distance from wheel to wheel
     public final double ROBOT_WIDTH = 2 * ROBOT_RADIUS;
 
-    public double ORIGINAL_ANGLE = 0;
-    public final double ORIGINAL_X = 0;
-    public final double ORIGINAL_Y = 0;
+    public double ORIGINAL_ANGLE, ORIGINAL_X, ORIGINAL_Y;
     public final double MEASURMENTS = 5;
     public final double INTERVAL_LENGTH = .02;
 
