@@ -27,7 +27,7 @@ public class PositioningSubsystem extends Subsystem {
 
     private TalonSRX frontLeftMotor, middleLeftMotor, frontRightMotor, backLeftMotor, middleRightMotor, backRightMotor;
 
-    private ArrayList<Double> robotXs, robotYs, robotThetas, leftEncoderPositions, rightEncoderPositions;
+    private ArrayList<Double> robotXs, robotYs, robotAngles, leftEncoderPositions, rightEncoderPositions;
     private Hashtable<TalonSRX,ArrayList<Double>> encPoss;
     private double robotAngle;
 
@@ -41,7 +41,7 @@ public class PositioningSubsystem extends Subsystem {
 
         robotXs = new ArrayList<Double>();
         robotYs = new ArrayList<Double>();
-        robotThetas = new ArrayList<Double>();
+        robotAngles = new ArrayList<Double>();
 
         encPoss = new Hashtable<TalonSRX,ArrayList<Double>>();
 
@@ -53,7 +53,7 @@ public class PositioningSubsystem extends Subsystem {
 
         robotXs.add(ORIGINAL_X);
         robotYs.add(ORIGINAL_Y);
-        robotThetas.add(ORIGINAL_ANGLE);
+        robotAngles.add(ORIGINAL_ANGLE);
         addNegEncPosition(frontLeftMotor);
         addEncPosition(frontRightMotor);
     }
@@ -88,10 +88,7 @@ public class PositioningSubsystem extends Subsystem {
 
     public double getX() {return last(robotXs);}
     public double getY() {return last(robotXs);}
-    public double getAngle() {return robotAngle;}
-
-    public double getDeltaTheta() {
-        return getAngle() - ORIGINAL_ANGLE;}
+    public double getAngle() {return last(robotAngles);}
 
     public double lastEncPos(TalonSRX talon)  {
         return last(encPoss.get(talon));}
@@ -103,13 +100,13 @@ public class PositioningSubsystem extends Subsystem {
         return averageRange(encPoss.get(talon)) / INTERVAL_LENGTH;}
 
     public double[] nextPosTankPigeon(double x, double y, double theta, double leftChange, double rightChange) {
-        double newAngle = Robot.autoSubsystem.getPigeonAngle();
+        double newTheta = Robot.autoSubsystem.getPigeonAngle();
         double averageTheta = (newAngle + theta)/2;
         double arcLength = .5 * (leftChange + rightChange);
         double newRobotX = x + arcLength * Math.cos(averageTheta);
         double newRobotY = y + arcLength * Math.sin(averageTheta);
 
-        double[] newPoint = { newRobotX, newRobotY, newAngle };
+        double[] newPoint = { newRobotX, newRobotY, newTheta };
         return newPoint;
     }
 
@@ -121,9 +118,9 @@ public class PositioningSubsystem extends Subsystem {
 
         trimAdd(robotXs, newPoint[0], 5);
         trimAdd(robotYs, newPoint[1], 5);
+        trimAdd(robotAngles, newPoint[2], 5);
         trimAdd(leftEncoderPositions, negEncPos(frontLeftMotor), 5);
         trimAdd(rightEncoderPositions, encPos(frontRightMotor), 5);
-        robotAngle = newPoint[2];
     }
 
     @Override
