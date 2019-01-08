@@ -59,6 +59,7 @@ public class PositioningSubsystem extends Subsystem {
     }
 
     public double encPos(TalonSRX motor) {
+        // Returns the encoder position of a talon
         double raw = motor.getSensorCollection().getQuadraturePosition();
         return raw / TICKS_PER_ROTATION * ENC_WHEEL_RATIO * (2 * Math.PI * WHEEL_RADIUS);
     }
@@ -67,6 +68,7 @@ public class PositioningSubsystem extends Subsystem {
     }
 
     private void addEncPosValue(TalonSRX talon, double val){
+        // Adds a value to one of the lists recording talon data
         encPoss.get(talon).add(val);
     }
     public void addEncPos(TalonSRX talon)   {addEncPosValue(talon,encPos(talon));}
@@ -77,11 +79,13 @@ public class PositioningSubsystem extends Subsystem {
     }
 
     public void trimIf(ArrayList<Double> arr, int maxSize) {
+        // Trims an array down to a max size, starting from the start
         while (maxSize < arr.size())
             arr.remove(0);
     }
 
     public void trimAdd(ArrayList<Double> arr, double val, int maxSize) {
+        // Adds a value to the array and then trims it to a max size
         arr.add(val);
         trimIf(arr, maxSize);
     }
@@ -91,15 +95,19 @@ public class PositioningSubsystem extends Subsystem {
     public double getAngle() {return last(robotAngles);}
 
     public double lastEncPos(TalonSRX talon)  {
+        // Takes a talon. Returns the last recorded pos of that talon
         return last(encPoss.get(talon));}
 
     private double averageRange(ArrayList<Double> arr) {
         return (last(arr) - arr.get(0)) / arr.size();}
 
     public double getWheelSpeed(TalonSRX talon) {
+        // Gets average wheel speed over the recorded measurmeants
         return averageRange(encPoss.get(talon)) / INTERVAL_LENGTH;}
 
     public double[] nextPosTankPigeon(double x, double y, double theta, double leftChange, double rightChange) {
+        // This assumes tank drive and you want to use the pigeon for calculating your angle
+        // Takes a pos (x,y,angle), a left side Δx and a right side Δx and returns an x,y,theta array
         double newTheta = Robot.autoSubsystem.getPigeonAngle();
         double averageTheta = (newAngle + theta)/2;
         double arcLength = .5 * (leftChange + rightChange);
@@ -111,7 +119,8 @@ public class PositioningSubsystem extends Subsystem {
     }
 
     public void updatePositionTank() {
-        // This can be done more accuratly. This is an estimate we will fix
+        // Uses the front left and front right motor to update the position, assuming tank drive
+        // Doesn't return anything, simply changes the fields that hold the position info
         double leftEncChange = negEncPos(frontLeftMotor) - lastEncPos(frontLeftMotor);
         double rightEncChange = encPos(frontRightMotor) - lastEncPos(frontRightMotor);
         double[] newPoint = nextPosTankPigeon(getX(), getY(), robotAngle, leftEncChange, rightEncChange);
