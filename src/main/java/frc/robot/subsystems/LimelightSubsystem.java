@@ -13,10 +13,11 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class LimelightSubsystem extends Subsystem{
 
     
-    public NetworkTable getCameraTable(String variable){ // According to API, should get a given variable (x1,a2... etc.)
+    public NetworkTable getCameraTable(){
         return NetworkTableInstance.getDefault().getTable("limelight");
     }
-    public double getTableData(NetworkTable table, String variable){
+    public double getTableData(NetworkTable table, String variable){ 
+        // According to API, should get a given variable (x1,a2... etc.)
         return table.getEntry(variable).getDouble(0);
     }
     public double setCameraParams(String param, int setting){ // According to API, should set a given param (camMode, pipeline... etc.)
