@@ -7,8 +7,13 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.PWMTalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class LimelightSubsytem extends Subsbytem{
-    
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
+public class LimelightSubsytem extends Subsystem{
+
     @Override
     protected void initDefaultCommand() {
         // LITTERALLY DIE
