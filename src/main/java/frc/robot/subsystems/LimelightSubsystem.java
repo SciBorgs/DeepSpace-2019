@@ -9,9 +9,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class LimelightSubsytem extends Subsystem{
+public class LimelightSubsystem extends Subsystem{
 
-    
     public getCameraData(String variable){ // According to API, should get a given variable (x1,a2... etc.)
         NetworkTableInstance.getDefault().getTable("limelight").getEntry(variable).getDouble(0);
     }
