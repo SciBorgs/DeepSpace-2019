@@ -119,12 +119,6 @@ public class PositioningSubsystem extends Subsystem {
         double rightEncChange = encPos(frontRightMotor) - lastEncPos(frontRightMotor);
         double[] newPoint = nextPosTankPigeon(getX(), getY(), robotAngle, leftEncChange, rightEncChange);
 
-        System.out.println("x:" + (int) (newPoint[0] * 100) / 100.);
-        System.out.println("y:" + (int) (newPoint[1] * 100) / 100.);
-        System.out.println("theta: " + (((int) (getDeltaTheta()))));
-        System.out.println("speeds(x, y): (" + getWheelSpeed(frontLeftMotor) + ", " + getWheelSpeed(frontRightMotor) + ")");
-        System.out.println("");
-
         trimAdd(robotXs, newPoint[0], 5);
         trimAdd(robotYs, newPoint[1], 5);
         trimAdd(leftEncoderPositions, negEncPos(frontLeftMotor), 5);
