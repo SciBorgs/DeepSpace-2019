@@ -53,12 +53,17 @@ public class PositioningSubsystem extends Subsystem {
 
         keepTrackOf(frontLeftMotor);
         keepTrackOf(frontRightMotor);
+        keepTrackOf(backLeftMotor);
+        keepTrackOf(backRightMotor);
 
         robotXs.add(ORIGINAL_X);
         robotYs.add(ORIGINAL_Y);
         robotAngles.add(ORIGINAL_ANGLE);
+
         addNegEncPos(frontLeftMotor);
+        addNegEncPos(backLeftMotor);
         addEncPos(frontRightMotor);
+        addEncPos(backRightMotor);
     }
 
     public double encPos(TalonSRX motor) {
@@ -115,6 +120,27 @@ public class PositioningSubsystem extends Subsystem {
         return averageRange(encPoss.get(talon)) / INTERVAL_LENGTH;
     }
 
+    public double[] nextPosMecanumPigeon(double x, double y, double theta, double flChange, double frChange, double blChange, double brChange){
+        // This is a GUESS for how mecanum positioning works. We don't know if it is correct :)
+        double newTheta = Robot.autoSubsystem.getPigeonAngle();
+        double averageTheta = (newAngle + theta) / 2;
+        double ANGLE = Math.PI/4;
+        double newRobotX = x + SIDE * (
+            flChange * Math.cos(theta - ANGLE) +
+            frChange * Math.cos(theta + ANGLE) + 
+            blChange * Math.cos(theta + ANGLE) +
+            brChange * Math.cos(theta - ANGLE))
+            / 4;
+        double newRobotY = y + SIDE * (
+            flChange * Math.sin(theta - ANGLE) + 
+            frChange * Math.sin(theta + ANGLE) + 
+            blChange * Math.sin(theta + ANGLE) + 
+            brChange * Math.sin(theta - ANGLE)) / 4;
+
+        double[] newPoint = { newRobotX, newRobotY, newTheta };
+        return newPoint;
+    }
+ 
     public double[] nextPosTankPigeon(double x, double y, double theta, double leftChange, double rightChange) {
         // This assumes tank drive and you want to use the pigeon for calculating your angle
         // Takes a pos (x,y,theta), a left side Δx and a right side Δx and returns an x,y,theta array
