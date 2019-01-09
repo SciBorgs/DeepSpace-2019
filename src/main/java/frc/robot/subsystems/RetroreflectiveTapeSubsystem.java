@@ -24,7 +24,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem{
         
         for (i = 0; i<3;i++){
             if (allvalues[i][0] == xvalues[1]){
-                double angle = (get(table,"ta" + Integer.toString(i)));
+                double angle = (get(table,"ts" + Integer.toString(i)));
             }
         }
         
