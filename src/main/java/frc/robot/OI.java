@@ -8,9 +8,20 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.ConditionalDriveCommand;
+import frc.robot.commands.FieldCentricDriveCommand;
+import frc.robot.commands.RobotCentricDriveCommand;
 
 public class OI {
     // Temporary Joystick ports
-    public final static Joystick rightStick = new Joystick(PortMap.RIGHT_STICK),
+    public static Joystick rightStick = new Joystick(PortMap.RIGHT_STICK),
             leftStick = new Joystick(PortMap.LEFT_STICK);
+
+    public static JoystickButton switchCentricDriving = new JoystickButton(rightStick, PortMap.RIGHT_JOYSTICK_BUTTON);
+
+    public OI() {
+        switchCentricDriving.whenPressed(new ConditionalDriveCommand(new FieldCentricDriveCommand(), new RobotCentricDriveCommand()));
+    }
+
 }

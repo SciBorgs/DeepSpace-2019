@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.OI;
 import frc.robot.Robot;
 
-public class DriveCommand extends Command {
+public class RobotCentricDriveCommand extends Command {
     private Joystick rightStick, leftStick;
     
-    public DriveCommand() {
+    public RobotCentricDriveCommand() {
         rightStick = OI.rightStick;
         leftStick = OI.leftStick;
     }
