@@ -149,16 +149,21 @@ public class PositioningSubsystem extends Subsystem {
         return nextPosPigeon(x,y,theta,changeAngles);
     }
 
-    public void updatePositionTank() {
-        // Uses the front left and front right motor to update the position, assuming tank drive
-        // Doesn't return anything, simply changes the fields that hold the position info
-        double leftEncChange = encUpdate(frontLeftMotor);
-        double rightEncChange = encUpdate(frontRightMotor);
-        double[] newPoint = nextPosTankPigeon(getX(), getY(), robotAngle, leftEncChange, rightEncChange);
-
+    public void changePoint(int[] point){
         trimAddDef(robotXs, newPoint[0]);
         trimAddDef(robotYs, newPoint[1]);
         trimAddDef(robotAngles, newPoint[2]);
+    }
+
+    public void updatePositionMecanum(){
+        changePoint(nextPosMecanumPigeon(getX(),getY(),robotAngle,
+                encUpdate(frontLeftMotor),encUpdate(frontRightMotor),encUpdate(backLeftMotor),encUpdate(backRightMotor)));
+    }
+
+    public void updatePositionTank(){
+        // Uses the front left and front right motor to update the position, assuming tank drive
+        // Doesn't return anything, simply changes the fields that hold the position info
+        changePoint(nextPosTankPigeon(getX(), getY(), robotAngle, encUpdate(frontLeftMotor), encUpdate(frontRightMotor)));
     }
 
     @Override
