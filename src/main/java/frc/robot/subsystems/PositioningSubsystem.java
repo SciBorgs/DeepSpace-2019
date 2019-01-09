@@ -120,38 +120,32 @@ public class PositioningSubsystem extends Subsystem {
         return averageRange(encPoss.get(talon)) / INTERVAL_LENGTH;
     }
 
-    public double[] nextPosMecanumPigeon(double x, double y, double theta, double flChange, double frChange, double blChange, double brChange){
-        // This is a GUESS for how mecanum positioning works. We don't know if it is correct :)
+    public double[] nextPosPigeon(double x, double y, double theta, double[][] changeAngles){
+        // Works for all forms of drive where the displacement is the average of the movement vectors over the wheels
         double newTheta = Robot.autoSubsystem.getPigeonAngle();
-        double averageTheta = (newAngle + theta) / 2;
-        double ANGLE = Math.PI/4;
-        double newRobotX = x + SIDE * (
-            flChange * Math.cos(theta - ANGLE) +
-            frChange * Math.cos(theta + ANGLE) + 
-            blChange * Math.cos(theta + ANGLE) +
-            brChange * Math.cos(theta - ANGLE))
-            / 4;
-        double newRobotY = y + SIDE * (
-            flChange * Math.sin(theta - ANGLE) + 
-            frChange * Math.sin(theta + ANGLE) + 
-            blChange * Math.sin(theta + ANGLE) + 
-            brChange * Math.sin(theta - ANGLE)) / 4;
+        double averageTheta = (newTheta + theta) / 2;
+        for(double[] motorData : changeAngles){
+            x += motorData[0] * Math.cos(averageTheta + motorData[1]) / motorData.length;
+            y += motorData[0] * Math.sin(averageTheta + motorData[1]) / motorData.length;
+        }
+        return new double[]{x,y,newTheta};
+    }
 
-        double[] newPoint = { newRobotX, newRobotY, newTheta };
-        return newPoint;
+    public double[] nextPosMecanumPigeon(double x, double y, double theta, double flChange, double frChange, double blChange, double brChange){
+        // Same as the one for Tank but for Mecanum
+        double[][] changeAngles = new double[][]
+                                {{flChange,theta - Angle},
+                                {frChange,theta + Angle},
+                                {blChange,theta + Angle},
+                                {brChange,theta - Angle}};
+        return nextPositionUniversalPigeon(x,y,theta,changeAngles);
     }
  
     public double[] nextPosTankPigeon(double x, double y, double theta, double leftChange, double rightChange) {
         // This assumes tank drive and you want to use the pigeon for calculating your angle
         // Takes a pos (x,y,theta), a left side Δx and a right side Δx and returns an x,y,theta array
-        double newTheta = Robot.autoSubsystem.getPigeonAngle();
-        double averageTheta = (newAngle + theta)/2;
-        double arcLength = .5 * (leftChange + rightChange);
-        double newRobotX = x + arcLength * Math.cos(averageTheta);
-        double newRobotY = y + arcLength * Math.sin(averageTheta);
-
-        double[] newPoint = { newRobotX, newRobotY, newTheta };
-        return newPoint;
+        double[][] changeAngles = new double[][]{{leftChange,theta},{rightChange,theta}};
+        return nextPosPigeon(x,y,theta,changeAngles);
     }
 
     public void updatePositionTank() {
