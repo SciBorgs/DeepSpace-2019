@@ -66,13 +66,13 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         Hashtable<String,Double>[] values = new Hashtable<String,Double>[]{createData(t,0),createData(t,1),createData(t,2)};
         Arrays.sort(values, dataCompare);
         double[] centerPos = center(values);
-        double distance = meterArea / values[1].get("a"); // Not sure wether this is the correct math
+        double distance = Math.sqrt(meterArea / values[1].get("a")); // Not sure wether this is the correct math
         double shift = distance * meterDegreeLength * centerPos[0];
 
         data.put("centerX",centerPos[0]);
         data.put("centerY", centerPos[1]);
         data.put("distance", distance);
-        data.put("shift", shift);
+        data.put("shift", shift);   
         return data;
     }
 
