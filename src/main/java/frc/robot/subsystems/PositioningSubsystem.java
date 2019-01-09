@@ -2,6 +2,7 @@ package main.java.frc.robot.subsystems;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import javafx.util.Pair;
 
 import org.usfirst.frc.team1155.robot.Robot;
 
@@ -27,10 +28,12 @@ public class PositioningSubsystem extends Subsystem {
 
     private ArrayList<Double> robotXs, robotYs, robotAngles;
     private Hashtable<TalonSRX,ArrayList<Double>> encPoss;
+    private Hashtable<TalonSRX,Boolean> negated;
     private double robotAngle;
 
-    public void keepTrackOf(TalonSRX talon){
+    public void keepTrackOf(TalonSRX talon,Boolean neg){
         encPoss.put(talon,new ArrayList<Double>());
+        negated.put(talon,neg);
     }
 
     public PositioningSubsystem() {
@@ -51,17 +54,17 @@ public class PositioningSubsystem extends Subsystem {
 
         encPoss = new Hashtable<TalonSRX,ArrayList<Double>>();
 
-        keepTrackOf(frontLeftMotor);
-        keepTrackOf(frontRightMotor);
-        keepTrackOf(backLeftMotor);
-        keepTrackOf(backRightMotor);
+        keepTrackOf(frontLeftMotor,true);
+        keepTrackOf(frontRightMotor,false);
+        keepTrackOf(backLeftMotor,true);
+        keepTrackOf(backRightMotor,false);
 
         robotXs.add(ORIGINAL_X);
         robotYs.add(ORIGINAL_Y);
         robotAngles.add(ORIGINAL_ANGLE);
 
-        addNegEncPos(frontLeftMotor);
-        addNegEncPos(backLeftMotor);
+        addEncPos(frontLeftMotor);
+        addEncPos(backLeftMotor);
         addEncPos(frontRightMotor);
         addEncPos(backRightMotor);
     }
@@ -69,18 +72,16 @@ public class PositioningSubsystem extends Subsystem {
     public double encPos(TalonSRX motor) {
         // Returns the encoder position of a talon
         double raw = motor.getSensorCollection().getQuadraturePosition();
-        return raw / TICKS_PER_ROTATION * ENC_WHEEL_RATIO * (2 * Math.PI * WHEEL_RADIUS);
-    }
-    public double negEncPos(TalonSRX motor){
-        return 0 - encPos(motor);
+        double value = raw / TICKS_PER_ROTATION * ENC_WHEEL_RATIO * (2 * Math.PI * WHEEL_RADIUS);
+        return negated.get(motor) ? (0 - value) : value;
     }
 
-    private void addEncPosValue(TalonSRX talon, double val){
-        // Adds a value to one of the lists recording talon data
-        trimAddDef(encPoss.get(talon),val);
-    }
-    public void addEncPos(TalonSRX talon)   {addEncPosValue(talon,encPos(talon));}
-    public void addNegEncPos(TalonSRX talon){addEncPosValue(talon,negEncPos(talon));}
+    public void addEncPos(TalonSRX talon){trimAddDef(encPoss.get(talon),encPos(talon));}
+    public double encUpdate(TalonSRX talon){
+        // Also returns the change
+        double lastPos = lastEncPos(talon);
+        addEncPos(talon);
+        return lastEncPos(talon) - lastPos;}
 
     public double last(ArrayList<Double> arr) {
         return arr.get(arr.size() - 1);
@@ -151,15 +152,13 @@ public class PositioningSubsystem extends Subsystem {
     public void updatePositionTank() {
         // Uses the front left and front right motor to update the position, assuming tank drive
         // Doesn't return anything, simply changes the fields that hold the position info
-        double leftEncChange = negEncPos(frontLeftMotor) - lastEncPos(frontLeftMotor);
-        double rightEncChange = encPos(frontRightMotor) - lastEncPos(frontRightMotor);
+        double leftEncChange = encUpdate(frontLeftMotor);
+        double rightEncChange = encUpdate(frontRightMotor);
         double[] newPoint = nextPosTankPigeon(getX(), getY(), robotAngle, leftEncChange, rightEncChange);
 
         trimAddDef(robotXs, newPoint[0]);
         trimAddDef(robotYs, newPoint[1]);
         trimAddDef(robotAngles, newPoint[2]);
-        addNegEncPos(frontLeftMotor);
-        addEncPos(frontRightMotor);
     }
 
     @Override
