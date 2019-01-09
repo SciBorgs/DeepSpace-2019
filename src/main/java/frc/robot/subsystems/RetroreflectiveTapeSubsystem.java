@@ -35,7 +35,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
                             (data1.get("y") + data2.get("y"))/2};
     }
     public boolean facingLeft(double skew){return skew > -45;}
-    public Hashtable<String,Double> createData(NetworkTale t, double nth){
+    public Hashtable<String,Double> createData(NetworkTable t, double nth){
         // Takes a snapshot of data and the nth contour you want and converts it into a hashtable
         Hashtable<String, Double> end = new Hashtable<String, Double>();
         end.put("nth",nth);
@@ -47,7 +47,6 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
     }
 
     public double[] center(Hashtable<String,Double>[] values){
-        Arrays.sort(values,dataCompare);
         boolean leftPair = facingLeft(values[1].get("s"));
         if (leftPair)
             return averagePos(values[0],values[1]);
