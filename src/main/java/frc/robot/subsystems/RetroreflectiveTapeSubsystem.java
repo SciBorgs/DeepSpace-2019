@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import java.util.Arrays;
+import java.util.Hasthable;
 
 public class RetroreflectiveTapeSubsystem extends Subsystem {
 
@@ -22,53 +23,38 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         return Robot.limelight.getTableDat(table, variable);
     }
 
-    public double[] center() {
-        NetworkTable table = getTable();
-        double[][] allvalues = { { get(table, "tx0"), get(table, "ty0") }, { get(table, "tx1"), get(table, "ty1") },
-                { get(table, "tx2"), get(table, "ty2") } };
-        double[] xvalues = { allvalues[0][0], allvalues[0][0], allvalues[0][0] };
-        Arrays.sort(xvalues);
-
-        double angle = 0.0;
-        double[] finalavg;
-
-        for (int i = 0; i < 3; i++) {
-            if (allvalues[i][0] == xvalues[1]) {
-                angle = (get(table, "ts" + Integer.toString(i)));
-            }
-        }
-
-        // left
-        if (angle > -45) {
-            double avgx = (xvalues[1] + xvalues[0]) / 2.0;
-            double avgy = 0;
-            for (int i = 0; i < 3; i++) {
-                if ((allvalues[i][0] == xvalues[1]) || (allvalues[i][0] == xvalues[0])) {
-                    avgy = avgy + allvalues[i][1];
-                }
-            }
-            avgy = avgy / 2.0;
-            finalavg = new double[] { avgx, avgy };
-            return finalavg;
-        }
-
-        // right
-        else if (angle < -45) {
-            double avgx = (xvalues[1] + xvalues[2]) / 2.0;
-            double avgy = 0;
-            for (int i = 0; i < 3; i++) {
-                if ((allvalues[i][0] == xvalues[1]) || (allvalues[i][0] == xvalues[2])) {
-                    avgy = avgy + allvalues[i][1];
-                }
-            }
-            avgy = avgy / 2.0;
-            finalavg = new double[] { avgx, avgy };
-            return finalavg;
-        }
-
-        return finalavg;
+    // Below are helper functions for center()
+    public boolean dataCompare(Hashtable<String,Double> pair1, Hashtable<String,Double> pair2){
+        return pair1.get("tx") > pair2.get("tx");
+    } 
+    public double[] averagePos(Hashtable<String,Double> data1, Hashtable<String,Double> data2){
+        return new double[]{(data1.get("tx") + data2.get("tx"))/2,
+                            (data1.get("ty") + data2.get("ty"))/2};
     }
+    public boolean facingLeft(double skew){return skew > -45;}
+    public Hashtable<String,Double> createData(NetworkTale t, double nth){
+        // Takes a snapshot of data and the nth contour you want and converts it into a hashtable
+        Hashtable<String, Double> end = new Hashtable<String, Double>();
+        end.put("nth",nth);
+        end.put("tx",get(t,"tx" + nth));
+        end.put("ty",get(t,"ty" + nth));
+        end.put("ts",get(t,"ts" + nth));
+        return end;
+    }
+    // Above are helper functions for center
 
+    public double[] center() {
+        // Find the center of the two retroflective pieces of tape that are facing twoards each other!
+        NetworkTable t = getTable();
+        Hashtable<String,Double>[] values = new Hashtable<String, Double>[]{createData(t,0),createData(t,1),createData(t,2)};
+        Arrays.sort(values,dataCompare);
+        boolean leftPair = facingLeft(values[1].get("ts"));
+        if (leftPair)
+            return averagePos(values[0],values[1]);
+        else
+            return averagePos(values[2],values[1]);
+    }
+    
     @Override
     protected void initDefaultCommand() {
         // LITTERALLY DIE
