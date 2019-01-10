@@ -15,7 +15,7 @@ import java.util.Hasthable;
 
 public class RetroreflectiveTapeSubsystem extends Subsystem {
 
-    public final static double meterDegreeLength = .02; // Needs to be measured
+    public final static double meterDegreeLength = .02;
     public final static double meterArea = 0.615; // In percent
 
     public NetworkTable getTable() {
@@ -35,6 +35,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
                             (data1.get("y") + data2.get("y"))/2};
     }
     public boolean facingLeft(double skew){return skew > -45;}
+    public boolean facingRight(double skew) {return skew > -45;}
     public Hashtable<String,Double> createData(NetworkTable t, double nth){
         // Takes a snapshot of data and the nth contour you want and converts it into a hashtable
         Hashtable<String, Double> end = new Hashtable<String, Double>();
@@ -47,31 +48,38 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
     }
 
     public double[] center(Hashtable<String,Double>[] values){
-        boolean leftPair = facingLeft(values[1].get("s"));
+        boolean leftPair =   facingLeft(values[1].get("s")) && noContour(values[1]) && noContour(values[0]);
+        boolean rightPair = facingRight(values[1].get("s")) && noContour(values[1]) && noContour(values[2]);
         if (leftPair)
             return averagePos(values[0],values[1]);
-        else
+        else if (rightPair)
             return averagePos(values[2],values[1]);
+        else 
+            return new double[]{};
     }
 
+    public boolean isContour(Hashtable<String,Double> data){return data.get("a") != 0;}
     // Above are helper functions for extractData()
 
     public Hashtable<String,Double> extractData(){
         // Extracts data from the given data. Currently: Center position, distance, shift 
         NetworkTable t = getTable();
         Hashtable<String,Double> data = new Hashtable<String,Double>();
+        String[] keys = new String[]{"centerX","centerY","distance","shift"};
+        for (String key : keys){data.put(key,0.0);}
         // Find the center of the two retroflective pieces of tape that are facing
         // twoards each other!
         Hashtable<String,Double>[] values = new Hashtable<String,Double>[]{createData(t,0),createData(t,1),createData(t,2)};
         Arrays.sort(values, dataCompare);
         double[] centerPos = center(values);
+        if (centerPos.length == 0){return data;}
         double distance = Math.sqrt(meterArea / values[1].get("a")); // Not sure wether this is the correct math
         double shift = distance * meterDegreeLength * centerPos[0];
 
         data.put("centerX",centerPos[0]);
         data.put("centerY", centerPos[1]);
         data.put("distance", distance);
-        data.put("shift", shift);   
+        data.put("shift", shift);
         return data;
     }
 
