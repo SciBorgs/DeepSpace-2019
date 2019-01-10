@@ -15,8 +15,8 @@ import java.util.Hasthable;
 
 public class RetroreflectiveTapeSubsystem extends Subsystem {
 
-    public final static double meterDegreeLength = 1; // Needs to be measured
-    public final static double meterArea = 40; // Needs to be measured
+    public final static double meterDegreeLength = .02; // Needs to be measured
+    public final static double meterArea = 0.615; // In percent
 
     public NetworkTable getTable() {
         return Robot.limelight.getCameraTable();
