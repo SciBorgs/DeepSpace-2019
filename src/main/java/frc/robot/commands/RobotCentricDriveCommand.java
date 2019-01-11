@@ -16,8 +16,10 @@ public class RobotCentricDriveCommand extends Command {
     private Joystick rightStick, leftStick;
     
     public RobotCentricDriveCommand() {
-        rightStick = OI.rightStick;
-        leftStick = OI.leftStick;
+        requires(Robot.driveSubsystem);
+
+        rightStick = Robot.oi.rightStick;
+        leftStick = Robot.oi.leftStick;
     }
 
     @Override

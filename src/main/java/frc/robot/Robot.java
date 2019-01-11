@@ -7,9 +7,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.JoystickArmCommand;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import main.java.frc.robot.subsystems.LimelightSubsystem;
 
@@ -18,47 +20,50 @@ public class Robot extends IterativeRobot {
     private static final String kCustomAuto = "My Auto";
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
-    //public static LimelightSubsystem limelight = new LimelightSubsystem();
+    public static LimelightSubsystem limelight = new LimelightSubsystem();
     public static PigeonIMU pigeon;
     public static DriveSubsystem driveSubsystem;
 
-    @Override
+    public static final double ARM_P_CONSTANT;
+    public static final double ARM_D_CONSTANT;
+    public static ArmSubsystem armSubsystem;
+
+    public static OI oi;
+
     public void robotInit() {
         m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
         m_chooser.addOption("My Auto", kCustomAuto);
         SmartDashboard.putData("Auto choices", m_chooser);
 
+        driveSubsystem = new DriveSubsystem();
+        armSubsystem = new ArmSubsystem(/* Pass motor channel here */);
+        oi = new OI();
+
         pigeon = new PigeonIMU(driveSubsystem.talonWithPigeon);
         pigeon.setYaw(0., 0);
 
-        driveSubsystem = new DriveSubsystem();
+        new JoystickArmCommand(oi.leftStick.getTwist());
     }
 
-    @Override
     public void robotPeriodic() {
     }
 
-    @Override
     public void autonomousInit() {
         pigeon.setYaw(0., 0);
-        
+
         m_autoSelected = m_chooser.getSelected();
         System.out.println("Auto selected: " + m_autoSelected);
     }
 
-    @Override
     public void autonomousPeriodic() {
     }
 
-    @Override
     public void teleopPeriodic() {
     }
 
-    @Override
     public void testPeriodic() {
     }
 
-    @Override
     public void disabledInit() {
         pigeon.setYaw(0., 0);
     }

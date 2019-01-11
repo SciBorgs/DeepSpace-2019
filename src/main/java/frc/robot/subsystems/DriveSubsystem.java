@@ -9,9 +9,10 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
 
-public class DriveSubsystem {
+public class DriveSubsystem extends Subsystem {
     private Talon frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
 
     /**
@@ -19,10 +20,10 @@ public class DriveSubsystem {
      */
     public DriveSubsystem() {
         // Temporary PWM channels
-        frontLeftMotor = new Talon(1);
-        backLeftMotor = new Talon(2);
+        frontLeftMotor  = new Talon(1);
+        backLeftMotor   = new Talon(2);
         frontRightMotor = new Talon(3);
-        backRightMotor = new Talon(4);
+        backRightMotor  = new Talon(4);
     }
 
     public double getPigeonAngle() {
@@ -38,15 +39,14 @@ public class DriveSubsystem {
     /**
      * Feed joystick input to mecanumDrive.
      * 
-     * @param rightStick    The right joystick - used for lateral movements
-     * @param leftStick     The left joystick - used for rotations
+     * @param rightStick The right joystick - used for lateral movements
+     * @param leftStick  The left joystick - used for rotations
      */
     public void setSpeed(Joystick rightStick, Joystick leftStick, Modes mode) {
-        double x = 0.0;
-        double y = 0.0;
-        
+        double x, y = 0.0;
+
         if (mode == Modes.FIELD) {
-            double angle = rightStick.getDirectionRadians() - getPigeonAngle();
+            double angle = rightStick.getDirectionRadians() - Math.toRadians(getPigeonAngle());
             x = Math.cos(angle) * rightStick.getMagnitude();
             y = Math.sin(angle) * rightStick.getMagnitude();
         } else {
@@ -73,5 +73,10 @@ public class DriveSubsystem {
         backLeftMotor.set(xSpeed - ySpeed + rotation);
         frontRightMotor.set(-xSpeed + ySpeed + rotation);
         backRightMotor.set(xSpeed + ySpeed + rotation);
+    }
+
+    @Override
+    protected void initDefaultCommand() {
+
     }
 }

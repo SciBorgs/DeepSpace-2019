@@ -7,29 +7,33 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.PID;
 import frc.robot.Robot;
-import frc.robot.subsystems.DriveSubsystem.Modes;
 
-public class FieldCentricDriveCommand extends Command {
-    private Joystick rightStick, leftStick;
+public class ManualArmCommand extends Command {
+    private PID pid;
+    private double m_endPosRadians;
 
-    public FieldCentricDriveCommand() {
-        requires(Robot.driveSubsystem);
+    public ManualArmCommand(double endPosRadians) throws IllegalArgumentException {
+        requires(Robot.armSubsystem);
         
-        rightStick = Robot.oi.rightStick;
-        leftStick = Robot.oi.leftStick;
+        if (endPosRadians > Robot.armSubsystem.GREATEST_ARM_POS || endPosRadians < Robot.armSubsystem.LOWEST_ARM_POS)
+            throw new IllegalArgumentException("The position was out of bounds");
+       
+        m_endPosRadians = endPosRadians;
     }
 
     @Override
     protected void initialize() {
-        Robot.driveSubsystem.mecanumDrive(0, 0, 0);
+        Robot.armSubsystem.setSpeed(0);
+        pid = new PID(Robot.ARM_P_CONSTANT, 0, Robot.ARM_D_CONSTANT);
     }
 
     @Override
     protected void execute() {
-        Robot.driveSubsystem.setSpeed(rightStick, leftStick, Modes.FIELD);
+        pid.add_measurement(m_endPosRadians - Robot.armSubsystem.getPos());
+        Robot.armSubsystem.setSpeed(pid.getOutput());
     }
 
     @Override
@@ -39,7 +43,7 @@ public class FieldCentricDriveCommand extends Command {
 
     @Override
     protected void end() {
-        Robot.driveSubsystem.mecanumDrive(0, 0, 0);
+        Robot.armSubsystem.setSpeed(0);
     }
 
     @Override
