@@ -1,13 +1,10 @@
 package frc.robot.subsystems;
 
-import frc.robot.PortMap;
-import frc.robot.Robot;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Robot;
 
 public class AutoSubsystem extends Subsystem {
 	Timer timer;

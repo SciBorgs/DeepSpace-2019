@@ -7,38 +7,30 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
+import frc.robot.PID;
 import frc.robot.Robot;
-<<<<<<< HEAD
-import frc.robot.subsystems.DriveSubsystem;
-=======
-import frc.robot.subsystems.DriveSubsystem.Modes;
->>>>>>> 7ec28d974757f0c3a02e261dc6783b6de9736d91
 
-public class RobotCentricDriveCommand extends Command {
-    private Joystick rightStick, leftStick;
-    
-    public RobotCentricDriveCommand() {
-        requires(Robot.driveSubsystem);
+public class JoystickArmCommand extends Command {
+    private PID pid;
+    private double m_speed;
 
-        rightStick = Robot.oi.rightStick;
-        leftStick = Robot.oi.leftStick;
+    public JoystickArmCommand(double speed) {
+        requires(Robot.armSubsystem);
+
+        m_speed = speed;
     }
 
     @Override
     protected void initialize() {
-        Robot.driveSubsystem.setSpeedMecanum(0, 0, 0);
+        Robot.armSubsystem.setSpeed(0);
+        pid = new PID(Robot.ARM_P_CONSTANT, 0, Robot.ARM_D_CONSTANT);
     }
 
     @Override
     protected void execute() {
-<<<<<<< HEAD
-        Robot.driveSubsystem.setSpeed(rightStick, leftStick, DriveSubsystem.Modes.ROBOT);
-=======
-        Robot.driveSubsystem.setSpeed(rightStick, leftStick, Modes.ROBOT);
->>>>>>> 7ec28d974757f0c3a02e261dc6783b6de9736d91
+        pid.add_measurement(m_speed - Robot.armSubsystem.m_motor.getSpeed());
+        Robot.armSubsystem.setSpeed(pid.getOutput());
     }
 
     @Override
@@ -48,7 +40,7 @@ public class RobotCentricDriveCommand extends Command {
 
     @Override
     protected void end() {
-        Robot.driveSubsystem.setSpeedMecanum(0, 0, 0);
+        Robot.armSubsystem.setSpeed(0);
     }
 
     @Override

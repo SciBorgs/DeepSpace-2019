@@ -9,7 +9,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveSubsystem.Modes;
 
@@ -17,8 +16,10 @@ public class FieldCentricDriveCommand extends Command {
     private Joystick rightStick, leftStick;
 
     public FieldCentricDriveCommand() {
-        rightStick = OI.rightStick;
-        leftStick = OI.leftStick;
+        requires(Robot.driveSubsystem);
+        
+        rightStick = Robot.oi.rightStick;
+        leftStick = Robot.oi.leftStick;
     }
 
     @Override

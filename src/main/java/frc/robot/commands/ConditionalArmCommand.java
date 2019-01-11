@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import frc.robot.Robot;
 
-public class ConditionalDriveCommand extends ConditionalCommand {
+public class ConditionalArmCommand extends ConditionalCommand {
     private boolean condition = false;
     
-    public ConditionalDriveCommand(Command onTrue, Command onFalse) {
+    public ConditionalArmCommand(Command onTrue, Command onFalse) {
         super(onTrue, onFalse);
-        requires(Robot.driveSubsystem);
+        requires(Robot.armSubsystem);
     }
 
     @Override

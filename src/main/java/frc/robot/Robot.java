@@ -7,11 +7,19 @@
 
 package frc.robot;
 
+<<<<<<< HEAD
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+=======
+import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.JoystickArmCommand;
+import frc.robot.subsystems.ArmSubsystem;
+>>>>>>> 7ec28d974757f0c3a02e261dc6783b6de9736d91
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.AutoSubsystem;
@@ -22,12 +30,20 @@ public class Robot extends IterativeRobot {
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelight = new LimelightSubsystem();
+<<<<<<< HEAD
     public static AutoSubsystem autoSubsystem = new AutoSubsystem();
+=======
+>>>>>>> 7ec28d974757f0c3a02e261dc6783b6de9736d91
     public static PigeonIMU pigeon;
     public static DriveSubsystem driveSubsystem;
 	public static TalonSRX lf, lm, lb, rf, rm, rb, pigeonTalon;
 
-    @Override
+    public static final double ARM_P_CONSTANT;
+    public static final double ARM_D_CONSTANT;
+    public static ArmSubsystem armSubsystem;
+
+    public static OI oi;
+
     public void robotInit() {
         //m_chooser.setDefaultOption("Default Auto", kDefaultAuto); // These lines were causing errors and weren't necessary. They should either be deleted or restored at some point soon
         //m_chooser.addOption("My Auto", kCustomAuto);
@@ -41,37 +57,35 @@ public class Robot extends IterativeRobot {
 		rb = new TalonSRX(PortMap.RIGHT_BACK_TALON);
 		pigeonTalon = lf;
 
+        driveSubsystem = new DriveSubsystem();
+        armSubsystem = new ArmSubsystem(/* Pass motor channel here */);
+        oi = new OI();
+
         pigeon = new PigeonIMU(driveSubsystem.talonWithPigeon);
         pigeon.setYaw(0., 0);
 
-        driveSubsystem = new DriveSubsystem();
+        new JoystickArmCommand(oi.leftStick.getTwist());
     }
 
-    @Override
     public void robotPeriodic() {
     }
 
-    @Override
     public void autonomousInit() {
         pigeon.setYaw(0., 0);
-        
+
         m_autoSelected = m_chooser.getSelected();
         System.out.println("Auto selected: " + m_autoSelected);
     }
 
-    @Override
     public void autonomousPeriodic() {
     }
 
-    @Override
     public void teleopPeriodic() {
     }
 
-    @Override
     public void testPeriodic() {
     }
 
-    @Override
     public void disabledInit() {
         pigeon.setYaw(0., 0);
     }

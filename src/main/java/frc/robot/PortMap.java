@@ -14,4 +14,7 @@ public class PortMap {
     public static final int RIGHT_FRONT_TALON = 6;
     public static final int RIGHT_MIDDLE_TALON = 16;
     public static final int RIGHT_BACK_TALON = 15;
+
+    // Temporary arm talon port
+    public static final int ARM_TALON = 10;
 }
