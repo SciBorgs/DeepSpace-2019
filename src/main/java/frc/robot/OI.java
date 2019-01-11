@@ -9,21 +9,20 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import frc.robot.commands.ArmCommand;
-import frc.robot.commands.ConditionalArmCommand;
 import frc.robot.commands.ConditionalDriveCommand;
 import frc.robot.commands.FieldCentricDriveCommand;
-import frc.robot.commands.JoystickArmCommand;
 import frc.robot.commands.RobotCentricDriveCommand;
 
 public class OI {
-    // Temporary Joystick ports
-    public Joystick rightStick = new Joystick(PortMap.RIGHT_STICK),
-            leftStick = new Joystick(PortMap.LEFT_STICK);
-
-    public JoystickButton switchCentricDriving = new JoystickButton(rightStick, PortMap.RIGHT_JOYSTICK_BUTTON);
+    public Joystick rightStick, leftStick;
+    public JoystickButton switchCentricDriving;
 
     public OI() {
-        switchCentricDriving.whenPressed(new ConditionalDriveCommand(new FieldCentricDriveCommand(), new RobotCentricDriveCommand()));
+        rightStick = new Joystick(PortMap.RIGHT_STICK);
+        leftStick = new Joystick(PortMap.LEFT_STICK);
+        switchCentricDriving = new JoystickButton(rightStick, PortMap.RIGHT_JOYSTICK_BUTTON);
+
+        switchCentricDriving.whenPressed(
+                new ConditionalDriveCommand(new FieldCentricDriveCommand(), new RobotCentricDriveCommand()));
     }
 }
