@@ -1,4 +1,4 @@
-package main.java.frc.robot.subsystems;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -15,7 +15,7 @@ public class LimelightSubsystem extends Subsystem{
         // According to API, should get a given variable (x1,a2... etc.)
         return table.getEntry(variable).getDouble(0);
     }
-    public double setCameraParams(String param, int setting){ // According to API, should set a given param (camMode, pipeline... etc.)
+    public void setCameraParams(String param, int setting){ // According to API, should set a given param (camMode, pipeline... etc.)
         NetworkTableInstance.getDefault().getTable("limelight").getEntry(param).setNumber(setting);
     }
 

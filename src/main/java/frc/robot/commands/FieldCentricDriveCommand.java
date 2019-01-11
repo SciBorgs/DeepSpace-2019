@@ -23,7 +23,7 @@ public class FieldCentricDriveCommand extends Command {
 
     @Override
     protected void initialize() {
-        Robot.driveSubsystem.mecanumDrive(0, 0, 0);
+        Robot.driveSubsystem.setSpeedMecanum(0, 0, 0);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class FieldCentricDriveCommand extends Command {
 
     @Override
     protected void end() {
-        Robot.driveSubsystem.mecanumDrive(0, 0, 0);
+        Robot.driveSubsystem.setSpeedMecanum(0, 0, 0);
     }
 
     @Override

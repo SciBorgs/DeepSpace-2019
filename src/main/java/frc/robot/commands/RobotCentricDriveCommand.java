@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.subsystems.DriveSubsystem;
 
 public class RobotCentricDriveCommand extends Command {
     private Joystick rightStick, leftStick;
@@ -22,12 +23,12 @@ public class RobotCentricDriveCommand extends Command {
 
     @Override
     protected void initialize() {
-        Robot.driveSubsystem.mecanumDrive(0, 0, 0);
+        Robot.driveSubsystem.setSpeedMecanum(0, 0, 0);
     }
 
     @Override
     protected void execute() {
-        Robot.driveSubsystem.setSpeed(rightStick, leftStick);
+        Robot.driveSubsystem.setSpeed(rightStick, leftStick, DriveSubsystem.Modes.ROBOT);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class RobotCentricDriveCommand extends Command {
 
     @Override
     protected void end() {
-        Robot.driveSubsystem.mecanumDrive(0, 0, 0);
+        Robot.driveSubsystem.setSpeedMecanum(0, 0, 0);
     }
 
     @Override

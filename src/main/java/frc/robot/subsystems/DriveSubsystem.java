@@ -7,22 +7,27 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Talon;
+import frc.robot.PortMap;
 import frc.robot.Robot;
 
 public class DriveSubsystem {
-    private Talon frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+    private TalonSRX frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+	public TalonSRX talonWithPigeon;
 
     /**
      * Initialize robot's motors
      */
     public DriveSubsystem() {
         // Temporary PWM channels
-        frontLeftMotor = new Talon(1);
-        backLeftMotor = new Talon(2);
-        frontRightMotor = new Talon(3);
-        backRightMotor = new Talon(4);
+        frontLeftMotor = new TalonSRX(PortMap.LEFT_FRONT_TALON);
+        backLeftMotor = new TalonSRX(PortMap.LEFT_BACK_TALON);
+        frontRightMotor = new TalonSRX(PortMap.RIGHT_FRONT_TALON);
+        backRightMotor = new TalonSRX(PortMap.RIGHT_BACK_TALON);
+        talonWithPigeon = frontLeftMotor;
     }
 
     public double getPigeonAngle() {
@@ -54,7 +59,11 @@ public class DriveSubsystem {
             y = rightStick.getY();
         }
 
-        mecanumDrive(x, -y, leftStick.getX());
+        setSpeedMecanum(x, -y, leftStick.getX());
+    }
+    
+    public void setTalon(TalonSRX talon, double speed) {
+    	talon.set(ControlMode.PercentOutput, speed);
     }
 
     /**
@@ -68,10 +77,10 @@ public class DriveSubsystem {
      * @param ySpeed   The speed that the robot should drive in the X direction
      * @param rotation The robot's rate of rotation
      */
-    public void mecanumDrive(double xSpeed, double ySpeed, double rotation) {
-        frontLeftMotor.set(-xSpeed - ySpeed + rotation);
-        backLeftMotor.set(xSpeed - ySpeed + rotation);
-        frontRightMotor.set(-xSpeed + ySpeed + rotation);
-        backRightMotor.set(xSpeed + ySpeed + rotation);
+    public void setSpeedMecanum(double xSpeed, double ySpeed, double rotation) {
+        setTalon(frontLeftMotor,-xSpeed - ySpeed + rotation);
+        setTalon(backLeftMotor,xSpeed - ySpeed + rotation);
+        setTalon(frontRightMotor,-xSpeed + ySpeed + rotation);
+        setTalon(backRightMotor,xSpeed + ySpeed + rotation);
     }
 }

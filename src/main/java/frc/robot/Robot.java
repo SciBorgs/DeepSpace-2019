@@ -7,26 +7,39 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveSubsystem;
-import main.java.frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.AutoSubsystem;
 
 public class Robot extends IterativeRobot {
-    private static final String kDefaultAuto = "Default";
-    private static final String kCustomAuto = "My Auto";
+//    private static final String kDefaultAuto = "Default";
+//    private static final String kCustomAuto = "My Auto";
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
-    //public static LimelightSubsystem limelight = new LimelightSubsystem();
+    public static LimelightSubsystem limelight = new LimelightSubsystem();
+    public static AutoSubsystem autoSubsystem = new AutoSubsystem();
     public static PigeonIMU pigeon;
     public static DriveSubsystem driveSubsystem;
+	public static TalonSRX lf, lm, lb, rf, rm, rb, pigeonTalon;
 
     @Override
     public void robotInit() {
-        m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-        m_chooser.addOption("My Auto", kCustomAuto);
-        SmartDashboard.putData("Auto choices", m_chooser);
+        //m_chooser.setDefaultOption("Default Auto", kDefaultAuto); // These lines were causing errors and weren't necessary. They should either be deleted or restored at some point soon
+        //m_chooser.addOption("My Auto", kCustomAuto);
+        //SmartDashboard.putData("Auto choices", m_chooser);
+
+		lf = new TalonSRX(PortMap.LEFT_FRONT_TALON);
+		lm = new TalonSRX(PortMap.LEFT_MIDDLE_TALON);
+		lb = new TalonSRX(PortMap.LEFT_BACK_TALON);
+		rf = new TalonSRX(PortMap.RIGHT_FRONT_TALON);
+		rm = new TalonSRX(PortMap.RIGHT_MIDDLE_TALON);
+		rb = new TalonSRX(PortMap.RIGHT_BACK_TALON);
+		pigeonTalon = lf;
 
         pigeon = new PigeonIMU(driveSubsystem.talonWithPigeon);
         pigeon.setYaw(0., 0);

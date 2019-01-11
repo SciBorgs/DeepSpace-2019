@@ -1,16 +1,12 @@
-package main.java.frc.robot.subsystems;
+package frc.robot.subsystems;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import javafx.util.Pair;
-
-import org.usfirst.frc.team1155.robot.Robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
-import edu.wpi.first.wpilibj.PWMTalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Robot;
 
 public class PositioningSubsystem extends Subsystem {
 
@@ -24,7 +20,7 @@ public class PositioningSubsystem extends Subsystem {
     public final int MEASURMENTS = 5; // How many values we keep track of for each encoder
     public final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
 
-    private TalonSRX frontLeftMotor, middleLeftMotor, frontRightMotor, backLeftMotor, middleRightMotor, backRightMotor;
+    private TalonSRX frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
 
     private ArrayList<Double> robotXs, robotYs, robotAngles;
     private Hashtable<TalonSRX,ArrayList<Double>> encPoss;
@@ -37,12 +33,10 @@ public class PositioningSubsystem extends Subsystem {
     }
 
     public PositioningSubsystem() {
-        middleLeftMotor  = Robot.autoSubsystem.lm;
-        middleRightMotor = Robot.autoSubsystem.rm;
-        frontLeftMotor   = Robot.autoSubsystem.lf;
-        frontRightMotor  = Robot.autoSubsystem.rf;
-        backLeftMotor    = Robot.autoSubsystem.lb;
-        backRightMotor   = Robot.autoSubsystem.rb;
+        frontLeftMotor   = Robot.lf;
+        frontRightMotor  = Robot.rf;
+        backLeftMotor    = Robot.lb;
+        backRightMotor   = Robot.rb;
 
         ORIGINAL_X = 0;
         ORIGINAL_Y = 0;
@@ -134,12 +128,13 @@ public class PositioningSubsystem extends Subsystem {
 
     public double[] nextPosMecanumPigeon(double x, double y, double theta, double flChange, double frChange, double blChange, double brChange){
         // Same as the one for Tank but for Mecanum
-        double[][] changeAngles = new double[][]
+        double Angle = Math.PI/2;
+    	double[][] changeAngles = new double[][]
                                 {{flChange,theta - Angle},
                                 {frChange,theta + Angle},
                                 {blChange,theta + Angle},
                                 {brChange,theta - Angle}};
-        return nextPositionUniversalPigeon(x,y,theta,changeAngles);
+        return nextPosPigeon(x,y,theta,changeAngles);
     }
  
     public double[] nextPosTankPigeon(double x, double y, double theta, double leftChange, double rightChange) {
@@ -149,10 +144,10 @@ public class PositioningSubsystem extends Subsystem {
         return nextPosPigeon(x,y,theta,changeAngles);
     }
 
-    public void changePoint(int[] point){
-        trimAddDef(robotXs, newPoint[0]);
-        trimAddDef(robotYs, newPoint[1]);
-        trimAddDef(robotAngles, newPoint[2]);
+    public void changePoint(double[] point){
+        trimAddDef(robotXs, point[0]);
+        trimAddDef(robotYs, point[1]);
+        trimAddDef(robotAngles, point[2]);
     }
 
     public void updatePositionMecanum(){
