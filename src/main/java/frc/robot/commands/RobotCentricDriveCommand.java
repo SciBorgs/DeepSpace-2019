@@ -9,13 +9,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
 import frc.robot.Robot;
-<<<<<<< HEAD
 import frc.robot.subsystems.DriveSubsystem;
-=======
 import frc.robot.subsystems.DriveSubsystem.Modes;
->>>>>>> 7ec28d974757f0c3a02e261dc6783b6de9736d91
+
 
 public class RobotCentricDriveCommand extends Command {
     private Joystick rightStick, leftStick;
@@ -34,11 +31,8 @@ public class RobotCentricDriveCommand extends Command {
 
     @Override
     protected void execute() {
-<<<<<<< HEAD
         Robot.driveSubsystem.setSpeed(rightStick, leftStick, DriveSubsystem.Modes.ROBOT);
-=======
         Robot.driveSubsystem.setSpeed(rightStick, leftStick, Modes.ROBOT);
->>>>>>> 7ec28d974757f0c3a02e261dc6783b6de9736d91
     }
 
     @Override

@@ -6,23 +6,19 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
+import java.util.Hashtable;
 
-<<<<<<< HEAD
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-=======
-import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.JoystickArmCommand;
 import frc.robot.subsystems.ArmSubsystem;
->>>>>>> 7ec28d974757f0c3a02e261dc6783b6de9736d91
+import frc.robot.subsystems.AutoSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.AutoSubsystem;
+import frc.robot.subsystems.RetroreflectiveTapeSubsystem;
 
 public class Robot extends IterativeRobot {
 //    private static final String kDefaultAuto = "Default";
@@ -30,16 +26,14 @@ public class Robot extends IterativeRobot {
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelight = new LimelightSubsystem();
-<<<<<<< HEAD
     public static AutoSubsystem autoSubsystem = new AutoSubsystem();
-=======
->>>>>>> 7ec28d974757f0c3a02e261dc6783b6de9736d91
+    public static RetroreflectiveTapeSubsystem retroreflective = new RetroreflectiveTapeSubsystem();
     public static PigeonIMU pigeon;
     public static DriveSubsystem driveSubsystem;
 	public static TalonSRX lf, lm, lb, rf, rm, rb, pigeonTalon;
-
-    public static final double ARM_P_CONSTANT;
-    public static final double ARM_D_CONSTANT;
+	
+    public static final double ARM_P_CONSTANT = .1;
+    public static final double ARM_D_CONSTANT = .1;
     public static ArmSubsystem armSubsystem;
 
     public static OI oi;
@@ -58,10 +52,10 @@ public class Robot extends IterativeRobot {
 		pigeonTalon = lf;
 
         driveSubsystem = new DriveSubsystem();
-        armSubsystem = new ArmSubsystem(/* Pass motor channel here */);
+        armSubsystem = new ArmSubsystem(/* Pass motor channel here */2);
         oi = new OI();
 
-        pigeon = new PigeonIMU(driveSubsystem.talonWithPigeon);
+        pigeon = new PigeonIMU(pigeonTalon);
         pigeon.setYaw(0., 0);
 
         new JoystickArmCommand(oi.leftStick.getTwist());
@@ -70,6 +64,13 @@ public class Robot extends IterativeRobot {
     public void robotPeriodic() {
     }
 
+    public static double getPigeonAngle(){
+		double[] yawPitchRoll = new double[3];
+		pigeon.getYawPitchRoll(yawPitchRoll);
+		//System.out.println("PigoenAngle: " + yawPitchRoll[0] % 360.);
+		return Math.toRadians(yawPitchRoll[0] % 360.);
+	}
+    
     public void autonomousInit() {
         pigeon.setYaw(0., 0);
 
@@ -78,6 +79,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
+    	Hashtable<String,Double> data = retroreflective.extractData();
     }
 
     public void teleopPeriodic() {

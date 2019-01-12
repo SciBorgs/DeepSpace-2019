@@ -1,14 +1,12 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Hashtable;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
-import sun.awt.SunHints.Value;
 
 public class RetroreflectiveTapeSubsystem extends Subsystem {
 
@@ -25,7 +23,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
 
     // Below are helper functions for extractData()
     public Comparator<Hashtable<String,Double>> dataCompare = 
-        (Hashtable<String,Double> pair1, Hashtable<String, Double> pair2) -> pair1.get("x") - pair2.get("x"); // Might need to paramaterize
+        (Hashtable<String,Double> pair1, Hashtable<String, Double> pair2) -> pair1.get("x") < pair2.get("x") ? 1 : -1; // Might need to paramaterize
     public double[] averagePos(Hashtable<String,Double> data1, Hashtable<String,Double> data2){
         return new double[]{(data1.get("x") + data2.get("x"))/2,
                             (data1.get("y") + data2.get("y"))/2};

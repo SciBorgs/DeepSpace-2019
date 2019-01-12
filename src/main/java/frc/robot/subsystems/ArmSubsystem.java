@@ -7,9 +7,7 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
 
@@ -23,7 +21,7 @@ public class ArmSubsystem extends Subsystem {
     }
 
     public double getPos() {
-        Robot.pigeon.getPigeonAngle();
+        return Robot.getPigeonAngle();
     }
 
     public void setSpeed(double speed) {
