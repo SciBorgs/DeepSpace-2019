@@ -11,39 +11,27 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Joystick;
-<<<<<<< HEAD
+import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.PortMap;
 import frc.robot.Robot;
 
-public class DriveSubsystem {
+public class DriveSubsystem extends Subsystem {
     private TalonSRX frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
 	public TalonSRX talonWithPigeon;
-=======
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.Robot;
-
-public class DriveSubsystem extends Subsystem {
-    private Talon frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
->>>>>>> 7ec28d974757f0c3a02e261dc6783b6de9736d91
-
     /**
      * Initialize robot's motors
      */
     public DriveSubsystem() {
         // Temporary PWM channels
-<<<<<<< HEAD
         frontLeftMotor = new TalonSRX(PortMap.LEFT_FRONT_TALON);
         backLeftMotor = new TalonSRX(PortMap.LEFT_BACK_TALON);
         frontRightMotor = new TalonSRX(PortMap.RIGHT_FRONT_TALON);
         backRightMotor = new TalonSRX(PortMap.RIGHT_BACK_TALON);
         talonWithPigeon = frontLeftMotor;
-=======
-        frontLeftMotor  = new Talon(1);
-        backLeftMotor   = new Talon(2);
-        frontRightMotor = new Talon(3);
-        backRightMotor  = new Talon(4);
->>>>>>> 7ec28d974757f0c3a02e261dc6783b6de9736d91
+        frontLeftMotor  = new TalonSRX(1);
+        backLeftMotor   = new TalonSRX(2);
+        frontRightMotor = new TalonSRX(3);
+        backRightMotor  = new TalonSRX(4);
     }
 
     public double getPigeonAngle() {
