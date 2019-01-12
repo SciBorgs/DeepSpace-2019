@@ -13,7 +13,8 @@ import sun.awt.SunHints.Value;
 public class RetroreflectiveTapeSubsystem extends Subsystem {
 
     public final static double meterDegreeLength = .02;
-    public final static double meterArea = 0.615; // In percent
+    public final static double meterArea = 0.605; // In percent
+    public final static double cameraWidth = 0.015; // In meters
 
     public NetworkTable getTable() {
         return Robot.limelight.getCameraTable();
@@ -70,7 +71,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         values.sort(dataCompare);
         double[] centerPos = center(values);
         if (centerPos.length == 0){return data;}
-        double distance = Math.sqrt(meterArea / values.get(1).get("a")); // Not sure wether this is the correct math
+        double distance = Math.sqrt(meterArea / values.get(1).get("a")) + cameraWidth; // Not sure wether this is the correct math
         double shift = distance * meterDegreeLength * centerPos[0];
 
         data.put("centerX",centerPos[0]);
