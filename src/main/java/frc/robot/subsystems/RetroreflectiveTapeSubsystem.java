@@ -24,7 +24,8 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
     }
 
     // Below are helper functions for extractData()
-    public Comparator dataCompare = Comparator.comparing((Hashtable<String,Double> pair) -> pair.get("x")); // Might need to paramaterize
+    public Comparator<Hashtable<String,Double>> dataCompare = 
+        (Hashtable<String,Double> pair1, Hashtable<String, Double> pair2) -> pair1.get("x") - pair2.get("x"); // Might need to paramaterize
     public double[] averagePos(Hashtable<String,Double> data1, Hashtable<String,Double> data2){
         return new double[]{(data1.get("x") + data2.get("x"))/2,
                             (data1.get("y") + data2.get("y"))/2};
