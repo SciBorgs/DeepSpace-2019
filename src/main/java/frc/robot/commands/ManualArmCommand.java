@@ -5,11 +5,12 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package org.usfirst.frc.team1155.robot.commands;
+
+import org.usfirst.frc.team1155.robot.PID;
+import org.usfirst.frc.team1155.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.PID;
-import frc.robot.Robot;
 
 public class ManualArmCommand extends Command {
     private PID pid;

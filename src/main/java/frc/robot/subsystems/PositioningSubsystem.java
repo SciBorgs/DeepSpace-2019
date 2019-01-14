@@ -1,12 +1,13 @@
-package frc.robot.subsystems;
+package org.usfirst.frc.team1155.robot.subsystems;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import org.usfirst.frc.team1155.robot.Robot;
+
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.Robot;
 
 public class PositioningSubsystem extends Subsystem {
 
@@ -20,14 +21,14 @@ public class PositioningSubsystem extends Subsystem {
     public final int MEASURMENTS = 5; // How many values we keep track of for each encoder
     public final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
 
-    private TalonSRX frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+    private CANSparkMax frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
 
     private ArrayList<Double> robotXs, robotYs, robotAngles;
-    private Hashtable<TalonSRX,ArrayList<Double>> encPoss;
-    private Hashtable<TalonSRX,Boolean> negated;
+    private Hashtable<CANSparkMax,ArrayList<Double>> encPoss;
+    private Hashtable<CANSparkMax,Boolean> negated;
     private double robotAngle;
 
-    public void keepTrackOf(TalonSRX talon,Boolean neg){
+    public void keepTrackOf(CANSparkMax talon, Boolean neg){
         encPoss.put(talon,new ArrayList<Double>());
         negated.put(talon,neg);
     }
@@ -46,7 +47,7 @@ public class PositioningSubsystem extends Subsystem {
         robotYs     = new ArrayList<Double>();
         robotAngles = new ArrayList<Double>();
 
-        encPoss = new Hashtable<TalonSRX,ArrayList<Double>>();
+        encPoss = new Hashtable<CANSparkMax,ArrayList<Double>>();
 
         keepTrackOf(frontLeftMotor,true);
         keepTrackOf(frontRightMotor,false);
@@ -63,15 +64,15 @@ public class PositioningSubsystem extends Subsystem {
         addEncPos(backRightMotor);
     }
 
-    public double encPos(TalonSRX motor) {
+    public double encPos(CANSparkMax motor) {
         // Returns the encoder position of a talon
-        double raw = motor.getSensorCollection().getQuadraturePosition();
+        double raw = motor.getEncoder().getPosition();
         double value = raw / TICKS_PER_ROTATION * ENC_WHEEL_RATIO * (2 * Math.PI * WHEEL_RADIUS);
         return negated.get(motor) ? (0 - value) : value;
     }
 
-    public void addEncPos(TalonSRX talon){trimAddDef(encPoss.get(talon),encPos(talon));}
-    public double encUpdate(TalonSRX talon){
+    public void addEncPos(CANSparkMax talon){trimAddDef(encPoss.get(talon),encPos(talon));}
+    public double encUpdate(CANSparkMax talon){
         // Also returns the change
         double lastPos = lastEncPos(talon);
         addEncPos(talon);
@@ -101,7 +102,7 @@ public class PositioningSubsystem extends Subsystem {
     public double getY() {return last(robotXs);}
     public double getAngle() {return last(robotAngles);}
 
-    public double lastEncPos(TalonSRX talon)  {
+    public double lastEncPos(CANSparkMax talon)  {
         // Takes a talon. Returns the last recorded pos of that talon
         return last(encPoss.get(talon));
     }
@@ -110,7 +111,7 @@ public class PositioningSubsystem extends Subsystem {
         return (last(arr) - arr.get(0)) / arr.size();
     }
 
-    public double getWheelSpeed(TalonSRX talon) {
+    public double getWheelSpeed(CANSparkMax talon) {
         // Gets average wheel speed over the recorded measurmeants
         return averageRange(encPoss.get(talon)) / INTERVAL_LENGTH;
     }

@@ -5,11 +5,12 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package org.usfirst.frc.team1155.robot.commands;
+
+import org.usfirst.frc.team1155.robot.PID;
+import org.usfirst.frc.team1155.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.PID;
-import frc.robot.Robot;
 
 public class JoystickArmCommand extends Command {
     private PID pid;
@@ -29,7 +30,7 @@ public class JoystickArmCommand extends Command {
 
     @Override
     protected void execute() {
-        pid.add_measurement(m_speed - Robot.armSubsystem.m_motor.getSpeed());
+        pid.add_measurement(m_speed - Robot.armSubsystem.m_motor.get());
         Robot.armSubsystem.setSpeed(pid.getOutput());
     }
 

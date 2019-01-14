@@ -4,24 +4,25 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
+package org.usfirst.frc.team1155.robot.subsystems;
+import org.usfirst.frc.team1155.robot.Robot;
 
-package frc.robot.subsystems;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.Robot;
 
 public class ArmSubsystem extends Subsystem {
-    public Talon m_motor;
+    public CANSparkMax m_motor;
     public final double LOWEST_ARM_POS = 0.0;
     public final double GREATEST_ARM_POS = Math.PI / 2;
 
     public ArmSubsystem(int motorChannel) {
-        m_motor = new Talon(motorChannel);
+        m_motor = new CANSparkMax(motorChannel, MotorType.kBrushless);
     }
 
     public double getPos() {
-        return Robot.getPigeonAngle();
+        return Robot.driveSubsystem.getPigeonAngle();
     }
 
     public void setSpeed(double speed) {
