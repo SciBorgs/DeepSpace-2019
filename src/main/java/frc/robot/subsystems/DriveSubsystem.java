@@ -10,15 +10,21 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.PortMap;
 import frc.robot.Robot;
+import frc.robot.PID;
 
 public class DriveSubsystem extends Subsystem {
     private TalonSRX frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
-	public TalonSRX talonWithPigeon;
-    /**
+    public TalonSRX talonWithPigeon;
+    // Define tested error values here
+    double kp, kd;
+    PID pid = new PID(kp, 0, kd);
+    /** 
      * Initialize robot's motors
      */
     public DriveSubsystem() {
@@ -86,7 +92,14 @@ public class DriveSubsystem extends Subsystem {
         setTalon(frontRightMotor,-xSpeed + ySpeed + rotation);
         setTalon(backRightMotor,xSpeed + ySpeed + rotation);
     }
-
+    
+    public double turnDegreeMecanum(double rotationAngle){
+        double error = getPigeonAngle() - rotationAngle;
+        pid.add_measurement(error);
+        setSpeedMecanum(0, 0, pid.getOutput());
+    }
+    
+     
     @Override
     protected void initDefaultCommand() {
 
