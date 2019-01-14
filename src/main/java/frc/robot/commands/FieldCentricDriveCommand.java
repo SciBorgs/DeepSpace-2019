@@ -5,19 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package org.usfirst.frc.team1155.robot.commands;
-
-import org.usfirst.frc.team1155.robot.Robot;
-import org.usfirst.frc.team1155.robot.subsystems.DriveSubsystem.Modes;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
+import frc.robot.subsystems.DriveSubsystem.Modes;
 
 public class FieldCentricDriveCommand extends Command {
+    private Joystick rightStick, leftStick;
 
     public FieldCentricDriveCommand() {
         requires(Robot.driveSubsystem);
         
+        rightStick = Robot.oi.rightStick;
+        leftStick = Robot.oi.leftStick;
     }
 
     @Override
@@ -27,7 +29,7 @@ public class FieldCentricDriveCommand extends Command {
 
     @Override
     protected void execute() {
-        Robot.driveSubsystem.setSpeed(Robot.oi.rightStick, Robot.oi.leftStick, Modes.FIELD);
+        Robot.driveSubsystem.setSpeed(rightStick, leftStick, Modes.FIELD);
     }
 
     @Override

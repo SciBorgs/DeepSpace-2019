@@ -1,4 +1,4 @@
-package org.usfirst.frc.team1155.robot.subsystems;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -7,11 +7,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class LimelightSubsystem extends Subsystem{
 
-    public final static double meterDegreeLength = .02;
-    public final static double meterArea = 0.605; // In percent
-    public final static double cameraWidth = .015; // In meters
-    public final static double imageHeight = 27.5 * 2; // In degrees
-    public final static double imageWidth = 20.4 * 2; // In degrees
     
     public NetworkTable getCameraTable(){
         return NetworkTableInstance.getDefault().getTable("limelight");

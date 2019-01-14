@@ -5,12 +5,11 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package org.usfirst.frc.team1155.robot.commands;
-
-import org.usfirst.frc.team1155.robot.Robot;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
+import frc.robot.Robot;
 
 public class ConditionalDriveCommand extends ConditionalCommand {
     private boolean condition = false;

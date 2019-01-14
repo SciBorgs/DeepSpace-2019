@@ -5,14 +5,13 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package org.usfirst.frc.team1155.robot;
-
-import org.usfirst.frc.team1155.robot.commands.ConditionalDriveCommand;
-import org.usfirst.frc.team1155.robot.commands.FieldCentricDriveCommand;
-import org.usfirst.frc.team1155.robot.commands.RobotCentricDriveCommand;
+package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.ConditionalDriveCommand;
+import frc.robot.commands.FieldCentricDriveCommand;
+import frc.robot.commands.RobotCentricDriveCommand;
 
 public class OI {
     public Joystick rightStick, leftStick;
@@ -23,5 +22,7 @@ public class OI {
         leftStick = new Joystick(PortMap.LEFT_STICK);
         switchCentricDriving = new JoystickButton(rightStick, PortMap.RIGHT_JOYSTICK_BUTTON);
 
+        switchCentricDriving.whenPressed(
+                new ConditionalDriveCommand(new FieldCentricDriveCommand(), new RobotCentricDriveCommand()));
     }
 }
