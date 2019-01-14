@@ -1,10 +1,11 @@
-package frc.robot.subsystems;
+package org.usfirst.frc.team1155.robot.subsystems;
+
+import org.usfirst.frc.team1155.robot.Robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.Robot;
 
 public class AutoSubsystem extends Subsystem {
 	Timer timer;

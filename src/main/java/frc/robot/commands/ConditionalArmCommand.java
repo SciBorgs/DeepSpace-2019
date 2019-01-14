@@ -5,11 +5,12 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package org.usfirst.frc.team1155.robot.commands;
+
+import org.usfirst.frc.team1155.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
-import frc.robot.Robot;
 
 public class ConditionalArmCommand extends ConditionalCommand {
     private boolean condition = false;

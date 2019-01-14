@@ -1,19 +1,20 @@
-package frc.robot.subsystems;
+package org.usfirst.frc.team1155.robot.subsystems;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Hashtable;
 
+import org.usfirst.frc.team1155.robot.Robot;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.Robot;
 
 public class RetroreflectiveTapeSubsystem extends Subsystem {
-
-    public final static double meterDegreeLength = .02;
-    public final static double meterArea = 0.605; // In percent
-    public final static double cameraWidth = 0.015; // In meters
-
+    
+	public final static double tapeHeight = .1397;// In meters
+	public final static double tapeWidth = .0508;// In meters
+	public final static double widthToHeight = tapeWidth / tapeHeight;
+	
     public NetworkTable getTable() {
         return Robot.limelight.getCameraTable();
     }
@@ -69,8 +70,10 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         values.sort(dataCompare);
         double[] centerPos = center(values);
         if (centerPos.length == 0){return data;}
-        double distance = Math.sqrt(meterArea / values.get(1).get("a")) + cameraWidth; // Not sure wether this is the correct math
-        double shift = distance * meterDegreeLength * centerPos[0];
+        double distance = Math.sqrt(Robot.limelight.meterArea / values.get(1).get("a")) + Robot.limelight.cameraWidth; // Not sure wether this is the correct math
+        double metersPerPixel = 
+        		Math.sqrt(widthToHeight * Robot.limelight.imageHeight * Robot.limelight.imageWidth * values.get(1).get("a")) / tapeHeight;
+        double shift = distance * metersPerPixel * centerPos[0];
 
         data.put("centerX",centerPos[0]);
         data.put("centerY", centerPos[1]);

@@ -4,34 +4,30 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
+package org.usfirst.frc.team1155.robot.subsystems;
 
-package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import org.usfirst.frc.team1155.robot.PortMap;
+import org.usfirst.frc.team1155.robot.Robot;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.PortMap;
-import frc.robot.Robot;
 
 public class DriveSubsystem extends Subsystem {
-    private TalonSRX frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
-	public TalonSRX talonWithPigeon;
+    private CANSparkMax leftFrontSpark, leftBackSpark, rightFrontSpark, rightBackSpark;
+
     /**
      * Initialize robot's motors
      */
     public DriveSubsystem() {
         // Temporary PWM channels
-        frontLeftMotor = new TalonSRX(PortMap.LEFT_FRONT_TALON);
-        backLeftMotor = new TalonSRX(PortMap.LEFT_BACK_TALON);
-        frontRightMotor = new TalonSRX(PortMap.RIGHT_FRONT_TALON);
-        backRightMotor = new TalonSRX(PortMap.RIGHT_BACK_TALON);
-        talonWithPigeon = frontLeftMotor;
-        frontLeftMotor  = new TalonSRX(1);
-        backLeftMotor   = new TalonSRX(2);
-        frontRightMotor = new TalonSRX(3);
-        backRightMotor  = new TalonSRX(4);
+        leftFrontSpark = new CANSparkMax(PortMap.LEFT_FRONT_SPARK, MotorType.kBrushless);
+        leftBackSpark = new CANSparkMax(PortMap.LEFT_BACK_SPARK, MotorType.kBrushless);
+        rightFrontSpark = new CANSparkMax(PortMap.RIGHT_FRONT_SPARK, MotorType.kBrushless);
+        rightBackSpark = new CANSparkMax(PortMap.RIGHT_BACK_SPARK, MotorType.kBrushless);
     }
 
     public double getPigeonAngle() {
@@ -64,10 +60,6 @@ public class DriveSubsystem extends Subsystem {
 
         setSpeedMecanum(x, -y, leftStick.getX());
     }
-    
-    public void setTalon(TalonSRX talon, double speed) {
-    	talon.set(ControlMode.PercentOutput, speed);
-    }
 
     /**
      * Cartesian mecanum drive method.
@@ -81,10 +73,10 @@ public class DriveSubsystem extends Subsystem {
      * @param rotation The robot's rate of rotation
      */
     public void setSpeedMecanum(double xSpeed, double ySpeed, double rotation) {
-        setTalon(frontLeftMotor,-xSpeed - ySpeed + rotation);
-        setTalon(backLeftMotor,xSpeed - ySpeed + rotation);
-        setTalon(frontRightMotor,-xSpeed + ySpeed + rotation);
-        setTalon(backRightMotor,xSpeed + ySpeed + rotation);
+        leftFrontSpark.set(-xSpeed - ySpeed + rotation);
+        leftBackSpark.set(xSpeed - ySpeed + rotation);
+        rightFrontSpark.set(-xSpeed + ySpeed + rotation);
+        rightBackSpark.set(xSpeed + ySpeed + rotation);
     }
 
     @Override

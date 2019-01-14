@@ -4,73 +4,73 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
+package org.usfirst.frc.team1155.robot;
 
-package frc.robot;
-import java.util.Hashtable;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import org.usfirst.frc.team1155.robot.commands.JoystickArmCommand;
+import org.usfirst.frc.team1155.robot.subsystems.ArmSubsystem;
+import org.usfirst.frc.team1155.robot.subsystems.AutoSubsystem;
+import org.usfirst.frc.team1155.robot.subsystems.DriveSubsystem;
+import org.usfirst.frc.team1155.robot.subsystems.LimelightSubsystem;
+import org.usfirst.frc.team1155.robot.subsystems.RetroreflectiveTapeSubsystem;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.commands.JoystickArmCommand;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.AutoSubsystem;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.RetroreflectiveTapeSubsystem;
+
+import java.util.Hashtable;
 
 public class Robot extends IterativeRobot {
-//    private static final String kDefaultAuto = "Default";
-//    private static final String kCustomAuto = "My Auto";
+    // private static final String kDefaultAuto = "Default";
+    // private static final String kCustomAuto = "My Auto";
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
-    public static LimelightSubsystem limelight = new LimelightSubsystem();
-    public static AutoSubsystem autoSubsystem = new AutoSubsystem();
-    public static RetroreflectiveTapeSubsystem retroreflective = new RetroreflectiveTapeSubsystem();
-    public static PigeonIMU pigeon;
+    public static LimelightSubsystem limelight;
+    public static AutoSubsystem autoSubsystem;
+    public static RetroreflectiveTapeSubsystem retroreflective;
     public static DriveSubsystem driveSubsystem;
-	public static TalonSRX lf, lm, lb, rf, rm, rb, pigeonTalon;
-	
-    public static final double ARM_P_CONSTANT = .1;
-    public static final double ARM_D_CONSTANT = .1;
+    public static PigeonIMU pigeon;
+    public static CANSparkMax lf, lm, lb, rf, rm, rb, sparkPigeon;
+
+    public static final double ARM_P_CONSTANT = 0.1;
+    public static final double ARM_D_CONSTANT = 0.1;
     public static ArmSubsystem armSubsystem;
 
     public static OI oi;
 
     public void robotInit() {
-        //m_chooser.setDefaultOption("Default Auto", kDefaultAuto); // These lines were causing errors and weren't necessary. They should either be deleted or restored at some point soon
-        //m_chooser.addOption("My Auto", kCustomAuto);
-        //SmartDashboard.putData("Auto choices", m_chooser);
-
-		lf = new TalonSRX(PortMap.LEFT_FRONT_TALON);
-		lm = new TalonSRX(PortMap.LEFT_MIDDLE_TALON);
-		lb = new TalonSRX(PortMap.LEFT_BACK_TALON);
-		rf = new TalonSRX(PortMap.RIGHT_FRONT_TALON);
-		rm = new TalonSRX(PortMap.RIGHT_MIDDLE_TALON);
-		rb = new TalonSRX(PortMap.RIGHT_BACK_TALON);
-		pigeonTalon = lf;
-
-        driveSubsystem = new DriveSubsystem();
-        armSubsystem = new ArmSubsystem(/* Pass motor channel here */2);
+        // m_chooser.setDefaultOption("Default Auto", kDefaultAuto); // These lines were
+        // causing errors and weren't necessary. They should either be deleted or
+        // restored at some point soon
+        // m_chooser.addOption("My Auto", kCustomAuto);
+        // SmartDashboard.putData("Auto choices", m_chooser);
         oi = new OI();
+        armSubsystem = new ArmSubsystem(PortMap.ARM_SPARK);
+        pigeon = new PigeonIMU(PortMap.LEFT_FRONT_SPARK);
+        retroreflective = new RetroreflectiveTapeSubsystem();
+        driveSubsystem = new DriveSubsystem();
+        autoSubsystem = new AutoSubsystem();
+        limelight = new LimelightSubsystem();
 
-        pigeon = new PigeonIMU(pigeonTalon);
+
+        lf = new CANSparkMax(PortMap.LEFT_FRONT_SPARK, CANSparkMaxLowLevel.MotorType.kBrushless);
+        lm = new CANSparkMax(PortMap.LEFT_MIDDLE_SPARK, CANSparkMaxLowLevel.MotorType.kBrushless);
+        lb = new CANSparkMax(PortMap.LEFT_BACK_SPARK, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rf = new CANSparkMax(PortMap.RIGHT_FRONT_SPARK, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rm = new CANSparkMax(PortMap.RIGHT_MIDDLE_SPARK, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rb = new CANSparkMax(PortMap.RIGHT_BACK_SPARK, CANSparkMaxLowLevel.MotorType.kBrushless);
+        sparkPigeon = lf;
+        
+        
         pigeon.setYaw(0., 0);
 
-        new JoystickArmCommand(oi.leftStick.getTwist());
     }
 
     public void robotPeriodic() {
     }
 
-    public static double getPigeonAngle(){
-		double[] yawPitchRoll = new double[3];
-		pigeon.getYawPitchRoll(yawPitchRoll);
-		//System.out.println("PigoenAngle: " + yawPitchRoll[0] % 360.);
-		return Math.toRadians(yawPitchRoll[0] % 360.);
-	}
-    
     public void autonomousInit() {
         pigeon.setYaw(0., 0);
 
@@ -80,6 +80,13 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
     	Hashtable<String,Double> data = retroreflective.extractData();
+    	System.out.println("distance: " + data.get("distance"));
+    }
+
+    public void teleopInit(){
+        //switchCentricDriving.whenPressed(
+         //   new ConditionalDriveCommand(new FieldCentricDriveCommand(), new RobotCentricDriveCommand()));
+
     }
 
     public void teleopPeriodic() {
