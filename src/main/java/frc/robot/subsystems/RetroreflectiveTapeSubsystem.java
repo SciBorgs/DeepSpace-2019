@@ -31,10 +31,10 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
     }
     public boolean facingLeft(double skew){return skew > -45;}
     public boolean facingRight(double skew) {return skew > -45;}
-    public Hashtable<String,Double> createData(NetworkTable t, double nth){
+    public Hashtable<String,Double> createData(NetworkTable t, int nth){
         // Takes a snapshot of data and the nth contour you want and converts it into a hashtable
         Hashtable<String, Double> end = new Hashtable<String, Double>();
-        end.put("nth",nth);
+        end.put("nth",(double) nth);
         end.put("x",get(t,"tx" + nth));
         end.put("y",get(t,"ty" + nth));
         end.put("s",get(t,"ts" + nth));
