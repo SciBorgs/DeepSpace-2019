@@ -19,7 +19,7 @@ import frc.robot.Robot;
 import frc.robot.PID;
 
 public class DriveSubsystem extends Subsystem {
-    private TalonSRX frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+    private TalonSRX frontLeftMotor, frontRightMotor, middleLeftMotor, middleRightMotor, backLeftMotor, backRightMotor;
     public TalonSRX talonWithPigeon;
     // Define tested error values here
     double kp, kd;
@@ -30,8 +30,10 @@ public class DriveSubsystem extends Subsystem {
     public DriveSubsystem() {
         // Temporary PWM channels
         frontLeftMotor = new TalonSRX(PortMap.LEFT_FRONT_TALON);
+        middleLeftMotor = new TalonSRX(PortMap.LEFT_MIDDLE_TALON);
         backLeftMotor = new TalonSRX(PortMap.LEFT_BACK_TALON);
         frontRightMotor = new TalonSRX(PortMap.RIGHT_FRONT_TALON);
+        middleRightMotor = new TalonSRX(PortMap.RIGHT_MIDDLE_TALON);
         backRightMotor = new TalonSRX(PortMap.RIGHT_BACK_TALON);
         talonWithPigeon = frontLeftMotor;
         frontLeftMotor  = new TalonSRX(1);
@@ -74,6 +76,17 @@ public class DriveSubsystem extends Subsystem {
     public void setTalon(TalonSRX talon, double speed) {
     	talon.set(ControlMode.PercentOutput, speed);
     }
+        	
+	public void setSpeedTank(double leftSpeed, double rightSpeed) {
+		
+		frontLeftMotor.set(ControlMode.PercentOutput, -leftSpeed);
+		middleLeftMotor.set(ControlMode.PercentOutput, -leftSpeed);
+		backLeftMotor.set(ControlMode.PercentOutput, -leftSpeed);
+
+		frontRightMotor.set(ControlMode.PercentOutput, rightSpeed);
+		middleRightMotor.set(ControlMode.PercentOutput, rightSpeed);
+		backRightMotor.set(ControlMode.PercentOutput, rightSpeed);
+	}
 
     /**
      * Cartesian mecanum drive method.
