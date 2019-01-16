@@ -159,6 +159,9 @@ public class PositioningSubsystem extends Subsystem {
         // Uses the front left and front right motor to update the position, assuming tank drive
         // Doesn't return anything, simply changes the fields that hold the position info
         changePoint(nextPosTankPigeon(getX(), getY(), robotAngle, encUpdate(frontLeftMotor), encUpdate(frontRightMotor)));
+        System.out.println("x: " + getX());
+        System.out.println("y: " + getY());
+        System.out.println("");
     }
 
     @Override
