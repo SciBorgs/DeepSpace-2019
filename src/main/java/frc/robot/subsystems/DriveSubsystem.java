@@ -93,7 +93,7 @@ public class DriveSubsystem extends Subsystem {
         setTalon(backRightMotor,xSpeed + ySpeed + rotation);
     }
     
-    public double turnDegreeMecanum(double rotationAngle){
+    public void turnDegreeMecanum(double rotationAngle){
         double error = getPigeonAngle() - rotationAngle;
         pid.add_measurement(error);
         setSpeedMecanum(0, 0, pid.getOutput());
