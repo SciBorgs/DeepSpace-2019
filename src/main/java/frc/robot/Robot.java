@@ -79,7 +79,10 @@ public class Robot extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
-    	Hashtable<String,Double> data = retroreflective.extractData();
+        Hashtable<String,Double> data = retroreflective.extractData();
+        System.out.println("distance " + (data.get("distance").toString()));
+        System.out.println("shift " + (data.get("shift").toString()));
+        //System.out.println(data.get("shift"));
     }
 
     public void teleopPeriodic() {
