@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class PositioningSubsystem extends Subsystem {
 
+	public final double INCHES_PER_METER = 39.37;
     public final double TICKS_PER_ROTATION = 4096;
-    public final double WHEEL_RADIUS = 3.; // In inches
+    public final double WHEEL_RADIUS = 3. / INCHES_PER_METER; // In meters
     public final double ENC_WHEEL_RATIO = (4. / 25.) * (1. / 1.2); // 4 rotations of the wheel is 25 rotations of the encoder
-    public final double ROBOT_RADIUS = 15.945; // Half the distance from wheel to wheel
+    public final double ROBOT_RADIUS = 15.945 / INCHES_PER_METER; // Half the distance from wheel to wheel
     public final double ROBOT_WIDTH = 2 * ROBOT_RADIUS;
 
+    public final double GLOBAL_ORIGINAL_ANGLE = Math.PI/2;
     public double ORIGINAL_ANGLE, ORIGINAL_X, ORIGINAL_Y;
     public final int MEASURMENTS = 5; // How many values we keep track of for each encoder
     public final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
@@ -26,7 +28,6 @@ public class PositioningSubsystem extends Subsystem {
     private ArrayList<Double> robotXs, robotYs, robotAngles;
     private Hashtable<TalonSRX,ArrayList<Double>> encPoss;
     private Hashtable<TalonSRX,Boolean> negated;
-    private double robotAngle;
 
     public void keepTrackOf(TalonSRX talon,Boolean neg){
         encPoss.put(talon,new ArrayList<Double>());
@@ -89,14 +90,14 @@ public class PositioningSubsystem extends Subsystem {
         arr.add(val);
         trimIf(arr, maxSize);
     }
-    public void trimAddDef(ArrayList<Double> arr, double val){
+    private void trimAddDef(ArrayList<Double> arr, double val){
         // Uses MEASURMENTS as the maxSize, Def is short for default
         trimAdd(arr, val, MEASURMENTS);
     }
 
     public double getX() {return last(robotXs);}
     public double getY() {return last(robotYs);}
-    public double getAngle() {return last(robotAngles) - ORIGINAL_ANGLE;}
+    public double getAngle() {return last(robotAngles) + GLOBAL_ORIGINAL_ANGLE - ORIGINAL_ANGLE;}
 
     public double lastEncPos(TalonSRX talon)  {
         // Takes a talon. Returns the last recorded pos of that talon
@@ -115,10 +116,9 @@ public class PositioningSubsystem extends Subsystem {
     public double[] nextPosPigeon(double x, double y, double theta, double[][] changeAngles){
         // Works for all forms of drive where the displacement is the average of the movement vectors over the wheels
         double newTheta = Robot.getPigeonAngle();
-        double averageTheta = (newTheta + theta) / 2;
         for(double[] motorData : changeAngles){
-            x += motorData[0] * Math.cos(averageTheta + motorData[1]) / changeAngles.length;
-            y += motorData[0] * Math.sin(averageTheta + motorData[1]) / changeAngles.length;
+            x += motorData[0] * Math.cos(theta + motorData[1]) / changeAngles.length;
+            y += motorData[0] * Math.sin(theta + motorData[1]) / changeAngles.length;
         }
         return new double[]{x,y,newTheta};
     }
@@ -155,12 +155,7 @@ public class PositioningSubsystem extends Subsystem {
     public void updatePositionTank(){
         // Uses the front left and front right motor to update the position, assuming tank drive
         // Doesn't return anything, simply changes the fields that hold the position info
-    	System.out.println("calculating...");
         changePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(middleLeftMotor), encUpdate(middleRightMotor)));
-        System.out.println("x: " + getX());
-        System.out.println("y: " + getY());
-        System.out.println("angle: " + getAngle());
-        System.out.println("");
     }
 
     @Override

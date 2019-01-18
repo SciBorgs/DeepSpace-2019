@@ -1,26 +1,41 @@
-package frc.robot.subsystems;
+package org.usfirst.frc.team1155.robot.subsystems;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import org.usfirst.frc.team1155.robot.PID;
+import org.usfirst.frc.team1155.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.Robot;
-import frc.robot.PID;
 
 public class LineupSubsystem extends Subsystem {
 
-    private PID pid = new PID(0.05,0,0);
-    private double desiredX = 0.5;
-    private double defaultSpeed = 0.3;
+	private double lineAngle = Math.PI / 2 * 1.1;
+	private double extraShift = .305 * .5; // It seems that it goes about this far too much not matter what
+    private double desiredShift = (0.305 * 2 - extraShift); // Assuming we are facing straight. To fix
+    private double desiredForward = 0.305 * 5;
+    private double shiftPrecision = 0.03;
+    private PID shiftPID = new PID(.4,0,2 * desiredShift); // In the end these should depend on desired end points
+    private PID forwardPID = new PID(.3,0,0);
 
     public LineupSubsystem() {}
-
-    public move(){
-        pid.add_measurement(desiredX - Robot.positioning.getX());
-        Robot.driveSubsystem.setSpeedTank(defaultSpeed + pid.getOutput(), rightSpeed - pid.getOutput());
+    
+    public double parallelCoordinate() {
+    	return Robot.pos.getX() * Math.sin(lineAngle) + Robot.pos.getY() * Math.cos(lineAngle);
     }
+    public double shiftCoordinate() {
+    	return Robot.pos.getX() * Math.cos(lineAngle) + Robot.pos.getY() * Math.sin(lineAngle);
+    }
+
+    public void move(){
+    	if (parallelCoordinate() < desiredForward) {
+	        shiftPID.add_measurement(desiredShift   - parallelCoordinate());
+	        forwardPID.add_measurement(desiredForward - shiftCoordinate());
+	        double output = (Math.abs(shiftCoordinate()) < shiftPrecision) ? 0 : shiftPID.getOutput();
+	        double defaultSpeed = forwardPID.getOutput();
+	        System.out.println("shift: " + (desiredShift - shiftCoordinate()));
+	        Robot.driveSubsystem.setSpeedTank(defaultSpeed + output, defaultSpeed - output);
+    	}
+    	else
+    		Robot.driveSubsystem.setSpeedTank(0,0);
+    	}
 
     @Override
     protected void initDefaultCommand() {

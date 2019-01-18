@@ -6,18 +6,13 @@
 /*----------------------------------------------------------------------------*/
 
 package org.usfirst.frc.team1155.robot;
-import java.util.Hashtable;
-
-import org.usfirst.frc.team1155.robot.commands.ConditionalDriveCommand;
-import org.usfirst.frc.team1155.robot.commands.FieldCentricDriveCommand;
-import org.usfirst.frc.team1155.robot.commands.JoystickArmCommand;
-import org.usfirst.frc.team1155.robot.commands.RobotCentricDriveCommand;
 import org.usfirst.frc.team1155.robot.subsystems.ArmSubsystem;
 import org.usfirst.frc.team1155.robot.subsystems.AutoSubsystem;
 import org.usfirst.frc.team1155.robot.subsystems.DriveSubsystem;
 import org.usfirst.frc.team1155.robot.subsystems.LimelightSubsystem;
-import org.usfirst.frc.team1155.robot.subsystems.RetroreflectiveTapeSubsystem;
+import org.usfirst.frc.team1155.robot.subsystems.LineupSubsystem;
 import org.usfirst.frc.team1155.robot.subsystems.PositioningSubsystem;
+import org.usfirst.frc.team1155.robot.subsystems.RetroreflectiveTapeSubsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -33,8 +28,9 @@ public class Robot extends IterativeRobot {
     public static LimelightSubsystem limelight = new LimelightSubsystem();
     public static AutoSubsystem autoSubsystem = new AutoSubsystem();
     public static RetroreflectiveTapeSubsystem retroreflective = new RetroreflectiveTapeSubsystem();
+    public static LineupSubsystem lineup = new LineupSubsystem();
+    public static DriveSubsystem driveSubsystem = new DriveSubsystem();
     public static PigeonIMU pigeon;
-    public static DriveSubsystem driveSubsystem;
 	public static TalonSRX lf, lm, lb, rf, rm, rb, pigeonTalon;
 	public static PositioningSubsystem pos;
 	
@@ -86,6 +82,7 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
     	pos.updatePositionTank();
+    	lineup.move();
     }
 
     public void teleopPeriodic() {
