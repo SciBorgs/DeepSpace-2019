@@ -20,6 +20,14 @@ public class PID {
 		this.d = d;
 	}
 	
+	public ArrayList<Double> getErrors(){
+		return errors;
+	}
+	
+	public ArrayList<Double> getTimes(){
+		return times;
+	}
+	
 	public void setP(double p) {
 		this.p = p;
 	}

@@ -17,6 +17,14 @@ public class LineupSubsystem extends Subsystem {
 
     public LineupSubsystem() {}
     
+    public PID getShiftPID() {
+    	return shiftPID;
+    }
+    
+    public PID getForwardPID() {
+    	return forwardPID;
+    }
+    
     public double parallelCoordinate() {
     	return Robot.pos.getX() * Math.sin(lineAngle) + Robot.pos.getY() * Math.cos(lineAngle);
     }

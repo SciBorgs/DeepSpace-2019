@@ -28,6 +28,18 @@ public class PositioningSubsystem extends Subsystem {
     private ArrayList<Double> robotXs, robotYs, robotAngles;
     private Hashtable<TalonSRX,ArrayList<Double>> encPoss;
     private Hashtable<TalonSRX,Boolean> negated;
+    
+    public ArrayList<Double> getRobotXs(){
+    	return robotXs;
+    }
+    
+    public ArrayList<Double> getRobotYs(){
+    	return robotYs;
+    }
+    
+    public ArrayList<Double> getAngles(){
+    	return robotAngles;
+    }
 
     public void keepTrackOf(TalonSRX talon,Boolean neg){
         encPoss.put(talon,new ArrayList<Double>());
