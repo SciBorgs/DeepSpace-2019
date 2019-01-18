@@ -5,20 +5,25 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package org.usfirst.frc.team1155.robot;
 import java.util.Hashtable;
+
+import org.usfirst.frc.team1155.robot.commands.ConditionalDriveCommand;
+import org.usfirst.frc.team1155.robot.commands.FieldCentricDriveCommand;
+import org.usfirst.frc.team1155.robot.commands.JoystickArmCommand;
+import org.usfirst.frc.team1155.robot.commands.RobotCentricDriveCommand;
+import org.usfirst.frc.team1155.robot.subsystems.ArmSubsystem;
+import org.usfirst.frc.team1155.robot.subsystems.AutoSubsystem;
+import org.usfirst.frc.team1155.robot.subsystems.DriveSubsystem;
+import org.usfirst.frc.team1155.robot.subsystems.LimelightSubsystem;
+import org.usfirst.frc.team1155.robot.subsystems.RetroreflectiveTapeSubsystem;
+import org.usfirst.frc.team1155.robot.subsystems.PositioningSubsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.commands.JoystickArmCommand;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.AutoSubsystem;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.RetroreflectiveTapeSubsystem;
 
 public class Robot extends IterativeRobot {
 //    private static final String kDefaultAuto = "Default";
@@ -31,6 +36,7 @@ public class Robot extends IterativeRobot {
     public static PigeonIMU pigeon;
     public static DriveSubsystem driveSubsystem;
 	public static TalonSRX lf, lm, lb, rf, rm, rb, pigeonTalon;
+	public static PositioningSubsystem pos;
 	
     public static final double ARM_P_CONSTANT = .1;
     public static final double ARM_D_CONSTANT = .1;
@@ -49,16 +55,17 @@ public class Robot extends IterativeRobot {
 		rf = new TalonSRX(PortMap.RIGHT_FRONT_TALON);
 		rm = new TalonSRX(PortMap.RIGHT_MIDDLE_TALON);
 		rb = new TalonSRX(PortMap.RIGHT_BACK_TALON);
-		pigeonTalon = lf;
-
-        driveSubsystem = new DriveSubsystem();
-        armSubsystem = new ArmSubsystem(/* Pass motor channel here */2);
-        oi = new OI();
-
+		pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
         pigeon = new PigeonIMU(pigeonTalon);
         pigeon.setYaw(0., 0);
 
-        new JoystickArmCommand(oi.leftStick.getTwist());
+        driveSubsystem = new DriveSubsystem();
+        //armSubsystem = new ArmSubsystem(/* Pass motor channel here */2);
+        oi = new OI();
+        pos = new PositioningSubsystem();
+
+
+        //new JoystickArmCommand(oi.leftStick.getTwist());
     }
 
     public void robotPeriodic() {
@@ -67,28 +74,27 @@ public class Robot extends IterativeRobot {
     public static double getPigeonAngle(){
 		double[] yawPitchRoll = new double[3];
 		pigeon.getYawPitchRoll(yawPitchRoll);
-		//System.out.println("PigoenAngle: " + yawPitchRoll[0] % 360.);
+		//System.out.println("yaw: " + yawPitchRoll[0] + " pitch: " + yawPitchRoll[1] + " roll: " + yawPitchRoll[2]);
 		return Math.toRadians(yawPitchRoll[0] % 360.);
 	}
     
     public void autonomousInit() {
-        pigeon.setYaw(0., 0);
 
         m_autoSelected = m_chooser.getSelected();
         System.out.println("Auto selected: " + m_autoSelected);
     }
 
     public void autonomousPeriodic() {
-    	Hashtable<String,Double> data = retroreflective.extractData();
+    	pos.updatePositionTank();
     }
 
     public void teleopPeriodic() {
+    	//oi.switchCentricDriving.whenPressed(new ConditionalDriveCommand(new FieldCentricDriveCommand(), new RobotCentricDriveCommand()));
     }
 
     public void testPeriodic() {
     }
 
     public void disabledInit() {
-        pigeon.setYaw(0., 0);
     }
 }
