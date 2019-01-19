@@ -20,7 +20,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class DriveSubsystem extends Subsystem {
     // Define tested error values here
     double kp, kd;
-    PID pid = new PID(kp, 0, kd);
+    PID mecanumAnglePID = new PID(kp, 0, kd);
+    PID tankAnglePID = new PID(.8, 0.2, 0.3);
     /** 
      * Initialize robot's motors
      */
@@ -87,8 +88,16 @@ public class DriveSubsystem extends Subsystem {
     
     public void turnDegreeMecanum(double rotationAngle){
         double error = Robot.getPigeonAngle() - rotationAngle;
-        pid.add_measurement(error);
-        setSpeedMecanum(0, 0, pid.getOutput());
+        mecanumAnglePID.add_measurement(error);
+        setSpeedMecanum(0, 0, mecanumAnglePID.getOutput());
+    }
+    
+    public void turnToDegreeTank(double desiredAngle) {
+    	double error = desiredAngle - Robot.pos.getAngle();
+    	System.out.println(error);
+    	tankAnglePID.add_measurement(error);
+    	double control = tankAnglePID.getOutput();
+    	setSpeedTank(-control, control);
     }
     
      

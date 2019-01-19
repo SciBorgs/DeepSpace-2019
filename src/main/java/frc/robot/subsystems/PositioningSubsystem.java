@@ -109,7 +109,8 @@ public class PositioningSubsystem extends Subsystem {
 
     public double getX() {return last(robotXs);}
     public double getY() {return last(robotYs);}
-    public double getAngle() {return last(robotAngles) + GLOBAL_ORIGINAL_ANGLE - ORIGINAL_ANGLE;}
+    public double adjustTheta(double theta) {return theta + GLOBAL_ORIGINAL_ANGLE - ORIGINAL_ANGLE;}
+    public double getAngle() {return adjustTheta(last(robotAngles));}
 
     public double lastEncPos(TalonSRX talon)  {
         // Takes a talon. Returns the last recorded pos of that talon
@@ -128,9 +129,10 @@ public class PositioningSubsystem extends Subsystem {
     public double[] nextPosPigeon(double x, double y, double theta, double[][] changeAngles){
         // Works for all forms of drive where the displacement is the average of the movement vectors over the wheels
         double newTheta = Robot.getPigeonAngle();
+        double avgTheta = (theta + adjustTheta(newTheta))/2;
         for(double[] motorData : changeAngles){
-            x += motorData[0] * Math.cos(theta + motorData[1]) / changeAngles.length;
-            y += motorData[0] * Math.sin(theta + motorData[1]) / changeAngles.length;
+            x += motorData[0] * Math.cos(avgTheta + motorData[1]) / changeAngles.length;
+            y += motorData[0] * Math.sin(avgTheta + motorData[1]) / changeAngles.length;
         }
         return new double[]{x,y,newTheta};
     }
@@ -168,6 +170,9 @@ public class PositioningSubsystem extends Subsystem {
         // Uses the front left and front right motor to update the position, assuming tank drive
         // Doesn't return anything, simply changes the fields that hold the position info
         changePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(middleLeftMotor), encUpdate(middleRightMotor)));
+        //System.out.println("X: " + getX());
+        //System.out.println("Y: " + getY());
+        System.out.println("Angle: " + getAngle());
     }
 
     @Override

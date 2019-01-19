@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package org.usfirst.frc.team1155.robot;
 import org.usfirst.frc.team1155.robot.subsystems.ArmSubsystem;
 import org.usfirst.frc.team1155.robot.subsystems.AutoSubsystem;
@@ -82,10 +75,10 @@ public class Robot extends IterativeRobot {
         // pos.getAngles().clear();
         // pos.getRobotXs().clear();
         // pos.getRobotYs().clear();
-        lineup.getShiftPID().getErrors().clear();
-        lineup.getShiftPID().getTimes().clear();
-        lineup.getForwardPID().getErrors().clear();
-        lineup.getForwardPID().getTimes().clear();
+        //lineup.getShiftPID().getErrors().clear();
+        //lineup.getShiftPID().getTimes().clear();
+        //lineup.getForwardPID().getErrors().clear();
+        //lineup.getForwardPID().getTimes().clear();
         
     }
 

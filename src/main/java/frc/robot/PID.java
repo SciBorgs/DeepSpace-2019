@@ -7,8 +7,8 @@ public class PID {
 
 	Timer timer;
 	private ArrayList<Double> times, errors;
-	private int maxSize = 3;
-	double p, i, d, u, integral;
+	private int maxSize = 4;
+	public double p, i, d, u, integral;
 	    
 	public PID(double p, double i, double d) {
 		timer = new Timer();
@@ -47,6 +47,8 @@ public class PID {
 		    double dd =  error - errors.get(0);
 		    integral += .5 * dt * (error + errors.get(0));
 		    double derivative = dd / dt;
+		    System.out.println("d change: " + (d * derivative));
+		    System.out.println("p change: " + (p * error));
 		    u = p * error + d * derivative + i * integral;
 		}
 		else
