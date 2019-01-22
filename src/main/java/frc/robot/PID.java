@@ -47,8 +47,6 @@ public class PID {
 		    double dd =  error - errors.get(0);
 		    integral += .5 * dt * (error + errors.get(0));
 		    double derivative = dd / dt;
-		    System.out.println("d change: " + (d * derivative));
-		    System.out.println("p change: " + (p * error));
 		    u = p * error + d * derivative + i * integral;
 		}
 		else

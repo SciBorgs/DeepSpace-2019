@@ -7,20 +7,28 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class LineupSubsystem extends Subsystem {
 
-	private double lineAngle = Math.PI / 2;
-	private double lineRotation = Math.PI / 10;
-	private double realLineAngle = lineAngle + lineRotation;
-	private double extraShift = .305 * .5; // It seems that it goes about this far too much not matter what
-    private double desiredForward = 0.305 * 5;
-    private double desiredShift = (0.305 * 2 - extraShift + Math.sin(lineRotation) * desiredForward); // Assuming we are facing straight. To fix
-    private double shiftPrecision = 0.05;
-    private double forwardPrecision = 0.08;
-    private double shiftD = .2;
-    public double desiredAngle = Math.PI/2;
-    private PID shiftPID = new PID(0.6,0,2.8); // In the end these should depend on desired end points
-    private PID forwardPID = new PID(0.1,.015,.0);
+	private double lineAngle;
+    private double desiredForward;
+    private double desiredShift; // Assuming we are facing straight. To fix
+    private double forwardPrecision;
+    private double shiftD;
+    public double desiredAngle;
+    private PID shiftPID; // In the end these should depend on desired end points
+    private PID forwardPID;
 
     public LineupSubsystem() {}
+    
+    public void resetInfo() {
+    	lineAngle = Math.PI / 2;
+    	desiredForward = 0.305 * 3;
+        desiredShift = 0.305 * 1; // Assuming we are facing straight. To fix
+        forwardPrecision = 0.08;
+        shiftD = .35;
+        desiredAngle = Math.PI/2;
+        shiftPID = new PID(1.1,0,2);
+    	forwardPID = new PID(0.4,.02,0);
+    	reset = false;
+    }
     
     public PID getShiftPID() {
     	return shiftPID;
@@ -31,10 +39,10 @@ public class LineupSubsystem extends Subsystem {
     }
     
     public double shiftCoordinate() {
-    	return Robot.pos.getX() * Math.sin(realLineAngle) - Robot.pos.getY() * Math.cos(realLineAngle);
+    	return Robot.pos.getX() * Math.sin(lineAngle) - Robot.pos.getY() * Math.cos(lineAngle);
     }
     public double parallelCoordinate() {
-    	return Robot.pos.getX() * Math.cos(realLineAngle) + Robot.pos.getY() * Math.sin(realLineAngle);
+    	return Robot.pos.getX() * Math.cos(lineAngle) + Robot.pos.getY() * Math.sin(lineAngle);
     }
     
     public double limitOutput(double output, double maxMagnitude) {
@@ -51,21 +59,18 @@ public class LineupSubsystem extends Subsystem {
     public double shiftError() {return desiredShift - shiftCoordinate();}
     public double parallelError() {return desiredForward - parallelCoordinate();}
     
+    private boolean reset;
     public void move(){
     	if (parallelCoordinate() < desiredForward - forwardPrecision) {
 	        shiftPID.add_measurement(shiftError());
 	        forwardPID.add_measurement(parallelError());
-	        double output =  limitOutput((Math.abs(shiftError()) < shiftPrecision) ? 0 : shiftPID.getOutput(),2);
+	        double output =  limitOutput(shiftPID.getOutput(),2);
 	        double defaultSpeed = forwardPID.getOutput();
-	        System.out.println("shift coord: " + shiftCoordinate());
-	        System.out.println("parallel error: " + parallelError());
-	        System.out.println("output: " + output);
 	        shiftPID.setD(shiftD / defaultSpeed);
-	        System.out.println("D: " + shiftPID.d);
-	        System.out.println("default speed: " + defaultSpeed);
 	        Robot.driveSubsystem.setSpeedTank(defaultSpeed * (1 + output), defaultSpeed * (1 - output));
     	}
     	else {
+    		if (!reset) {Robot.driveSubsystem.resetTurnPID(0.5,2,0.3);}
     		Robot.driveSubsystem.turnToDegreeTank(desiredAngle);
     	}
     }

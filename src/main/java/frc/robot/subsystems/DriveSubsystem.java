@@ -21,7 +21,7 @@ public class DriveSubsystem extends Subsystem {
     // Define tested error values here
     double kp, kd;
     PID mecanumAnglePID = new PID(kp, 0, kd);
-    PID tankAnglePID = new PID(.8, 0.2, 0.3);
+    PID tankAnglePID;
     /** 
      * Initialize robot's motors
      */
@@ -79,6 +79,11 @@ public class DriveSubsystem extends Subsystem {
      * @param ySpeed   The speed that the robot should drive in the X direction
      * @param rotation The robot's rate of rotation
      */
+	
+	public double roundControl(double speed) {
+		return Math.round(speed * 10) / 10.0; 
+	}
+	
     public void setSpeedMecanum(double xSpeed, double ySpeed, double rotation) {
         setTalon(Robot.lf,-xSpeed - ySpeed + rotation);
         setTalon(Robot.lb,xSpeed - ySpeed + rotation);
@@ -92,11 +97,15 @@ public class DriveSubsystem extends Subsystem {
         setSpeedMecanum(0, 0, mecanumAnglePID.getOutput());
     }
     
+    public void resetTurnPID() {resetTurnPID(.8, 2, 0.3);}
+    public void resetTurnPID(double p, double i, double d) {tankAnglePID = new PID(p,i,d);}
+    
     public void turnToDegreeTank(double desiredAngle) {
     	double error = desiredAngle - Robot.pos.getAngle();
-    	System.out.println(error);
+    	System.out.println("error: " + error);
     	tankAnglePID.add_measurement(error);
     	double control = tankAnglePID.getOutput();
+    	System.out.println("Control: " + control);
     	setSpeedTank(-control, control);
     }
     

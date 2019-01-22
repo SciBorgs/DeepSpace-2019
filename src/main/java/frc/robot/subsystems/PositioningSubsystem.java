@@ -18,7 +18,7 @@ public class PositioningSubsystem extends Subsystem {
     public final double ROBOT_RADIUS = 15.945 / INCHES_PER_METER; // Half the distance from wheel to wheel
     public final double ROBOT_WIDTH = 2 * ROBOT_RADIUS;
 
-    public final double GLOBAL_ORIGINAL_ANGLE = Math.PI/2;
+    public final double GLOBAL_ORIGINAL_ANGLE = Math.PI/4;
     public double ORIGINAL_ANGLE, ORIGINAL_X, ORIGINAL_Y;
     public final int MEASURMENTS = 5; // How many values we keep track of for each encoder
     public final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
@@ -64,13 +64,23 @@ public class PositioningSubsystem extends Subsystem {
         keepTrackOf(middleLeftMotor,true); // true and false indicates whether the values must be negated
         keepTrackOf(middleRightMotor,false);
 
-        robotXs.add(ORIGINAL_X);
-        robotYs.add(ORIGINAL_Y);
-        robotAngles.add(ORIGINAL_ANGLE);
-
+        resetPosition();
+        
+    }
+    
+    public void setPosition(double robotX, double robotY, double angle) {
+    	trimAddDef(robotXs,robotX);
+    	trimAddDef(robotYs,robotY);
+    	trimAddDef(robotAngles,angle);
+    }
+    
+    public void resetPosition() {
+    	ORIGINAL_ANGLE = Robot.getPigeonAngle();
+    	System.out.println("Original Angle: " + ORIGINAL_ANGLE);
+    	setPosition(ORIGINAL_X,ORIGINAL_Y,ORIGINAL_ANGLE);
         addEncPos(middleLeftMotor);
         addEncPos(middleRightMotor);
-    }
+    	}
 
     public double encPos(TalonSRX motor) {
         // Returns the encoder position of a talon
@@ -155,11 +165,7 @@ public class PositioningSubsystem extends Subsystem {
         return nextPosPigeon(x,y,theta,changeAngles);
     }
 
-    public void changePoint(double[] point){
-        trimAddDef(robotXs, point[0]);
-        trimAddDef(robotYs, point[1]);
-        trimAddDef(robotAngles, point[2]);
-    }
+    public void changePoint(double[] point){setPosition(point[0],point[1],point[2]);}
 
     public void updatePositionMecanum(){
         changePoint(nextPosMecanumPigeon(getX(),getY(),getAngle(),
@@ -170,8 +176,8 @@ public class PositioningSubsystem extends Subsystem {
         // Uses the front left and front right motor to update the position, assuming tank drive
         // Doesn't return anything, simply changes the fields that hold the position info
         changePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(middleLeftMotor), encUpdate(middleRightMotor)));
-        //System.out.println("X: " + getX());
-        //System.out.println("Y: " + getY());
+        System.out.println("X: " + getX());
+        System.out.println("Y: " + getY());
         System.out.println("Angle: " + getAngle());
     }
 

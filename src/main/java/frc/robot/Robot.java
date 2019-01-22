@@ -68,18 +68,12 @@ public class Robot extends IterativeRobot {
 	}
     
     public void autonomousInit() {
-
+    	System.out.println("Yikes!");
         m_autoSelected = m_chooser.getSelected();
         System.out.println("Auto selected: " + m_autoSelected);
         pigeon.setYaw(0, 30);
-        // pos.getAngles().clear();
-        // pos.getRobotXs().clear();
-        // pos.getRobotYs().clear();
-        //lineup.getShiftPID().getErrors().clear();
-        //lineup.getShiftPID().getTimes().clear();
-        //lineup.getForwardPID().getErrors().clear();
-        //lineup.getForwardPID().getTimes().clear();
-        
+        lineup.resetInfo();
+        pos.resetPosition();
     }
 
     public void autonomousPeriodic() {
