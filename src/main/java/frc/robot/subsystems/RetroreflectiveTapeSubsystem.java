@@ -10,9 +10,10 @@ import frc.robot.Robot;
 
 public class RetroreflectiveTapeSubsystem extends Subsystem {
 
-    public final static double meterDegreeLength = .02;
     public final static double meterArea = 0.605; // In percent
     public final static double cameraWidth = 0.015; // In meters
+    public final static double tapeLength = .1397; // In meters
+    public final static double tapeWidth = .0508; // In meters
 
     public NetworkTable getTable() {
         return Robot.limelight.getCameraTable();
@@ -24,7 +25,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
 
     // Below are helper functions for extractData()
     public Comparator<Hashtable<String,Double>> dataCompare = 
-        (Hashtable<String,Double> pair1, Hashtable<String, Double> pair2) -> pair1.get("x") < pair2.get("x") ? 1 : -1; // Might need to paramaterize
+        (Hashtable<String,Double> pair1, Hashtable<String, Double> pair2) -> pair1.get("x") > pair2.get("x") ? 1 : -1; // Might need to paramaterize
     public double[] averagePos(Hashtable<String,Double> data1, Hashtable<String,Double> data2){
         return new double[]{(data1.get("x") + data2.get("x"))/2,
                             (data1.get("y") + data2.get("y"))/2};
@@ -70,8 +71,11 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         double[] centerPos = center(values);
         if (centerPos.length == 0){return data;}
         double distance = Math.sqrt(meterArea / values.get(1).get("a")) + cameraWidth; // Not sure wether this is the correct math
-        double shift = distance * meterDegreeLength * centerPos[0];
-
+        double degreeLength = tapeLength / (Math.sqrt((tapeLength/tapeWidth) * LimelightSubsystem.imageHeight * LimelightSubsystem.imageWidth * values.get(1).get("a")/100.));
+        System.out.println("degree length: " + degreeLength);
+        System.out.println("x shift degrees: " + centerPos[0]);
+        double shift = degreeLength * centerPos[0]; //Negative to the Left, Positive to the Right
+        System.out.println(centerPos[0]);
         data.put("centerX",centerPos[0]);
         data.put("centerY", centerPos[1]);
         data.put("distance", distance);
