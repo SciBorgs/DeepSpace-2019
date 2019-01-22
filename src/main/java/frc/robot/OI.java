@@ -5,13 +5,10 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package org.usfirst.frc.team1155.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import frc.robot.commands.ConditionalDriveCommand;
-import frc.robot.commands.FieldCentricDriveCommand;
-import frc.robot.commands.RobotCentricDriveCommand;
 
 public class OI {
     public Joystick rightStick, leftStick;

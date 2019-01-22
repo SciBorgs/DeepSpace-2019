@@ -5,45 +5,27 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.subsystems;
+package org.usfirst.frc.team1155.robot.subsystems;
+
+import org.usfirst.frc.team1155.robot.PID;
+import org.usfirst.frc.team1155.robot.PortMap;
+import org.usfirst.frc.team1155.robot.Robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.PortMap;
-import frc.robot.Robot;
-import frc.robot.PID;
 
 public class DriveSubsystem extends Subsystem {
-    private TalonSRX frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
-    public TalonSRX talonWithPigeon;
     // Define tested error values here
     double kp, kd;
-    PID pid = new PID(kp, 0, kd);
+    PID mecanumAnglePID = new PID(kp, 0, kd);
+    PID tankAnglePID;
     /** 
      * Initialize robot's motors
      */
     public DriveSubsystem() {
-        // Temporary PWM channels
-        frontLeftMotor = new TalonSRX(PortMap.LEFT_FRONT_TALON);
-        backLeftMotor = new TalonSRX(PortMap.LEFT_BACK_TALON);
-        frontRightMotor = new TalonSRX(PortMap.RIGHT_FRONT_TALON);
-        backRightMotor = new TalonSRX(PortMap.RIGHT_BACK_TALON);
-        talonWithPigeon = frontLeftMotor;
-        frontLeftMotor  = new TalonSRX(1);
-        backLeftMotor   = new TalonSRX(2);
-        frontRightMotor = new TalonSRX(3);
-        backRightMotor  = new TalonSRX(4);
-    }
-
-    public double getPigeonAngle() {
-        double[] yawPitchRoll = new double[3];
-        Robot.pigeon.getYawPitchRoll(yawPitchRoll);
-        return yawPitchRoll[0] % 360.;
     }
 
     public enum Modes {
@@ -60,7 +42,7 @@ public class DriveSubsystem extends Subsystem {
         double x, y = 0.0;
 
         if (mode == Modes.FIELD) {
-            double angle = rightStick.getDirectionRadians() - Math.toRadians(getPigeonAngle());
+            double angle = rightStick.getDirectionRadians() - Math.toRadians(Robot.getPigeonAngle());
             x = Math.cos(angle) * rightStick.getMagnitude();
             y = Math.sin(angle) * rightStick.getMagnitude();
         } else {
@@ -74,6 +56,17 @@ public class DriveSubsystem extends Subsystem {
     public void setTalon(TalonSRX talon, double speed) {
     	talon.set(ControlMode.PercentOutput, speed);
     }
+        	
+	public void setSpeedTank(double leftSpeed, double rightSpeed) {
+		
+		setTalon(Robot.lf, -leftSpeed);
+		setTalon(Robot.lm, -leftSpeed);
+		setTalon(Robot.lb, -leftSpeed);
+
+		setTalon(Robot.rf, rightSpeed);
+		setTalon(Robot.rm, rightSpeed);
+		setTalon(Robot.rb, rightSpeed);
+	}
 
     /**
      * Cartesian mecanum drive method.
@@ -86,17 +79,34 @@ public class DriveSubsystem extends Subsystem {
      * @param ySpeed   The speed that the robot should drive in the X direction
      * @param rotation The robot's rate of rotation
      */
+	
+	public double roundControl(double speed) {
+		return Math.round(speed * 10) / 10.0; 
+	}
+	
     public void setSpeedMecanum(double xSpeed, double ySpeed, double rotation) {
-        setTalon(frontLeftMotor,-xSpeed - ySpeed + rotation);
-        setTalon(backLeftMotor,xSpeed - ySpeed + rotation);
-        setTalon(frontRightMotor,-xSpeed + ySpeed + rotation);
-        setTalon(backRightMotor,xSpeed + ySpeed + rotation);
+        setTalon(Robot.lf,-xSpeed - ySpeed + rotation);
+        setTalon(Robot.lb,xSpeed - ySpeed + rotation);
+        setTalon(Robot.rf,-xSpeed + ySpeed + rotation);
+        setTalon(Robot.rb,xSpeed + ySpeed + rotation);
     }
     
     public void turnDegreeMecanum(double rotationAngle){
-        double error = getPigeonAngle() - rotationAngle;
-        pid.add_measurement(error);
-        setSpeedMecanum(0, 0, pid.getOutput());
+        double error = Robot.getPigeonAngle() - rotationAngle;
+        mecanumAnglePID.add_measurement(error);
+        setSpeedMecanum(0, 0, mecanumAnglePID.getOutput());
+    }
+    
+    public void resetTurnPID() {resetTurnPID(.8, 2, 0.3);}
+    public void resetTurnPID(double p, double i, double d) {tankAnglePID = new PID(p,i,d);}
+    
+    public void turnToDegreeTank(double desiredAngle) {
+    	double error = desiredAngle - Robot.pos.getAngle();
+    	System.out.println("error: " + error);
+    	tankAnglePID.add_measurement(error);
+    	double control = tankAnglePID.getOutput();
+    	System.out.println("Control: " + control);
+    	setSpeedTank(-control, control);
     }
     
      
