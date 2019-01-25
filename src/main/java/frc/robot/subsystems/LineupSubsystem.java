@@ -7,13 +7,13 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class LineupSubsystem extends Subsystem {
 
-	private double lineAngle;
-    private double desiredForward;
-    private double desiredShift; // Assuming we are facing straight. To fix
-    private PID shiftPID; // In the end these should depend on desired end points
-    private PID forwardPID;
-    private double forwardGoal;
-    private double forwardScale = 0.8;
+	private double lineAngle; // To line up with
+    private double desiredForward; // This is where we will aim for b/c of overshooting
+    private double desiredShift;
+    private PID shiftPID; // PID for deciding the difference in our wheels' speeds
+    private PID forwardPID; // PID for deciding our speed
+    private double forwardGoal; // This is where we actually want to end up
+    private double forwardScale = 0.8; // We're assuming that it goes an extra 20 percent.
 
     public LineupSubsystem() {}
     
@@ -38,33 +38,20 @@ public class LineupSubsystem extends Subsystem {
     
     public double shift(double x, double y, double angle)    {return x * Math.sin(angle) - y * Math.cos(angle);}
     public double parallel(double x, double y, double angle) {return x * Math.cos(angle) + y * Math.sin(angle);}
-    public double shiftCoordinate()    {return shift(Robot.pos.getX(),Robot.pos.getY(),lineAngle);}
+    public double shiftCoordinate()    {return shift(Robot.pos.getX(),Robot.pos.getY(),lineAngle);} // turns the line we are lining up with into the y-axis
     public double parallelCoordinate() {return parallel(Robot.pos.getX(),Robot.pos.getY(),lineAngle);}
-
-    
-    public double limitOutput(double output, double maxMagnitude) {
-    	if (output > maxMagnitude)
-    		return maxMagnitude;
-    	else if (output < 0 - maxMagnitude)
-    		return 0 - maxMagnitude;
-    	else
-    		return output;
-    }
     
     public double shiftError() {return desiredShift - shiftCoordinate();}
     public double parallelError() {return desiredForward - parallelCoordinate();}
     public double deltaTheta() {return lineAngle - Robot.pos.getAngle();}
-    public double projectedShift() {
-    	return shiftError() - (forwardGoal - parallelCoordinate()) * Math.tan(deltaTheta());
-    }
     
     public void move(){
     	if (parallelCoordinate() < desiredForward) {
-        	shiftPID.add_measurement_d(shiftError(),0 - Math.sin(deltaTheta()));
+        	shiftPID.add_measurement_d(shiftError(),0 - Math.sin(deltaTheta())); // We use the sine of our change in angle as the derivative (that's the secret!)
 	        forwardPID.add_measurement(parallelError());
 	        double output =  shiftPID.getOutput();
 	        double defaultSpeed = forwardPID.getOutput();
-	        Robot.driveSubsystem.setSpeedTank(defaultSpeed * (1 + output), defaultSpeed * (1 - output));
+	        Robot.driveSubsystem.setSpeedTank(defaultSpeed * (1 + output), defaultSpeed * (1 - output)); // The output changes the percentage that goes to each side which makes it turn
     	}
     	else {
     		Robot.driveSubsystem.setSpeedTank(0, 0);
