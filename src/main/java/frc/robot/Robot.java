@@ -67,18 +67,19 @@ public class Robot extends IterativeRobot {
 		return Math.toRadians(yawPitchRoll[0] % 360.);
 	}
     
+    //TODO: make robot work lol
+    
     public void autonomousInit() {
-    	System.out.println("Yikes!");
-        m_autoSelected = m_chooser.getSelected();
         System.out.println("Auto selected: " + m_autoSelected);
         pigeon.setYaw(0, 30);
-        lineup.resetInfo();
-        pos.resetPosition();
+    	pos.updatePositionTank();
+        lineup.resetInfo(.305 * 6.3, .305 * -.6, Math.toRadians(-19));
+        m_autoSelected = m_chooser.getSelected();
+        //pos.resetPosition();
     }
 
     public void autonomousPeriodic() {
     	pos.updatePositionTank();
-    	lineup.move();
     }
 
     public void teleopPeriodic() {

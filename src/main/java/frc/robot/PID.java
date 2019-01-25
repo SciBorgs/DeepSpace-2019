@@ -39,12 +39,28 @@ public class PID {
 	public void setD(double d) {
 		this.d = d;
 	}
+	
+	public void setSmoother(int amount) {maxSize = amount;}
 	  
 	public void add_measurement(double error) {
 		double currentTime = timer.get();
 		if (!(errors.isEmpty())) {
 		    double dt = currentTime - times.get(0);
 		    double dd =  error - errors.get(0);
+		    integral += .5 * dt * (error + errors.get(0));
+		    double derivative = dd / dt;
+		    u = p * error + d * derivative + i * integral;
+		}
+		else
+			u = p * error;
+		Robot.pos.trimAdd(times, currentTime, maxSize);
+		Robot.pos.trimAdd(errors, error, maxSize);
+	}
+	  
+	public void add_measurement_d(double error, double dd) {
+		double currentTime = timer.get();
+		if (!(errors.isEmpty())) {
+		    double dt = currentTime - times.get(0);
 		    integral += .5 * dt * (error + errors.get(0));
 		    double derivative = dd / dt;
 		    u = p * error + d * derivative + i * integral;
