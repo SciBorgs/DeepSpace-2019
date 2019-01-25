@@ -5,11 +5,11 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package org.usfirst.frc.team1155.robot.subsystems;
+package frc.robot.subsystems;
 
-import org.usfirst.frc.team1155.robot.PID;
-import org.usfirst.frc.team1155.robot.PortMap;
-import org.usfirst.frc.team1155.robot.Robot;
+import frc.robot.PID;
+import frc.robot.PortMap;
+import frc.robot.Robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
