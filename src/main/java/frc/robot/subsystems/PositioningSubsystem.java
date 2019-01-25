@@ -18,10 +18,12 @@ public class PositioningSubsystem extends Subsystem {
     public final double ROBOT_RADIUS = 15.945 / INCHES_PER_METER; // Half the distance from wheel to wheel
     public final double ROBOT_WIDTH = 2 * ROBOT_RADIUS;
 
-    public final double GLOBAL_ORIGINAL_ANGLE = Math.PI/4;
+    public final double GLOBAL_ORIGINAL_ANGLE = Math.PI/2;
     public double ORIGINAL_ANGLE, ORIGINAL_X, ORIGINAL_Y;
     public final int MEASURMENTS = 5; // How many values we keep track of for each encoder
     public final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
+    public final double STATIC_POSITION_ERROR = .05;
+    public final double STATIC_ANGLE_ERROR = Math.toRadians(2);
 
     private TalonSRX frontLeftMotor, frontRightMotor, middleLeftMotor, middleRightMotor, backLeftMotor, backRightMotor;
 
@@ -122,6 +124,12 @@ public class PositioningSubsystem extends Subsystem {
     public double adjustTheta(double theta) {return theta + GLOBAL_ORIGINAL_ANGLE - ORIGINAL_ANGLE;}
     public double getAngle() {return adjustTheta(last(robotAngles));}
 
+    public boolean inRange(double n1, double n2, double error) {return Math.abs(n1 - n2) < error;}
+    public boolean xStatic() {return inRange(getX(),robotXs.get(0),STATIC_POSITION_ERROR);}
+    public boolean yStatic() {return inRange(getY(),robotYs.get(0),STATIC_POSITION_ERROR);}
+    public boolean angleStatic() {return inRange(getAngle(),robotAngles.get(0),STATIC_ANGLE_ERROR);}
+    public boolean robotStatic() {return xStatic() && yStatic() && angleStatic();}
+    
     public double lastEncPos(TalonSRX talon)  {
         // Takes a talon. Returns the last recorded pos of that talon
         return last(encPoss.get(talon));
@@ -176,9 +184,9 @@ public class PositioningSubsystem extends Subsystem {
         // Uses the front left and front right motor to update the position, assuming tank drive
         // Doesn't return anything, simply changes the fields that hold the position info
         changePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(middleLeftMotor), encUpdate(middleRightMotor)));
-        System.out.println("X: " + getX());
-        System.out.println("Y: " + getY());
-        System.out.println("Angle: " + getAngle());
+       // System.out.println("X: " + getX());
+       // System.out.println("Y: " + getY());
+       // System.out.println("Angle: " + getAngle());
     }
 
     @Override
