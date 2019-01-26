@@ -22,7 +22,7 @@ public class LineupSubsystem extends Subsystem {
     	forwardGoal = forwardChange;
     	desiredForward = forwardScale * forwardGoal + parallelCoordinate();
         desiredShift = shiftChange + shiftCoordinate();
-        shiftPID = new PID(.5,0,.13);
+        shiftPID = new PID(.7,0,.13);
     	forwardPID = new PID(0.45,.02,0.05);
     	shiftPID.setSmoother(6);
     	Robot.driveSubsystem.resetTurnPID(0.5,.15,0.3);
