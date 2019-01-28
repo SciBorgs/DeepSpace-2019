@@ -17,9 +17,6 @@ public class OI {
     public OI() {
         rightStick = new Joystick(PortMap.RIGHT_STICK);
         leftStick = new Joystick(PortMap.LEFT_STICK);
-        //switchCentricDriving = new JoystickButton(rightStick, PortMap.RIGHT_JOYSTICK_BUTTON);
-
-        //switchCentricDriving.whenPressed(
-        //        new ConditionalDriveCommand(new FieldCentricDriveCommand(), new RobotCentricDriveCommand()));
+        switchCentricDriving = new JoystickButton(rightStick, PortMap.RIGHT_JOYSTICK_BUTTON);
     }
 }

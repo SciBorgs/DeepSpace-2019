@@ -130,6 +130,10 @@ public class PositioningSubsystem extends Subsystem {
     public boolean angleStatic() {return inRange(getAngle(),robotAngles.get(0),STATIC_ANGLE_ERROR);}
     public boolean robotStatic() {return xStatic() && yStatic() && angleStatic();}
     
+    public double getAngularSpeed() {
+    	return (getAngle() - adjustTheta(robotAngles.get(0))) / ((MEASURMENTS - 1) * INTERVAL_LENGTH);
+    }
+    
     public double lastEncPos(TalonSRX talon)  {
         // Takes a talon. Returns the last recorded pos of that talon
         return last(encPoss.get(talon));
