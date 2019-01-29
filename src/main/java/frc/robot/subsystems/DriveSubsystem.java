@@ -21,12 +21,17 @@ public class DriveSubsystem extends Subsystem {
     // Define tested error values here
     double kp, kd;
     PID mecanumAnglePID = new PID(kp, 0, kd);
-    double tankAngleP = 1;
+    double tankAngleP = 3;
     double goalOmegaConstant = 1;
+    PID ballFollowerPID;
+    double ballFollowerP = 0.1;
+    double ballFollowerI = 0;
+    double ballFollowerD = 0.05;
     /** 
      * Initialize robot's motors
      */
     public DriveSubsystem() {
+    	ballFollowerPID = new PID(ballFollowerP, ballFollowerI, ballFollowerD);
     }
 
     public enum Modes {
@@ -64,6 +69,13 @@ public class DriveSubsystem extends Subsystem {
 		double goalOmega = goalOmegaConstant * (leftSpeed - rightSpeed);
 		double change = (goalOmega - Robot.pos.getAngularSpeed()) * tankAngleP;
 		setSpeedTank(averageOutput + change, averageOutput - change); 
+	}
+	
+	public void setSpeedTankBallFollow(double leftSpeed, double rightSpeed, double tx) {
+		ballFollowerPID.add_measurement(tx);
+		double turnMagnitude = ballFollowerPID.getOutput();
+		double avg = .5 * (leftSpeed + rightSpeed);
+		setSpeedTank(avg - turnMagnitude, avg + turnMagnitude);
 	}
 
     /**
