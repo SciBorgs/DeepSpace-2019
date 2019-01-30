@@ -24,9 +24,9 @@ public class DriveSubsystem extends Subsystem {
     double tankAngleP = 3;
     double goalOmegaConstant = 1;
     PID ballFollowerPID;
-    double ballFollowerP = 0.1;
+    double ballFollowerP = 0.05;
     double ballFollowerI = 0;
-    double ballFollowerD = 0.05;
+    double ballFollowerD = 0.001;
     /** 
      * Initialize robot's motors
      */
@@ -75,8 +75,10 @@ public class DriveSubsystem extends Subsystem {
 		ballFollowerPID.add_measurement(tx);
 		double turnMagnitude = ballFollowerPID.getOutput();
 		double avg = .5 * (leftSpeed + rightSpeed);
-		setSpeedTank(avg - turnMagnitude, avg + turnMagnitude);
-	}
+		setSpeedTank(avg + turnMagnitude, avg - turnMagnitude);
+    }
+    
+    public void followBall(double tx){setSpeedTankBallFollow(-leftStick.getY(),-rightStick.getY(),tx)};
 
     /**
      * Cartesian mecanum drive method.
