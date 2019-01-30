@@ -1,9 +1,9 @@
-package org.usfirst.frc.team1155.robot.subsystems;
+package frc.robot.subsystems;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import org.usfirst.frc.team1155.robot.Robot;
+import frc.robot.Robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 

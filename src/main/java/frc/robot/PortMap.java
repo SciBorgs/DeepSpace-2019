@@ -1,4 +1,4 @@
-package org.usfirst.frc.team1155.robot;
+package frc.robot;
 
 public class PortMap {
     public static final int LEFT_STICK = 0;
