@@ -5,13 +5,14 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package org.usfirst.frc.team1155.robot.commands;
+
+import org.usfirst.frc.team1155.robot.Robot;
+import org.usfirst.frc.team1155.robot.subsystems.DriveSubsystem;
+import org.usfirst.frc.team1155.robot.subsystems.DriveSubsystem.Modes;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.Robot;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.DriveSubsystem.Modes;
 
 
 public class RobotCentricDriveCommand extends Command {
@@ -22,17 +23,19 @@ public class RobotCentricDriveCommand extends Command {
 
         rightStick = Robot.oi.rightStick;
         leftStick = Robot.oi.leftStick;
+        System.out.println("CONSTRUCTED");
     }
 
     @Override
     protected void initialize() {
-        Robot.driveSubsystem.setSpeedMecanum(0, 0, 0);
+    	System.out.println("INITIALIZING");
+        Robot.driveSubsystem.setSpeedTank(0, 0);
     }
 
     @Override
     protected void execute() {
-        Robot.driveSubsystem.setSpeed(rightStick, leftStick, DriveSubsystem.Modes.ROBOT);
-        Robot.driveSubsystem.setSpeed(rightStick, leftStick, Modes.ROBOT);
+    	System.out.println("[     executing...     ]");
+        Robot.driveSubsystem.setSpeed(leftStick, rightStick);
     }
 
     @Override
@@ -42,7 +45,7 @@ public class RobotCentricDriveCommand extends Command {
 
     @Override
     protected void end() {
-        Robot.driveSubsystem.setSpeedMecanum(0, 0, 0);
+        Robot.driveSubsystem.setSpeedTank(0, 0);
     }
 
     @Override

@@ -21,11 +21,17 @@ public class DriveSubsystem extends Subsystem {
     // Define tested error values here
     double kp, kd;
     PID mecanumAnglePID = new PID(kp, 0, kd);
-    PID tankAnglePID;
+    double tankAngleP = 3;
+    double goalOmegaConstant = 1;
+    PID ballFollowerPID;
+    double ballFollowerP = 0.1;
+    double ballFollowerI = 0;
+    double ballFollowerD = 0.05;
     /** 
      * Initialize robot's motors
      */
     public DriveSubsystem() {
+    	ballFollowerPID = new PID(ballFollowerP, ballFollowerI, ballFollowerD);
     }
 
     public enum Modes {
@@ -38,19 +44,9 @@ public class DriveSubsystem extends Subsystem {
      * @param rightStick The right joystick - used for lateral movements
      * @param leftStick  The left joystick - used for rotations
      */
-    public void setSpeed(Joystick rightStick, Joystick leftStick, Modes mode) {
-        double x, y = 0.0;
-
-        if (mode == Modes.FIELD) {
-            double angle = rightStick.getDirectionRadians() - Math.toRadians(Robot.getPigeonAngle());
-            x = Math.cos(angle) * rightStick.getMagnitude();
-            y = Math.sin(angle) * rightStick.getMagnitude();
-        } else {
-            x = rightStick.getX();
-            y = rightStick.getY();
-        }
-
-        setSpeedMecanum(x, -y, leftStick.getX());
+    public void setSpeed(Joystick leftStick, Joystick rightStick) {
+    	System.out.println("rs: " + rightStick.getY());
+        setSpeedTankAngularControl(-leftStick.getY(),-rightStick.getY());
     }
     
     public void setTalon(TalonSRX talon, double speed) {
@@ -66,6 +62,20 @@ public class DriveSubsystem extends Subsystem {
 		setTalon(Robot.rf, rightSpeed);
 		setTalon(Robot.rm, rightSpeed);
 		setTalon(Robot.rb, rightSpeed);
+	}
+	
+	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
+		double averageOutput = (leftSpeed + rightSpeed) / 2;
+		double goalOmega = goalOmegaConstant * (leftSpeed - rightSpeed);
+		double change = (goalOmega - Robot.pos.getAngularSpeed()) * tankAngleP;
+		setSpeedTank(averageOutput + change, averageOutput - change); 
+	}
+	
+	public void setSpeedTankBallFollow(double leftSpeed, double rightSpeed, double tx) {
+		ballFollowerPID.add_measurement(tx);
+		double turnMagnitude = ballFollowerPID.getOutput();
+		double avg = .5 * (leftSpeed + rightSpeed);
+		setSpeedTank(avg - turnMagnitude, avg + turnMagnitude);
 	}
 
     /**
@@ -95,18 +105,6 @@ public class DriveSubsystem extends Subsystem {
         double error = Robot.getPigeonAngle() - rotationAngle;
         mecanumAnglePID.add_measurement(error);
         setSpeedMecanum(0, 0, mecanumAnglePID.getOutput());
-    }
-    
-    public void resetTurnPID() {resetTurnPID(.8, 2, 0.3);}
-    public void resetTurnPID(double p, double i, double d) {tankAnglePID = new PID(p,i,d);}
-    
-    public void turnToDegreeTank(double desiredAngle) {
-    	double error = desiredAngle - Robot.pos.getAngle();
-    	System.out.println("error: " + error);
-    	tankAnglePID.add_measurement(error);
-    	double control = tankAnglePID.getOutput();
-    	System.out.println("Control: " + control);
-    	setSpeedTank(-control, control);
     }
     
      

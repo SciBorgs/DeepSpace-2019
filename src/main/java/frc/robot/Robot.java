@@ -9,8 +9,10 @@ import frc.robot.subsystems.RetroreflectiveTapeSubsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 public class Robot extends IterativeRobot {
@@ -30,6 +32,7 @@ public class Robot extends IterativeRobot {
     public static final double ARM_P_CONSTANT = .1;
     public static final double ARM_D_CONSTANT = .1;
     public static ArmSubsystem armSubsystem;
+    
 
     public static OI oi;
 
@@ -47,42 +50,57 @@ public class Robot extends IterativeRobot {
 		pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
         pigeon = new PigeonIMU(pigeonTalon);
         pigeon.setYaw(0., 0);
-
         driveSubsystem = new DriveSubsystem();
         //armSubsystem = new ArmSubsystem(/* Pass motor channel here */2);
         oi = new OI();
         pos = new PositioningSubsystem();
 
-
+        System.out.println("roboinited");
         //new JoystickArmCommand(oi.leftStick.getTwist());
     }
 
     public void robotPeriodic() {
+    	
     }
 
     public static double getPigeonAngle(){
 		double[] yawPitchRoll = new double[3];
 		pigeon.getYawPitchRoll(yawPitchRoll);
 		//System.out.println("yaw: " + yawPitchRoll[0] + " pitch: " + yawPitchRoll[1] + " roll: " + yawPitchRoll[2]);
-		return Math.toRadians(yawPitchRoll[0] % 360.);
+		return Math.toRadians(yawPitchRoll[0] % 360.); //raw goes from 0 to 22 and we want from 0 to 360
 	}
     
     //TODO: make robot work lol
     
     public void autonomousInit() {
+    	System.out.println("Yikes!");
         System.out.println("Auto selected: " + m_autoSelected);
-        pigeon.setYaw(0, 30);
     	pos.updatePositionTank();
-        lineup.resetInfo(.305 * 6.3, .305 * -.6, Math.toRadians(-19));
+        //lineup.resetInfo(.305 * 8, .305 * -2.2, Math.toRadians(-26));
+        //System.out.println("INITIAL ANGLE: " + pos.getAngle());
         m_autoSelected = m_chooser.getSelected();
-        //pos.resetPosition();
+        pos.resetPosition();
+        pigeon.enterCalibrationMode(CalibrationMode.Temperature, 10);
     }
 
     public void autonomousPeriodic() {
+    	
+    	System.out.println("[ ANGLE ]: " + pigeon.getFusedHeading() % 360.);
     	pos.updatePositionTank();
+    	//lineup.move();
+    	
+    }
+    
+    @Override
+    public void teleopInit() {
+    	System.out.println("[     teleinitting    ]");
+    	RobotCentricDriveCommand com = new RobotCentricDriveCommand();
+    	com.start();
     }
 
     public void teleopPeriodic() {
+    	Scheduler.getInstance().run();
+    	pos.updatePositionTank();
     	//oi.switchCentricDriving.whenPressed(new ConditionalDriveCommand(new FieldCentricDriveCommand(), new RobotCentricDriveCommand()));
     }
 

@@ -5,12 +5,13 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package org.usfirst.frc.team1155.robot.commands;
+
+import org.usfirst.frc.team1155.robot.Robot;
+import org.usfirst.frc.team1155.robot.subsystems.DriveSubsystem.Modes;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.Robot;
-import frc.robot.subsystems.DriveSubsystem.Modes;
 
 public class FieldCentricDriveCommand extends Command {
     private Joystick rightStick, leftStick;
@@ -24,12 +25,12 @@ public class FieldCentricDriveCommand extends Command {
 
     @Override
     protected void initialize() {
-        Robot.driveSubsystem.setSpeedMecanum(0, 0, 0);
+        Robot.driveSubsystem.setSpeedTank(0, 0);
     }
 
     @Override
     protected void execute() {
-        Robot.driveSubsystem.setSpeed(rightStick, leftStick, Modes.FIELD);
+        Robot.driveSubsystem.setSpeed(rightStick, leftStick);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class FieldCentricDriveCommand extends Command {
 
     @Override
     protected void end() {
-        Robot.driveSubsystem.setSpeedMecanum(0, 0, 0);
+        Robot.driveSubsystem.setSpeedTank(0, 0);
     }
 
     @Override
