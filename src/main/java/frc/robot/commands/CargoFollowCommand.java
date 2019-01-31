@@ -10,15 +10,15 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class FollowCargoCommand extends Command {
+public class CargoFollowCommand extends Command {
 
-    public FollowCargoCommand() {
+    public CargoFollowCommand() {
         requires(Robot.cargoFollowSubsystem);
     }
 
-    @Override protected void    initialize()  {Robot.cargoFollow.ballLimelightMode();
-    @Override protected void    execute()     {Robot.cargoFollow.followBall();}
-    @Override protected boolean isFinished()  {return true;}
-    @Override protected void    end()         {Robot.armSubsystem.setSpeed(0);}
-    @Override protected void    interrupted() {end();}
+    @Override protected void initialize()   {Robot.cargoFollowSubsystem.modeToCargo();
+    @Override protected void execute()      {Robot.cargoFollowSubsystem.followBall();}
+    @Override protected boolean isFinished(){return true;}
+    @Override protected void end()          {Robot.armSubsystem.setSpeed(0);}
+    @Override protected void interrupted()  {end();}
 }
