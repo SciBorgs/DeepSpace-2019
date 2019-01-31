@@ -19,11 +19,8 @@ public class LiftSubsystem extends Subsystem {
         return Robot.rb.getEncoder().getPosition();
     }
 
-    public void setSpeed(double speed) {
-        Robot.rb.set(speed);
-    }
+    public void setSpeed(double speed) {Robot.rb.set(speed);}
 
     @Override
-    protected void initDefaultCommand() {
-    }
+    protected void initDefaultCommand() {}
 }

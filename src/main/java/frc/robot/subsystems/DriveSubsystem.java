@@ -19,8 +19,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class DriveSubsystem extends Subsystem {
     // Define tested error values here
-    double kp, kd;
-    PID mecanumAnglePID = new PID(kp, 0, kd);
     double tankAngleP = 3;
     double goalOmegaConstant = 1;
     PID ballFollowerPID;
@@ -34,16 +32,6 @@ public class DriveSubsystem extends Subsystem {
     	ballFollowerPID = new PID(ballFollowerP, ballFollowerI, ballFollowerD);
     }
 
-    public enum Modes {
-        FIELD, ROBOT
-    }
-
-    /**
-     * Feed joystick input to mecanumDrive.
-     * 
-     * @param rightStick The right joystick - used for lateral movements
-     * @param leftStick  The left joystick - used for rotations
-     */
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
     	System.out.println("rs: " + rightStick.getY());
         setSpeedTankAngularControl(-leftStick.getY(),-rightStick.getY());
@@ -79,36 +67,6 @@ public class DriveSubsystem extends Subsystem {
     }
     
     public void followBall(double tx){setSpeedTankBallFollow(-leftStick.getY(),-rightStick.getY(),tx)};
-
-    /**
-     * Cartesian mecanum drive method.
-     * 
-     * Allows the robot to drive in any direction without changing its orientation.
-     * The four wheels are arranged in such a manner that the front and back wheels
-     * are "toed in" 45 degrees.
-     * 
-     * @param xSpeed   The speed that the robot should drive in the X direction
-     * @param ySpeed   The speed that the robot should drive in the X direction
-     * @param rotation The robot's rate of rotation
-     */
-	
-	public double roundControl(double speed) {
-		return Math.round(speed * 10) / 10.0; 
-	}
-	
-    public void setSpeedMecanum(double xSpeed, double ySpeed, double rotation) {
-        setTalon(Robot.lf,-xSpeed - ySpeed + rotation);
-        setTalon(Robot.lb,xSpeed - ySpeed + rotation);
-        setTalon(Robot.rf,-xSpeed + ySpeed + rotation);
-        setTalon(Robot.rb,xSpeed + ySpeed + rotation);
-    }
-    
-    public void turnDegreeMecanum(double rotationAngle){
-        double error = Robot.getPigeonAngle() - rotationAngle;
-        mecanumAnglePID.add_measurement(error);
-        setSpeedMecanum(0, 0, mecanumAnglePID.getOutput());
-    }
-    
      
     @Override
     protected void initDefaultCommand() {

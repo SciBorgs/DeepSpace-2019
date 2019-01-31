@@ -19,37 +19,13 @@ public class RobotCentricDriveCommand extends Command {
     private Joystick rightStick, leftStick;
     
     public RobotCentricDriveCommand() {
-        requires(Robot.driveSubsystem);
-
         rightStick = Robot.oi.rightStick;
         leftStick = Robot.oi.leftStick;
-        System.out.println("CONSTRUCTED");
     }
 
-    @Override
-    protected void initialize() {
-    	System.out.println("INITIALIZING");
-        Robot.driveSubsystem.setSpeedTank(0, 0);
-    }
-
-    @Override
-    protected void execute() {
-    	System.out.println("[     executing...     ]");
-        Robot.driveSubsystem.setSpeed(leftStick, rightStick);
-    }
-
-    @Override
-    protected boolean isFinished() {
-        return false;
-    }
-
-    @Override
-    protected void end() {
-        Robot.driveSubsystem.setSpeedTank(0, 0);
-    }
-
-    @Override
-    protected void interrupted() {
-        end();
-    }
+    @Override protected void    initialize()  {Robot.driveSubsystem.setSpeedTank(0, 0);}
+    @Override protected void    execute()     {Robot.driveSubsystem.setSpeed(leftStick, rightStick);}
+    @Override protected boolean isFinished()  {return false;}
+    @Override protected void    end()         {Robot.driveSubsystem.setSpeedTank(0, 0);}
+    @Override protected void    interrupted() {end();}
 }

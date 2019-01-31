@@ -10,7 +10,6 @@ public class LimelightSubsystem extends Subsystem{
     public final static double imageWidth = 55.;
     public final static double imageHeight = 41.;
 
-    
     public NetworkTable getCameraTable(){
         return NetworkTableInstance.getDefault().getTable("limelight");
     }

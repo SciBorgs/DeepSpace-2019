@@ -25,29 +25,23 @@ public class LineupSubsystem extends Subsystem {
         shiftPID = new PID(.7,0,.13);
     	forwardPID = new PID(0.45,.02,0.05);
     	shiftPID.setSmoother(6);
-    	Robot.driveSubsystem.resetTurnPID(0.5,.15,0.3);
     	}
     
-    public PID getShiftPID() {
-    	return shiftPID;
-    }
+    public PID getShiftPID()   {return shiftPID;} 
+    public PID getForwardPID() {return forwardPID;}
     
-    public PID getForwardPID() {
-    	return forwardPID;
-    }
-    
-    public double shift(double x, double y, double angle)    {return x * Math.sin(angle) - y * Math.cos(angle);}
+    public double    shift(double x, double y, double angle) {return x * Math.sin(angle) - y * Math.cos(angle);}
     public double parallel(double x, double y, double angle) {return x * Math.cos(angle) + y * Math.sin(angle);}
     public double shiftCoordinate()    {return shift(Robot.pos.getX(),Robot.pos.getY(),lineAngle);} // turns the line we are lining up with into the y-axis
     public double parallelCoordinate() {return parallel(Robot.pos.getX(),Robot.pos.getY(),lineAngle);}
     
-    public double shiftError() {return desiredShift - shiftCoordinate();}
+    public double shiftError()    {return desiredShift - shiftCoordinate();}
     public double parallelError() {return desiredForward - parallelCoordinate();}
-    public double deltaTheta() {return lineAngle - Robot.pos.getAngle();}
+    public double deltaTheta()    {return Robot.pos.getAngle() - lineAngle;}
     
     public void move(){
     	if (parallelCoordinate() < desiredForward) {
-        	shiftPID.add_measurement_d(shiftError(),0 - Math.sin(deltaTheta())); // We use the sine of our change in angle as the derivative (that's the secret!)
+        	shiftPID.add_measurement_d(shiftError(),Math.sin(deltaTheta())); // We use the sine of our change in angle as the derivative (that's the secret!)
 	        forwardPID.add_measurement(parallelError());
 	        double output =  shiftPID.getOutput();
 	        double defaultSpeed = forwardPID.getOutput();

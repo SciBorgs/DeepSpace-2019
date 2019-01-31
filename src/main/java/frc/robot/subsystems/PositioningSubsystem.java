@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import frc.robot.Robot;
+import frc.robot.Utils;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -31,16 +32,12 @@ public class PositioningSubsystem extends Subsystem {
     private Hashtable<TalonSRX,ArrayList<Double>> encPoss;
     private Hashtable<TalonSRX,Boolean> negated;
     
-    public ArrayList<Double> getRobotXs(){
-    	return robotXs;
-    }
-    
-    public ArrayList<Double> getRobotYs(){
-    	return robotYs;
-    }
-    
-    public ArrayList<Double> getAngles(){
-    	return robotAngles;
+    public ArrayList<Double> getRobotXs(){return robotXs;}   
+    public ArrayList<Double> getRobotYs(){return robotYs;}
+    public ArrayList<Double> getAngles() {
+        ArrayList<Double> adjustedAngles = new ArrayList<Double>();
+        for (angle : robotAngles){adjustedAngles.add(adjustTheta(angle));}
+        return adjustedAngles;
     }
 
     public void keepTrackOf(TalonSRX talon,Boolean neg){
@@ -78,7 +75,6 @@ public class PositioningSubsystem extends Subsystem {
     
     public void resetPosition() {
     	ORIGINAL_ANGLE = Robot.getPigeonAngle();
-    	System.out.println("Original Angle: " + ORIGINAL_ANGLE);
     	setPosition(ORIGINAL_X,ORIGINAL_Y,ORIGINAL_ANGLE);
         addEncPos(middleLeftMotor);
         addEncPos(middleRightMotor);
@@ -99,30 +95,15 @@ public class PositioningSubsystem extends Subsystem {
         addEncPos(talon);
         return lastEncPos(talon) - lastPos;}
 
-    public double last(ArrayList<Double> arr) {
-        return arr.get(arr.size() - 1);
-    }
-
-    public void trimIf(ArrayList<Double> arr, int maxSize) {
-        // Trims an array down to a max size, starting from the start
-        while (maxSize < arr.size())
-            arr.remove(0);
-    }
-
-    public void trimAdd(ArrayList<Double> arr, double val, int maxSize) {
-        // Adds a value to the array and then trims it to a max size
-        arr.add(val);
-        trimIf(arr, maxSize);
-    }
     private void trimAddDef(ArrayList<Double> arr, double val){
         // Uses MEASURMENTS as the maxSize, Def is short for default
-        trimAdd(arr, val, MEASURMENTS);
+        Utils.trimAdd(arr, val, MEASURMENTS);
     }
 
-    public double getX() {return last(robotXs);}
-    public double getY() {return last(robotYs);}
     public double adjustTheta(double theta) {return theta + GLOBAL_ORIGINAL_ANGLE - ORIGINAL_ANGLE;}
-    public double getAngle() {return adjustTheta(last(robotAngles));}
+    public double getAngle() {return adjustTheta(Utils.last(robotAngles));}
+    public double getX()     {return Utils.last(robotXs);}
+    public double getY()     {return Utils.last(robotYs);}
 
     public boolean inRange(double n1, double n2, double error) {return Math.abs(n1 - n2) < error;}
     public boolean xStatic() {return inRange(getX(),robotXs.get(0),STATIC_POSITION_ERROR);}
@@ -136,11 +117,11 @@ public class PositioningSubsystem extends Subsystem {
     
     public double lastEncPos(TalonSRX talon)  {
         // Takes a talon. Returns the last recorded pos of that talon
-        return last(encPoss.get(talon));
+        return Utils.last(encPoss.get(talon));
     }
 
     private double averageRange(ArrayList<Double> arr) {
-        return (last(arr) - arr.get(0)) / arr.size();
+        return (Utils.last(arr) - arr.get(0)) / arr.size();
     }
 
     public double getWheelSpeed(TalonSRX talon) {
@@ -158,17 +139,6 @@ public class PositioningSubsystem extends Subsystem {
         }
         return new double[]{x,y,newTheta};
     }
-
-    public double[] nextPosMecanumPigeon(double x, double y, double theta, double flChange, double frChange, double blChange, double brChange){
-        // Same as the one for Tank but for Mecanum, probably gives bad estimates
-        double Angle = Math.PI/2;
-    	double[][] changeAngles = new double[][]
-                                {{flChange,0 - Angle},
-                                {frChange,Angle},
-                                {blChange,Angle},
-                                {brChange,0 - Angle}};
-        return nextPosPigeon(x,y,theta,changeAngles);
-    }
  
     public double[] nextPosTankPigeon(double x, double y, double theta, double leftChange, double rightChange) {
         // This assumes tank drive and you want to use the pigeon for calculating your angle
@@ -179,18 +149,14 @@ public class PositioningSubsystem extends Subsystem {
 
     public void changePoint(double[] point){setPosition(point[0],point[1],point[2]);}
 
-    public void updatePositionMecanum(){
-        changePoint(nextPosMecanumPigeon(getX(),getY(),getAngle(),
-                encUpdate(frontLeftMotor),encUpdate(frontRightMotor),encUpdate(backLeftMotor),encUpdate(backRightMotor)));
+    public void updatePositionTank(){
+        changePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(middleLeftMotor), encUpdate(middleRightMotor))); 
     }
 
-    public void updatePositionTank(){
-        // Uses the front left and front right motor to update the position, assuming tank drive
-        // Doesn't return anything, simply changes the fields that hold the position info
-        changePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(middleLeftMotor), encUpdate(middleRightMotor)));
-       // System.out.println("X: " + getX());
-       // System.out.println("Y: " + getY());
-       // System.out.println("Angle: " + getAngle());
+    public void printPosition(){
+        System.out.println("X: " + getX());
+        System.out.println("Y: " + getY());
+        System.out.println("Angle: " + getAngle());
     }
 
     @Override
