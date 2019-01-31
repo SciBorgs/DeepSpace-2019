@@ -18,7 +18,7 @@ public class LineupSubsystem extends Subsystem {
     public LineupSubsystem() {}
     
     public void resetInfo(double forwardChange, double shiftChange, double angleChange) {
-    	lineAngle = Robot.pos.getAngle() + angleChange;
+    	lineAngle = Robot.positioningSubsystem.getAngle() + angleChange;
     	forwardGoal = forwardChange;
     	desiredForward = forwardScale * forwardGoal + parallelCoordinate();
         desiredShift = shiftChange + shiftCoordinate();
@@ -32,12 +32,12 @@ public class LineupSubsystem extends Subsystem {
     
     public double    shift(double x, double y, double angle) {return x * Math.sin(angle) - y * Math.cos(angle);}
     public double parallel(double x, double y, double angle) {return x * Math.cos(angle) + y * Math.sin(angle);}
-    public double shiftCoordinate()    {return shift(Robot.pos.getX(),Robot.pos.getY(),lineAngle);} // turns the line we are lining up with into the y-axis
-    public double parallelCoordinate() {return parallel(Robot.pos.getX(),Robot.pos.getY(),lineAngle);}
+    public double shiftCoordinate()    {return shift(Robot.positioningSubsystem.getX(),Robot.positioningSubsystem.getY(),lineAngle);} // turns the line we are lining up with into the y-axis
+    public double parallelCoordinate() {return parallel(Robot.positioningSubsystem.getX(),Robot.positioningSubsystem.getY(),lineAngle);}
     
     public double shiftError()    {return desiredShift - shiftCoordinate();}
     public double parallelError() {return desiredForward - parallelCoordinate();}
-    public double deltaTheta()    {return Robot.pos.getAngle() - lineAngle;}
+    public double deltaTheta()    {return Robot.positioningSubsystem.getAngle() - lineAngle;}
     
     public void move(){
     	if (parallelCoordinate() < desiredForward) {

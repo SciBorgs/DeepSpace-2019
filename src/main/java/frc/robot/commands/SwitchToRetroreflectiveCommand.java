@@ -10,15 +10,15 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class CargoFollowCommand extends Command {
+public class SwitchToRetroreflectiveCommand extends Command {
 
-    public CargoFollowCommand() {
-        requires(Robot.cargoFollowSubsystem);
+    public SwitchToRetroreflectiveCommand() {
+        requires(Robot.retroreflectiveSubsystem);
     }
 
-    @Override protected void    initialize()  {Robot.cargoFollowSubsystem.modeToCargo();}
-    @Override protected void    execute()     {Robot.cargoFollowSubsystem.followBall();}
+    @Override protected void    initialize()  {Robot.retroreflectiveSubsystem.modeToRetroreflective();}
+    @Override protected void    execute()     {return;}
     @Override protected boolean isFinished()  {return true;}
-    @Override protected void    end()         {Robot.driveSubsystem.setSpeedTank(0, 0);;}
+    @Override protected void    end()         {return;}
     @Override protected void    interrupted() {end();}
 }

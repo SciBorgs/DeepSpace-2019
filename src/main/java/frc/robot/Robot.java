@@ -1,5 +1,6 @@
 package frc.robot;
 import frc.robot.subsystems.*;
+import frc.robot.commands.RobotCentricDriveCommand;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -15,7 +16,6 @@ public class Robot extends IterativeRobot {
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-    public static AutoSubsystem autoSubsystem = new AutoSubsystem();
     public static RetroreflectiveTapeSubsystem retroreflectiveSubsystem = new RetroreflectiveTapeSubsystem();
     public static LineupSubsystem lineupSubsystem = new LineupSubsystem();
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
@@ -43,7 +43,7 @@ public class Robot extends IterativeRobot {
         pigeon.enterCalibrationMode(CalibrationMode.Temperature, 10);
         oi = new OI();
         System.out.println("roboinited");
-        pos.updatePositionTank();
+        positioningSubsystem.updatePositionTank();
     }
 
     public void robotPeriodic() {

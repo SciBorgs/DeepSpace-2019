@@ -5,18 +5,22 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package org.usfirst.frc.team1155.robot;
+package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.*;
 
 public class OI {
     public Joystick rightStick, leftStick;
-    public JoystickButton switchCentricDriving;
+    public JoystickButton switchToRetroreflectiveButton;
 
     public OI() {
-        rightStick = new Joystick(PortMap.RIGHT_STICK);
-        leftStick = new Joystick(PortMap.LEFT_STICK);
-        switchCentricDriving = new JoystickButton(rightStick, PortMap.RIGHT_JOYSTICK_BUTTON);
+        rightStick = new Joystick(PortMap.JOYSTICK_RIGHT);
+        leftStick = new Joystick(PortMap.JOYSTICK_LEFT);
+        
+        switchToRetroreflectiveButton = new JoystickButton(rightStick, PortMap.JOYSTICK_LEFT_BUTTON);
+        switchToRetroreflectiveButton.whileHeld(new SwitchToRetroreflectiveCommand());
+        switchToRetroreflectiveButton.whenReleased(new SwitchToCargoCommand());
     }
 }

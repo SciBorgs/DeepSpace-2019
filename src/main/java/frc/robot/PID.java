@@ -30,7 +30,7 @@ public class PID {
 	public void setSmoother(int amount) {maxSize = amount;}
 	  
 	public void add_measurement(double error) {
-		add_measurment_d(error,errors.isEmpty? 0 : error - errors.get(0));
+		add_measurement_d(error,errors.isEmpty() ? 0 : error - errors.get(0));
 	}
 	  
 	public void add_measurement_d(double error, double dd) {
