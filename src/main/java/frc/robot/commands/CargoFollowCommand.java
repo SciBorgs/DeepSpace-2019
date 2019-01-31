@@ -16,9 +16,9 @@ public class CargoFollowCommand extends Command {
         requires(Robot.cargoFollowSubsystem);
     }
 
-    @Override protected void initialize()   {Robot.cargoFollowSubsystem.modeToCargo();
-    @Override protected void execute()      {Robot.cargoFollowSubsystem.followBall();}
-    @Override protected boolean isFinished(){return true;}
-    @Override protected void end()          {Robot.armSubsystem.setSpeed(0);}
-    @Override protected void interrupted()  {end();}
+    @Override protected void    initialize()  {Robot.cargoFollowSubsystem.modeToCargo();
+    @Override protected void    execute()     {Robot.cargoFollowSubsystem.followBall();}
+    @Override protected boolean isFinished()  {return true;}
+    @Override protected void    end()         {Robot.armSubsystem.setSpeed(0);}
+    @Override protected void    interrupted() {end();}
 }
