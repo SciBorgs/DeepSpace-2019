@@ -4,6 +4,7 @@ import frc.robot.commands.RobotCentricDriveCommand;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
@@ -24,7 +25,7 @@ public class Robot extends IterativeRobot {
 	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static CargoFollowSubsystem cargoFollowSubsystem = new CargoFollowSubsystem();
     public static PigeonIMU pigeon;
-    public static SparkMax lf, lm, lb, rf, rm, rb;
+    public static CANSparkMax lf, lm, lb, rf, rm, rb;
     public static Talon pigeonTalon;
     public static DigitalInput ballLimitSwitch, hatchLimitSwitch;
 	
@@ -34,13 +35,15 @@ public class Robot extends IterativeRobot {
     public static OI oi;
 
     public void robotInit() {
-		lf = new CanSparkMax(PortMap.LEFT_FRONT_SPARK);
-		lm = new CanSparkMax(PortMap.LEFT_MIDDLE_SPARK);
-		lb = new CanSparkMax(PortMap.LEFT_BACK_SPARK);
-		rf = new CanSparkMax(PortMap.RIGHT_FRONT_SPARK);
-		rm = new CanSparkMax(PortMap.RIGHT_MIDDLE_SPARK);
-		rb = new CanSparkMax(PortMap.RIGHT_BACK_SPARK);
-		pigeonTalon = new CanSparkMax(PortMap.PIGEON_TALON);
+
+        MotorType motorType = MotorType.kBrushless;
+		lf = new CANSparkMax(PortMap.LEFT_FRONT_SPARK,motorType);
+		lm = new CANSparkMax(PortMap.LEFT_MIDDLE_SPARK,motorType);
+		lb = new CANSparkMax(PortMap.LEFT_BACK_SPARK,motorType);
+		rf = new CANSparkMax(PortMap.RIGHT_FRONT_SPARK,motorType);
+		rm = new CANSparkMax(PortMap.RIGHT_MIDDLE_SPARK,motorType);
+		rb = new CANSparkMax(PortMap.RIGHT_BACK_SPARK,motorType);
+		pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
         pigeon = new PigeonIMU(pigeonTalon);
         ballLimitSwitch = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);
         hatchLimitSwitch = new DigitalInput(PortMap.HATCH_LIMIT_SWITCH);
