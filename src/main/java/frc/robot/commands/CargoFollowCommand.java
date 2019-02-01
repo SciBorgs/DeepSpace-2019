@@ -12,13 +12,13 @@ import frc.robot.Robot;
 
 public class CargoFollowCommand extends Command {
 
-    public CargoFollowCommand() {
+    public CargoFollowCommand(JoystickButton button) {
         requires(Robot.cargoFollowSubsystem);
     }
 
-    @Override protected void    initialize()  {Robot.cargoFollowSubsystem.modeToCargo();}
+    @Override protected void    initialize()  {return;}
     @Override protected void    execute()     {Robot.cargoFollowSubsystem.followBall();}
     @Override protected boolean isFinished()  {return true;}
-    @Override protected void    end()         {Robot.driveSubsystem.setSpeedTank(0, 0);;}
+    @Override protected void    end()         {return;}
     @Override protected void    interrupted() {end();}
 }
