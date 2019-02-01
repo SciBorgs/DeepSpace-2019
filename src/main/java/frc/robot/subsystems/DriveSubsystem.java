@@ -55,7 +55,7 @@ public class DriveSubsystem extends Subsystem {
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
 		double averageOutput = (leftSpeed + rightSpeed) / 2;
 		double goalOmega = goalOmegaConstant * (leftSpeed - rightSpeed);
-		double change = (goalOmega - Robot.pos.getAngularSpeed()) * tankAngleP;
+		double change = (goalOmega - Robot.positioningSubsystem.getAngularSpeed()) * tankAngleP;
 		setSpeedTank(averageOutput + change, averageOutput - change); 
 	}
 	
@@ -66,7 +66,7 @@ public class DriveSubsystem extends Subsystem {
 		setSpeedTank(avg + turnMagnitude, avg - turnMagnitude);
     }
     
-    public void followBall(double tx){setSpeedTankBallFollow(-leftStick.getY(),-rightStick.getY(),tx)};
+    public void followBall(double tx){setSpeedTankBallFollow(-Robot.oi.leftStick.getY(),-Robot.oi.rightStick.getY(),tx);}
      
     @Override
     protected void initDefaultCommand() {

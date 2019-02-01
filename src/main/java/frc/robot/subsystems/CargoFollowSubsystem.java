@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class CargoFollowSubsystem extends Subsystem {
     
     public void followBall() {
-        if (Robot.limelight.getTableData(Robot.limelight.getCameraTable(), "tv") != 1) {return;}
-        double tx = Robot.limelight.getTableData(Robot.limelight.getCameraTable(), "tx");
+        if (Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "tv") != 1) {return;}
+        double tx = Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "tx");
         Robot.driveSubsystem.followBall(tx);
     }
 
-    public void ballLimelightMode() {
-        Robot.limelight.setCameraParams("ledMode", 1); // Force LED Off
-        Robot.limelight.setCameraParams("pipeline", 9); // Switch to Ball Pipeline
+    public void modeToCargo() {
+        Robot.limelightSubsystem.setCameraParams("ledMode", 1); // Force LED Off
+        Robot.limelightSubsystem.setCameraParams("pipeline", 9); // Switch to Cargo Pipeline
     }
 
     @Override

@@ -36,7 +36,7 @@ public class PositioningSubsystem extends Subsystem {
     public ArrayList<Double> getRobotYs(){return robotYs;}
     public ArrayList<Double> getAngles() {
         ArrayList<Double> adjustedAngles = new ArrayList<Double>();
-        for (angle : robotAngles){adjustedAngles.add(adjustTheta(angle));}
+        for (Double angle : robotAngles){adjustedAngles.add(adjustTheta(angle));}
         return adjustedAngles;
     }
 

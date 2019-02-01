@@ -18,12 +18,17 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
     public final static double tapeAngle = .24434; // In radians, approximation according to FRC
     public final static double seperation = .31; // Distance between the centers about
 
+    public void modeToRetroreflective() {
+        Robot.limelightSubsystem.setCameraParams("ledMode", 3); // Force LED Off
+        Robot.limelightSubsystem.setCameraParams("pipeline", 0); // Switch to Retroreflective Tape Pipeline
+    }
+
     public NetworkTable getTable() {
-        return Robot.limelight.getCameraTable();
+        return Robot.limelightSubsystem.getCameraTable();
     }
 
     public double get(NetworkTable table, String variable) {
-        return Robot.limelight.getTableData(table, variable);
+        return Robot.limelightSubsystem.getTableData(table, variable);
     }
 
     // Below are helper functions for extractData()
@@ -40,7 +45,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         Hashtable<String, Double> end = new Hashtable<String, Double>();
         end.put("nth",(double) nth);
         end.put("a",get(t,"ta" + nth));
-        end.put("x",isContour(end) ? get(t,"tx" + nth) : Robot.limelight.imageWidth + 1);
+        end.put("x",isContour(end) ? get(t,"tx" + nth) : Robot.limelightSubsystem.imageWidth + 1);
         end.put("y",get(t,"ty" + nth));
         end.put("s",get(t,"ts" + nth));
         return end;
@@ -99,7 +104,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         if (centerPos.length == 0){return data;}
         System.out.println("detected");
         double distance = distance(values.get(1));
-        double degreeLength = tapeLength / (Math.sqrt((tapeLength/tapeWidth) * LimelightSubsystem.imageHeight * LimelightSubsystem.imageWidth * values.get(1).get("a")/100.));
+        double degreeLength = tapeLength / (Math.sqrt((tapeLength/tapeWidth) * Robot.limelightSubsystem.imageHeight * Robot.limelightSubsystem.imageWidth * values.get(1).get("a")/100.));
         System.out.println("degree length: " + degreeLength);
         System.out.println("x shift degrees: " + centerPos[0]);
         double shift = degreeLength * centerPos[0]; //Negative to the Left, Positive to the Right
