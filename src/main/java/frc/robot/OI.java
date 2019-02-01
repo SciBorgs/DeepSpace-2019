@@ -13,14 +13,18 @@ import frc.robot.commands.*;
 
 public class OI {
     public Joystick rightStick, leftStick;
-    public JoystickButton switchToRetroreflectiveButton;
+    public JoystickButton switchToRetroreflectiveButton, followBallButton;
 
     public OI() {
         rightStick = new Joystick(PortMap.JOYSTICK_RIGHT);
         leftStick = new Joystick(PortMap.JOYSTICK_LEFT);
         
         switchToRetroreflectiveButton = new JoystickButton(rightStick, PortMap.JOYSTICK_LEFT_BUTTON);
-        switchToRetroreflectiveButton.whileHeld(new SwitchToRetroreflectiveCommand());
+        switchToRetroreflectiveButton.whenPressed(new SwitchToRetroreflectiveCommand());
         switchToRetroreflectiveButton.whenReleased(new SwitchToCargoCommand());
+
+        followBallButton = new JoystickBUtton(leftStick, PortMap.JOYSTICK_TRIGGER);
+        followBallButton.whileHeld(new CargoFollowCommand());
+
     }
 }
