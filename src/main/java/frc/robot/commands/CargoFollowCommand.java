@@ -12,7 +12,7 @@ import frc.robot.Robot;
 
 public class CargoFollowCommand extends Command {
 
-    public CargoFollowCommand(JoystickButton button) {
+    public CargoFollowCommand() {
         requires(Robot.cargoFollowSubsystem);
     }
 
