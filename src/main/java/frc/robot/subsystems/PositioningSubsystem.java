@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import frc.robot.Robot;
 import frc.robot.Utils;
 
-import com.ctre.phoenix.motorcontrol.can.SparkMax;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -26,8 +26,9 @@ public class PositioningSubsystem extends Subsystem {
     public final double STATIC_ANGLE_ERROR = Math.toRadians(2);
 
     private ArrayList<Double> robotXs, robotYs, robotAngles;
-    private Hashtable<SparkMax,ArrayList<Double>> encPoss;
-    private Hashtable<SparkMax,Boolean> negated;
+    private Hashtable<CANSparkMax,ArrayList<Double>> encPoss;
+    private Hashtable<CANSparkMax,Boolean> negated;
+    private ArrayList<CANSparkMax> sparks;
     
     public ArrayList<Double> getRobotXs(){return robotXs;}   
     public ArrayList<Double> getRobotYs(){return robotYs;}
@@ -37,14 +38,13 @@ public class PositioningSubsystem extends Subsystem {
         return adjustedAngles;
     }
 
-    public void keepTrackOf(SparkMax spark,Boolean neg){
+    public void keepTrackOf(CANSparkMax spark,Boolean neg){
         encPoss.put(spark,new ArrayList<Double>());
         negated.put(spark,neg);
+        sparks.add(spark);
     }
 
-    public PositioningSubsystem() {
-        middleLeftMotor   = Robot.lm;
-        middleRightMotor  = Robot.rm;
+    public PositioningSubsystem(){
 
         ORIGINAL_X = 0;
         ORIGINAL_Y = 0;
@@ -54,8 +54,9 @@ public class PositioningSubsystem extends Subsystem {
         robotYs     = new ArrayList<Double>();
         robotAngles = new ArrayList<Double>();
 
-        encPoss = new Hashtable<SparkMax,ArrayList<Double>>();
-        negated = new Hashtable<SparkMax,Boolean>();
+        encPoss = new Hashtable<CANSparkMax,ArrayList<Double>>();
+        negated = new Hashtable<CANSparkMax,Boolean>();
+        sparks = new ArrayList<CANSparkMax>();
 
         keepTrackOf(Robot.lm,true); // true and false indicates whether the values must be negated
         keepTrackOf(Robot.rm,false);
@@ -72,12 +73,12 @@ public class PositioningSubsystem extends Subsystem {
     
     public void resetPosition() {
     	ORIGINAL_ANGLE = Robot.getPigeonAngle();
-    	setPosition(ORIGINAL_X,ORIGINAL_Y,ORIGINAL_ANGLE);
-        addEncPos(middleLeftMotor);
-        addEncPos(middleRightMotor);
+        setPosition(ORIGINAL_X,ORIGINAL_Y,ORIGINAL_ANGLE);
+        for (CANSparkMax spark : sparks)
+            addEncPos(spark);
     	}
 
-    public double encPos(SparkMax motor) {
+    public double encPos(CANSparkMax motor) {
         // Returns the encoder position of a spark
         double rotations = motor.getEncoder().getPosition();
         //System.out.println(raw);
@@ -85,8 +86,8 @@ public class PositioningSubsystem extends Subsystem {
         return negated.get(motor) ? (0 - value) : value;
     }
 
-    public void addEncPos(SparkMax spark){trimAddDef(encPoss.get(spark),encPos(spark));}
-    public double encUpdate(SparkMax spark){
+    public void addEncPos(CANSparkMax spark){trimAddDef(encPoss.get(spark),encPos(spark));}
+    public double encUpdate(CANSparkMax spark){
         // Also returns the change
         double lastPos = lastEncPos(spark);
         addEncPos(spark);
@@ -112,7 +113,7 @@ public class PositioningSubsystem extends Subsystem {
     	return (getAngle() - adjustTheta(robotAngles.get(0))) / ((MEASURMENTS - 1) * INTERVAL_LENGTH);
     }
     
-    public double lastEncPos(SparkMax spark)  {
+    public double lastEncPos(CANSparkMax spark)  {
         // Takes a spark. Returns the last recorded pos of that spark
         return Utils.last(encPoss.get(spark));
     }
@@ -121,7 +122,7 @@ public class PositioningSubsystem extends Subsystem {
         return (Utils.last(arr) - arr.get(0)) / arr.size();
     }
 
-    public double getWheelSpeed(SparkMax spark) {
+    public double getWheelSpeed(CANSparkMax spark) {
         // Gets average wheel speed over the recorded measurmeants
         return averageRange(encPoss.get(spark)) / INTERVAL_LENGTH;
     }
@@ -147,7 +148,7 @@ public class PositioningSubsystem extends Subsystem {
     public void changePoint(double[] point){setPosition(point[0],point[1],point[2]);}
 
     public void updatePositionTank(){
-        changePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(middleLeftMotor), encUpdate(middleRightMotor))); 
+        changePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(Robot.lm), encUpdate(Robot.rm))); 
     }
 
     public void printPosition(){
