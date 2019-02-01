@@ -2,7 +2,7 @@ package frc.robot;
 
 public class PortMap {
 
-  	// *****************JOYSTICKS*****************//
+  	//*****************JOYSTICKS*****************//
 
 	public static final int JOYSTICK_LEFT = 1;
 	public static final int JOYSTICK_RIGHT = 0;
@@ -16,6 +16,8 @@ public class PortMap {
 
 	public static final int[][] JOYSTICK_BUTTON_MATRIX_RIGHT = { { 13, 12, 11 }, { 14, 15, 16 } };
 
+    //*******************SPARKS******************//
+
     public static final int LEFT_FRONT_SPARK = 0; 
     public static final int LEFT_MIDDLE_SPARK = 1; 
     public static final int LEFT_BACK_SPARK = 2;
@@ -23,6 +25,11 @@ public class PortMap {
     public static final int RIGHT_FRONT_SPARK = 3;
     public static final int RIGHT_MIDDLE_SPARK = 4;
     public static final int RIGHT_BACK_SPARK = 5;
-    
+
+    ///*************LIMIT*SWITCHES**************//
+
+    public static final int BALL_LIMIT_SWITCH = 0;
+    public static final int HATCH_LIMIT_SWITCH = 1;
+
     public static final int PIGEON_TALON = 6;
 }

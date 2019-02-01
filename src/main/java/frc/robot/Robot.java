@@ -10,6 +10,7 @@ import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Robot extends IterativeRobot {
 //    private static final String kDefaultAuto = "Default";
@@ -25,6 +26,7 @@ public class Robot extends IterativeRobot {
     public static PigeonIMU pigeon;
     public static SparkMax lf, lm, lb, rf, rm, rb;
     public static Talon pigeonTalon;
+    public static DigitalInput ballLimitSwitch, hatchLimitSwitch;
 	
     public static final double ARM_P_CONSTANT = .1;
     public static final double ARM_D_CONSTANT = .1;    
@@ -32,7 +34,6 @@ public class Robot extends IterativeRobot {
     public static OI oi;
 
     public void robotInit() {
-
 		lf = new CanSparkMax(PortMap.LEFT_FRONT_SPARK);
 		lm = new CanSparkMax(PortMap.LEFT_MIDDLE_SPARK);
 		lb = new CanSparkMax(PortMap.LEFT_BACK_SPARK);
@@ -41,6 +42,9 @@ public class Robot extends IterativeRobot {
 		rb = new CanSparkMax(PortMap.RIGHT_BACK_SPARK);
 		pigeonTalon = new CanSparkMax(PortMap.PIGEON_TALON);
         pigeon = new PigeonIMU(pigeonTalon);
+        ballLimitSwitch = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);
+        hatchLimitSwitch = new DigitalInput(PortMap.HATCH_LIMIT_SWITCH);
+
         pigeon.setYaw(0., 0);
         pigeon.enterCalibrationMode(CalibrationMode.Temperature, 10);
         oi = new OI();
@@ -49,7 +53,8 @@ public class Robot extends IterativeRobot {
     }
 
     public void robotPeriodic() {
-    	positioningSubsystem.updatePositionTank();  	
+        positioningSubsystem.updatePositionTank();
+        retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch();  	
     }
 
     public static double getPigeonAngle(){

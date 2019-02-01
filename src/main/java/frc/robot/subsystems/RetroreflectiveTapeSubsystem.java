@@ -18,6 +18,14 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
     public final static double tapeAngle = .24434; // In radians, approximation according to FRC
     public final static double seperation = .31; // Distance between the centers about
 
+    public void modeToRetroreflectiveByLimitSwitch() {
+        if (stateOfLimitSwitch()) {modeToRetroreflective();}
+    }
+
+    public boolean stateOfLimitSwitch() { // True is closed, false is open
+        return (!Robot.ballLimitSwitch.get() || !Robot.hatchLimitSwitch.get());
+    }
+
     public void modeToRetroreflective() {
         Robot.limelightSubsystem.setCameraParams("ledMode", 3); // Force LED Off
         Robot.limelightSubsystem.setCameraParams("pipeline", 0); // Switch to Retroreflective Tape Pipeline

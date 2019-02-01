@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import frc.robot.Robot;
 import frc.robot.Utils;
 
-import com.ctre.phoenix.motorcontrol.can.SparkMax;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
