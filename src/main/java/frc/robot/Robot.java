@@ -3,6 +3,7 @@ import frc.robot.subsystems.*;
 import frc.robot.commands.RobotCentricDriveCommand;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
@@ -22,7 +23,8 @@ public class Robot extends IterativeRobot {
 	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static CargoFollowSubsystem cargoFollowSubsystem = new CargoFollowSubsystem();
     public static PigeonIMU pigeon;
-	public static TalonSRX lf, lm, lb, rf, rm, rb, pigeonTalon;
+    public static SparkMax lf, lm, lb, rf, rm, rb;
+    public static Talon pigeonTalon;
 	
     public static final double ARM_P_CONSTANT = .1;
     public static final double ARM_D_CONSTANT = .1;    
@@ -31,13 +33,13 @@ public class Robot extends IterativeRobot {
 
     public void robotInit() {
 
-		lf = new TalonSRX(PortMap.LEFT_FRONT_TALON);
-		lm = new TalonSRX(PortMap.LEFT_MIDDLE_TALON);
-		lb = new TalonSRX(PortMap.LEFT_BACK_TALON);
-		rf = new TalonSRX(PortMap.RIGHT_FRONT_TALON);
-		rm = new TalonSRX(PortMap.RIGHT_MIDDLE_TALON);
-		rb = new TalonSRX(PortMap.RIGHT_BACK_TALON);
-		pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
+		lf = new CanSparkMax(PortMap.LEFT_FRONT_SPARK);
+		lm = new CanSparkMax(PortMap.LEFT_MIDDLE_SPARK);
+		lb = new CanSparkMax(PortMap.LEFT_BACK_SPARK);
+		rf = new CanSparkMax(PortMap.RIGHT_FRONT_SPARK);
+		rm = new CanSparkMax(PortMap.RIGHT_MIDDLE_SPARK);
+		rb = new CanSparkMax(PortMap.RIGHT_BACK_SPARK);
+		pigeonTalon = new CanSparkMax(PortMap.PIGEON_TALON);
         pigeon = new PigeonIMU(pigeonTalon);
         pigeon.setYaw(0., 0);
         pigeon.enterCalibrationMode(CalibrationMode.Temperature, 10);

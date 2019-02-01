@@ -6,14 +6,13 @@ import java.util.Hashtable;
 import frc.robot.Robot;
 import frc.robot.Utils;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.SparkMax;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class PositioningSubsystem extends Subsystem {
 
 	public final double INCHES_PER_METER = 39.37;
-    public final double TICKS_PER_ROTATION = 4096;
     public final double WHEEL_RADIUS = 3. / INCHES_PER_METER; // In meters
     public final double ENC_WHEEL_RATIO = (4. / 25.) * (1. / 1.2); // 4 rotations of the wheel is 25 rotations of the encoder
     public final double ROBOT_RADIUS = 15.945 / INCHES_PER_METER; // Half the distance from wheel to wheel
@@ -26,11 +25,9 @@ public class PositioningSubsystem extends Subsystem {
     public final double STATIC_POSITION_ERROR = .05;
     public final double STATIC_ANGLE_ERROR = Math.toRadians(2);
 
-    private TalonSRX frontLeftMotor, frontRightMotor, middleLeftMotor, middleRightMotor, backLeftMotor, backRightMotor;
-
     private ArrayList<Double> robotXs, robotYs, robotAngles;
-    private Hashtable<TalonSRX,ArrayList<Double>> encPoss;
-    private Hashtable<TalonSRX,Boolean> negated;
+    private Hashtable<SparkMax,ArrayList<Double>> encPoss;
+    private Hashtable<SparkMax,Boolean> negated;
     
     public ArrayList<Double> getRobotXs(){return robotXs;}   
     public ArrayList<Double> getRobotYs(){return robotYs;}
@@ -40,9 +37,9 @@ public class PositioningSubsystem extends Subsystem {
         return adjustedAngles;
     }
 
-    public void keepTrackOf(TalonSRX talon,Boolean neg){
-        encPoss.put(talon,new ArrayList<Double>());
-        negated.put(talon,neg);
+    public void keepTrackOf(SparkMax spark,Boolean neg){
+        encPoss.put(spark,new ArrayList<Double>());
+        negated.put(spark,neg);
     }
 
     public PositioningSubsystem() {
@@ -57,11 +54,11 @@ public class PositioningSubsystem extends Subsystem {
         robotYs     = new ArrayList<Double>();
         robotAngles = new ArrayList<Double>();
 
-        encPoss = new Hashtable<TalonSRX,ArrayList<Double>>();
-        negated = new Hashtable<TalonSRX,Boolean>();
+        encPoss = new Hashtable<SparkMax,ArrayList<Double>>();
+        negated = new Hashtable<SparkMax,Boolean>();
 
-        keepTrackOf(middleLeftMotor,true); // true and false indicates whether the values must be negated
-        keepTrackOf(middleRightMotor,false);
+        keepTrackOf(Robot.lm,true); // true and false indicates whether the values must be negated
+        keepTrackOf(Robot.rm,false);
 
         resetPosition();
         
@@ -80,20 +77,20 @@ public class PositioningSubsystem extends Subsystem {
         addEncPos(middleRightMotor);
     	}
 
-    public double encPos(TalonSRX motor) {
-        // Returns the encoder position of a talon
-        double raw = motor.getSensorCollection().getQuadraturePosition();
+    public double encPos(SparkMax motor) {
+        // Returns the encoder position of a spark
+        double rotations = motor.getEncoder().getPosition();
         //System.out.println(raw);
-        double value = raw / TICKS_PER_ROTATION * ENC_WHEEL_RATIO * (2 * Math.PI * WHEEL_RADIUS);
+        double value = rotations * ENC_WHEEL_RATIO * (2 * Math.PI * WHEEL_RADIUS);
         return negated.get(motor) ? (0 - value) : value;
     }
 
-    public void addEncPos(TalonSRX talon){trimAddDef(encPoss.get(talon),encPos(talon));}
-    public double encUpdate(TalonSRX talon){
+    public void addEncPos(SparkMax spark){trimAddDef(encPoss.get(spark),encPos(spark));}
+    public double encUpdate(SparkMax spark){
         // Also returns the change
-        double lastPos = lastEncPos(talon);
-        addEncPos(talon);
-        return lastEncPos(talon) - lastPos;}
+        double lastPos = lastEncPos(spark);
+        addEncPos(spark);
+        return lastEncPos(spark) - lastPos;}
 
     private void trimAddDef(ArrayList<Double> arr, double val){
         // Uses MEASURMENTS as the maxSize, Def is short for default
@@ -115,18 +112,18 @@ public class PositioningSubsystem extends Subsystem {
     	return (getAngle() - adjustTheta(robotAngles.get(0))) / ((MEASURMENTS - 1) * INTERVAL_LENGTH);
     }
     
-    public double lastEncPos(TalonSRX talon)  {
-        // Takes a talon. Returns the last recorded pos of that talon
-        return Utils.last(encPoss.get(talon));
+    public double lastEncPos(SparkMax spark)  {
+        // Takes a spark. Returns the last recorded pos of that spark
+        return Utils.last(encPoss.get(spark));
     }
 
     private double averageRange(ArrayList<Double> arr) {
         return (Utils.last(arr) - arr.get(0)) / arr.size();
     }
 
-    public double getWheelSpeed(TalonSRX talon) {
+    public double getWheelSpeed(SparkMax spark) {
         // Gets average wheel speed over the recorded measurmeants
-        return averageRange(encPoss.get(talon)) / INTERVAL_LENGTH;
+        return averageRange(encPoss.get(spark)) / INTERVAL_LENGTH;
     }
 
     public double[] nextPosPigeon(double x, double y, double theta, double[][] changeAngles){

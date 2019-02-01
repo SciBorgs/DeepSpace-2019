@@ -12,7 +12,7 @@ import frc.robot.PortMap;
 import frc.robot.Robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -36,20 +36,16 @@ public class DriveSubsystem extends Subsystem {
     	System.out.println("rs: " + rightStick.getY());
         setSpeedTankAngularControl(-leftStick.getY(),-rightStick.getY());
     }
-    
-    public void setTalon(TalonSRX talon, double speed) {
-    	talon.set(ControlMode.PercentOutput, speed);
-    }
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
 		
-		setTalon(Robot.lf, -leftSpeed);
-		setTalon(Robot.lm, -leftSpeed);
-		setTalon(Robot.lb, -leftSpeed);
+		Robot.lf.set(-leftSpeed);
+		Robot.lm.set(-leftSpeed);
+		Robot.lb.set(-leftSpeed);
 
-		setTalon(Robot.rf, rightSpeed);
-		setTalon(Robot.rm, rightSpeed);
-		setTalon(Robot.rb, rightSpeed);
+		Robot.rf.set(rightSpeed);
+		Robot.rm.set(rightSpeed);
+		Robot.rb.set(rightSpeed);
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
