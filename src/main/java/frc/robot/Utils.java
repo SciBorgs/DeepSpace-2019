@@ -18,4 +18,13 @@ public class Utils{
         arr.add(val);
         trimIf(arr, maxSize);
     }
+
+    public static double limitOutput(double output, double max){
+        if (output > max)
+            return max;
+        else if (output < - max)
+            return -max;
+        else
+            return output;
+    }
 }

@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import frc.robot.PortMap;
+import frc.robot.Robot;
+import frc.robot.Utils;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -14,9 +16,10 @@ public class ZLiftSubsystem extends Subsystem {
     private TalonSRX leftZLift, rightZLift;
     private PigeonIMU pigeon;
     private PID anglePID;
-    
-    private double leftSpeed, rightSpeed = 0;
-    private double angleP = 0.10, angleI = 0.0, angleD = 0.01;
+    private double maxOutput = 0.1;
+    private double defaultSpeed = 0.08;
+
+    private double angleP = 0.005, angleI = 0.0, angleD = 0.0;
 
     private DoubleSolenoid doubleSolenoid;
 
@@ -24,34 +27,12 @@ public class ZLiftSubsystem extends Subsystem {
         leftZLift = new TalonSRX(PortMap.LEFT_ZLIFT);
         rightZLift = new TalonSRX(PortMap.RIGHT_ZLIFT);
 
-        pigeon = new PigeonIMU(rightZLift);        
+        pigeon = new PigeonIMU(rightZLift);
         anglePID = new PID(angleP, angleI, angleD);
-   
+
         doubleSolenoid = new DoubleSolenoid(PortMap.FORWARD_CHANNEL, PortMap.REVERSE_CHANNEL);
 
         reset();
-    }
-
-    public double safety(double s) {
-        if (s > 0.02) {
-            if (s > 0.06) {
-                return 0.06;
-            } else if (s < 0.05) {
-                return 0.05;
-            } else {
-                return s;
-            }
-        } else if (s < -0.02) {
-            if (s < -0.06) {
-                return -0.06;
-            } else if (s > -0.05) {
-                return -0.05;
-            } else {
-                return s;
-            }
-        } else {
-            return 0;
-        }
     }
 
     public void lift() {
@@ -59,19 +40,16 @@ public class ZLiftSubsystem extends Subsystem {
 
         System.out.println(anglePID.getOutput() + " Angle: " + getYaw());
 
-        leftSpeed = safety(-anglePID.getOutput());
-        rightSpeed = safety(anglePID.getOutput());
-        leftSpeed += 0.051;
-        rightSpeed += 0.051;
-        leftZLift.set(ControlMode.PercentOutput, leftSpeed);
-        rightZLift.set(ControlMode.PercentOutput, rightSpeed);
+        double speed = Utils.limitOutput(anglePID.getOutput(), maxOutput);
+     
+        leftZLift.set(ControlMode.PercentOutput, -speed + defaultSpeed);
+        rightZLift.set(ControlMode.PercentOutput, speed + defaultSpeed);
     }
 
     public void reset() {
         leftZLift.set(ControlMode.PercentOutput, 0);
         rightZLift.set(ControlMode.PercentOutput, 0);
         pigeon.setYaw(0, 10);
-
         doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
@@ -81,8 +59,11 @@ public class ZLiftSubsystem extends Subsystem {
         return angs[0];
     }
 
-    public void unlockPistons() { doubleSolenoid.set(DoubleSolenoid.Value.kForward); }
+    public void unlockPistons() {
+        doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
 
     @Override
-    protected void initDefaultCommand() {}
+    protected void initDefaultCommand() {
+    }
 }

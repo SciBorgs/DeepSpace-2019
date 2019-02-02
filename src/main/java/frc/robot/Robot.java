@@ -92,5 +92,6 @@ public class Robot extends IterativeRobot {
     }
 
     public void disabledInit() {
+        zLiftSubsystem.reset();
     }
 }
