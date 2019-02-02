@@ -1,6 +1,7 @@
 package frc.robot;
 import frc.robot.subsystems.*;
 import frc.robot.commands.RobotCentricDriveCommand;
+import frc.robot.commands.ZLiftCommand;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
@@ -24,9 +25,10 @@ public class Robot extends IterativeRobot {
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
 	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static CargoFollowSubsystem cargoFollowSubsystem = new CargoFollowSubsystem();
+    public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
     public static PigeonIMU pigeon;
     public static CANSparkMax lf, lm, lb, rf, rm, rb;
-    public static Talon pigeonTalon;
+    public static TalonSRX pigeonTalon;
     public static DigitalInput ballLimitSwitch, hatchLimitSwitch;
 	
     public static final double ARM_P_CONSTANT = .1;
@@ -79,7 +81,7 @@ public class Robot extends IterativeRobot {
     
     @Override
     public void teleopInit() {
-    	new RobotCentricDriveCommand().start();
+        new RobotCentricDriveCommand().start();
     }
 
     public void teleopPeriodic() {
