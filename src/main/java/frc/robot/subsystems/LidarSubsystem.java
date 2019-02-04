@@ -4,17 +4,18 @@ import frc.robot.Robot;
 import java.util.Hashtable;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import gui.Main;
 
-class Point{
-    public double x, y;
-    public Point(double point_x, double point_y) {x = point_x; y = point_y;}
-}
 class Line{
     public double m, b;
     public Line(double m_des, double b_des) {m = m_des; b = b_des;}
 }
 
-public class LidarSubsystem extends Subsystem {
+public class LidarSubsystem extends Subsystem{
+    public LidarSubsystem() {
+        Main.main();
+    }
+
 
     public double wallPrecision = 0.03; // The amount a point can be off the line of the wall and be considerned on it
     public double offWallPrecision = wallPrecision * 3/4; // How close a point can be to the line of a wall and be considered off it
@@ -73,6 +74,10 @@ public class LidarSubsystem extends Subsystem {
             angleOn++;
         }
         return isHatch(points);
+    }
+
+    public void displayPoints(Point[] points){
+        Main.addPoints(points);
     }
     
     @Override

@@ -40,7 +40,7 @@ public class ZLiftSubsystem extends Subsystem {
 
         System.out.println(anglePID.getOutput() + " Angle: " + getYaw());
 
-        double speed = anglePID.getLimitedOutput(maxOutput);
+        double speed = anglePID.getLimitOutput(maxOutput);
      
         leftZLift.set(ControlMode.PercentOutput, -speed + defaultSpeed);
         rightZLift.set(ControlMode.PercentOutput, speed + defaultSpeed);
