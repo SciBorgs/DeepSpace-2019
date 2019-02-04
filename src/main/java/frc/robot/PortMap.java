@@ -36,4 +36,10 @@ public class PortMap {
     public static final int[] GEAR_SHIFTER_SOLENOID = {0, 1};
 
     public static final int PIGEON_TALON = 6;
+
+    public static final int LEFT_ZLIFT = 2;
+    public static final int RIGHT_ZLIFT = 8;
+
+    public static final int FORWARD_CHANNEL = 2;
+    public static final int REVERSE_CHANNEL = 3;
 }

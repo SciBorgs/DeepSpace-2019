@@ -1,7 +1,6 @@
 package frc.robot;
 import frc.robot.subsystems.*;
-import frc.robot.commands.RobotCentricDriveCommand;
-import frc.robot.commands.SwitchToCargoCommand;
+import frc.robot.commands.*;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
@@ -27,6 +26,7 @@ public class Robot extends IterativeRobot {
 	public static PositioningSubsystem positioningSubsystem;// = new PositioningSubsystem();
     public static CargoFollowSubsystem cargoFollowSubsystem = new CargoFollowSubsystem();
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
+    public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
     public static PigeonIMU pigeon;
     public static CANSparkMax lf, lm, lb, rf, rm, rb;
     public static TalonSRX pigeonTalon;
@@ -102,5 +102,6 @@ public class Robot extends IterativeRobot {
     }
 
     public void disabledInit() {
+        zLiftSubsystem.reset();
     }
 }
