@@ -74,6 +74,8 @@ public class LidarSubsystem extends Subsystem {
         }
         return isHatch(points);
     }
+
+    public void displayPoints(Point[] points, firstAngle)
     
     @Override
     protected void initDefaultCommand() {

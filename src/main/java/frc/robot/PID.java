@@ -48,4 +48,5 @@ public class PID {
 	}
 	  
 	public double getOutput() {return u;}
+	public double getLimitedOutpt(double limit) {return Utils.limitedOutpt(output,limit);}
 }
