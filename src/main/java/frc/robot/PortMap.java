@@ -4,8 +4,8 @@ public class PortMap {
 
   	//*****************JOYSTICKS*****************//
 
-	public static final int JOYSTICK_LEFT = 1;
-	public static final int JOYSTICK_RIGHT = 0;
+	public static final int JOYSTICK_LEFT = 0;
+	public static final int JOYSTICK_RIGHT = 1;
 
 	public static final int JOYSTICK_TRIGGER = 1;
 	public static final int JOYSTICK_CENTER_BUTTON = 2;
@@ -26,10 +26,14 @@ public class PortMap {
     public static final int RIGHT_MIDDLE_SPARK = 4;
     public static final int RIGHT_BACK_SPARK = 5;
 
-    ///*************LIMIT*SWITCHES**************//
+    //***************LIMIT*SWITCHES**************//
 
     public static final int BALL_LIMIT_SWITCH = 0;
     public static final int HATCH_LIMIT_SWITCH = 1;
+
+    //***************DOUBLE*SOLENOIDS*************//
+
+    public static final int[] GEAR_SHIFTER_SOLENOID = {0, 1};
 
     public static final int PIGEON_TALON = 6;
 }

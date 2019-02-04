@@ -18,12 +18,12 @@ public class OI {
     public OI() {
         rightStick = new Joystick(PortMap.JOYSTICK_RIGHT);
         leftStick = new Joystick(PortMap.JOYSTICK_LEFT);
-        
+
         switchToRetroreflectiveButton = new JoystickButton(rightStick, PortMap.JOYSTICK_LEFT_BUTTON);
         switchToRetroreflectiveButton.whenPressed(new SwitchToRetroreflectiveCommand());
         switchToRetroreflectiveButton.whenReleased(new SwitchToCargoCommand());
 
-        followBallButton = new JoystickBUtton(leftStick, PortMap.JOYSTICK_TRIGGER);
+        followBallButton = new JoystickButton(leftStick, PortMap.JOYSTICK_TRIGGER);
         followBallButton.whileHeld(new CargoFollowCommand());
 
     }
