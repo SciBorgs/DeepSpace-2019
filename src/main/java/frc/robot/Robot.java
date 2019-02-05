@@ -21,14 +21,15 @@ public class Robot extends IterativeRobot {
 //    private static final String kCustomAuto = "My Auto";
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
-    public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-    public static RetroreflectiveTapeSubsystem retroreflectiveSubsystem = new RetroreflectiveTapeSubsystem();
-    public static LineupSubsystem lineupSubsystem = new LineupSubsystem();
-    public static DriveSubsystem driveSubsystem = new DriveSubsystem();
+    public static LimelightSubsystem limelightSubsystem;// = new LimelightSubsystem();
+    public static RetroreflectiveTapeSubsystem retroreflectiveSubsystem;// = new RetroreflectiveTapeSubsystem();
+    public static LineupSubsystem lineupSubsystem;// = new LineupSubsystem();
+    public static DriveSubsystem driveSubsystem;// = new DriveSubsystem();
 	public static PositioningSubsystem positioningSubsystem;// = new PositioningSubsystem();
-    public static CargoFollowSubsystem cargoFollowSubsystem = new CargoFollowSubsystem();
-    public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
-    public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
+    public static CargoFollowSubsystem cargoFollowSubsystem;// = new CargoFollowSubsystem();
+    public static GearShiftSubsystem gearShiftSubsystem;// = new GearShiftSubsystem();
+    public static ZLiftSubsystem zLiftSubsystem;// = new ZLiftSubsystem();
+    public static LidarSubsystem lidarSubsystem = new LidarSubsystem();
     public static PigeonIMU pigeon;
     public static CANSparkMax lf, lm, lb, rf, rm, rb;
     public static TalonSRX pigeonTalon;
@@ -42,8 +43,9 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
 
 
-        new SwitchToCargoCommand().start();
+       // new SwitchToCargoCommand().start();
 
+        /*
         MotorType motorType = MotorType.kBrushed;
         MotorType motorType2 = MotorType.kBrushless;
 		lf = new CANSparkMax(PortMap.LEFT_FRONT_SPARK,motorType2);
@@ -65,6 +67,7 @@ public class Robot extends IterativeRobot {
         //positioningSubsystem.updatePositionTank();
         Compressor c = new Compressor();
 //        c.stop();
+*/
                 
         try {
             System.out.println("LIDAR status: starting");
@@ -80,8 +83,8 @@ public class Robot extends IterativeRobot {
 
     public void robotPeriodic() {
         //positioningSubsystem.updatePositionTank();
-        retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
-        gearShiftSubsystem.shiftGear(); 	
+        //retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
+        //gearShiftSubsystem.shiftGear(); 	
     }
 
     public static double getPigeonAngle(){
@@ -96,27 +99,29 @@ public class Robot extends IterativeRobot {
         System.out.println("Auto selected: " + m_autoSelected);
         //positioningSubsystem.resetPosition();
         m_autoSelected = m_chooser.getSelected();
-        gearShiftSubsystem.shiftUp();
+        //gearShiftSubsystem.shiftUp();
     }
 
     public void autonomousPeriodic() {
-        Hashtable<Double,Double> data = LidarServer.getInstance().lidarScan;
-
-        System.out.println("size: " + data.size());
-        if (data.size() > 0){
-            System.out.print("[");
-            for (double angle = 0; angle < 360; angle++){
-                if (data.containsKey(angle))
-                    System.out.print("(" + angle + "," + data.get(angle) + "), ");
-            }
-            System.out.println("]");
+        //System.out.println("rotation: " + Math.toDegrees(lidarSubsystem.wallRotation(350,10)));
+        //System.out.println("is wall?: " + lidarSubsystem.isWall(lidarSubsystem.fetchScan(), 345, 15));
+        Hashtable<String,Double> data = lidarSubsystem.hatchInfo(330, 30);
+        System.out.print("hatch detected?: ");
+        System.out.println(data.get("detected"));
+        if (data.get("detected") == 1){
+            System.out.print("angle: ");
+            System.out.println(Math.toDegrees(data.get("angle")));
+            System.out.print("parallel: ");
+            System.out.println(data.get("parallel") * Utils.metersToInches);
+            System.out.print("shift: ");
+            System.out.println(data.get("shift") * Utils.metersToInches);
         }
     }
     
     @Override
     public void teleopInit() {
-        new RobotCentricDriveCommand().start();
-        gearShiftSubsystem.shiftDown();
+        //new RobotCentricDriveCommand().start();
+        //gearShiftSubsystem.shiftDown();
     }
 
     public void teleopPeriodic() {
@@ -127,6 +132,6 @@ public class Robot extends IterativeRobot {
     }
 
     public void disabledInit() {
-        zLiftSubsystem.reset();
+        //zLiftSubsystem.reset();
     }
 }

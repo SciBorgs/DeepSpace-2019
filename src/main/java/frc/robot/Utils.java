@@ -3,6 +3,9 @@ package frc.robot;
 import java.util.*;
 
 public class Utils{
+
+    public static double metersToInches = 39.37;
+
     public static double last(ArrayList<Double> arr) {
         return arr.get(arr.size() - 1);
     }
