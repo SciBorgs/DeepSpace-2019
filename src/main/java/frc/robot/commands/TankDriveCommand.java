@@ -14,10 +14,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 
 
-public class RobotCentricDriveCommand extends Command {
+public class TankDriveCommand extends Command {
     private Joystick rightStick, leftStick;
     
-    public RobotCentricDriveCommand() {
+    public TankDriveCommand() {
         rightStick = Robot.oi.rightStick;
         leftStick = Robot.oi.leftStick;
     }

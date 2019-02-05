@@ -23,7 +23,7 @@ public class DriveSubsystem extends Subsystem {
     double tankAngleP = 3;
 	double goalOmegaConstant = 1;
 	
-    public static CANSparkMax lf, lm, lb, rf, rm, rb;
+    public CANSparkMax lf, lm, lb, rf, rm, rb;
 
 
 	/** 
