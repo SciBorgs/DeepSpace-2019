@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 
+import java.util.*;
+
 public class Robot extends IterativeRobot {
 //    private static final String kDefaultAuto = "Default";
 //    private static final String kCustomAuto = "My Auto";
@@ -39,6 +41,7 @@ public class Robot extends IterativeRobot {
 
     public void robotInit() {
 
+
         new SwitchToCargoCommand().start();
 
         MotorType motorType = MotorType.kBrushed;
@@ -62,6 +65,17 @@ public class Robot extends IterativeRobot {
         //positioningSubsystem.updatePositionTank();
         Compressor c = new Compressor();
 //        c.stop();
+                
+        try {
+            System.out.println("LIDAR status: starting");
+            boolean started = LidarServer.getInstance().start();
+            System.out.println("LIDAR status" + (started ? "started" : "failed to start"));
+        } catch (Throwable t) {
+            System.out.println("LIDAR status: crashed -" + t);
+            t.printStackTrace();
+            throw t;
+        }
+
     }
 
     public void robotPeriodic() {
@@ -86,6 +100,17 @@ public class Robot extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
+        Hashtable<Double,Double> data = LidarServer.getInstance().lidarScan;
+
+        System.out.println("size: " + data.size());
+        if (data.size() > 0){
+            System.out.print("[");
+            for (double angle = 0; angle < 360; angle++){
+                if (data.containsKey(angle))
+                    System.out.print("(" + angle + "," + data.get(angle) + "), ");
+            }
+            System.out.println("]");
+        }
     }
     
     @Override

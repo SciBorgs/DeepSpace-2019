@@ -4,7 +4,7 @@ import frc.robot.Robot;
 import java.util.Hashtable;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import gui.Main;
+//import gui.Main;
 
 class Line{
     public double m, b;
@@ -13,7 +13,7 @@ class Line{
 
 public class LidarSubsystem extends Subsystem{
     public LidarSubsystem() {
-        Main.main();
+        //Main.main();
     }
 
 
@@ -77,7 +77,7 @@ public class LidarSubsystem extends Subsystem{
     }
 
     public void displayPoints(Point[] points){
-        Main.addPoints(points);
+        //sMain.addPoints(points);
     }
     
     @Override
