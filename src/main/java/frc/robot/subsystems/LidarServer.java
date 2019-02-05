@@ -25,7 +25,9 @@ public class LidarServer {
     private Process mProcess;
     private boolean mEnding = false;
     public Hashtable<Double,Double> lidarScan = new Hashtable<Double,Double>();
+    private Hashtable<Double,Integer> lidarZeros = new Hashtable<Double,Integer>();
     private String lidarPath = "/home/root/chezy_lidar";
+    private double minimumZeros = 5;
 
     public static LidarServer getInstance() {
         if (mInstance == null) {
@@ -131,11 +133,17 @@ public class LidarServer {
             try {
                 long ts = Long.parseLong(parts[0]);
                 long ms_ago = curSystemTime - ts;
-                double normalizedTs = curFPGATime - (ms_ago / 1000.0f);
                 double angle = ((int) Double.parseDouble(parts[1])) % 360;
                 double distance = Double.parseDouble(parts[2]);
-                
-                lidarScan.put(angle,distance);
+
+                if (!(lidarZeros.containsKey(angle))){lidarZeros.put(angle,0);}
+
+                if (distance == 0 && !(lidarZeros.get(angle) >= minimumZeros))
+                   lidarZeros.put(angle,lidarZeros.get(angle) + 1);
+                else
+                    lidarScan.put(angle,distance);
+                if (distance != 0)
+                    lidarZeros.put(angle,0);
             } catch (java.lang.NumberFormatException e) {
                 e.printStackTrace();
             }

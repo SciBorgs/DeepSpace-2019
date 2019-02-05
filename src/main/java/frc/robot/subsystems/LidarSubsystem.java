@@ -20,16 +20,16 @@ public class LidarSubsystem extends Subsystem{
     }
 
 
-    public double wallPrecision = 0.02; // The amount a point can be off the line of the wall and be considerned on it
-    public double offWallPrecision = wallPrecision * 3/4; // How close a point can be to the line of a wall and be considered off it
+    public double wallPrecision = 0.04; // The amount a point can be off the line of the wall and be considerned on it
+    public double offWallPrecision = wallPrecision * 1/2; // How close a point can be to the line of a wall and be considered off it
     // Note: offWallPrecision and wallPrecision are different!
-    public double wallLengthReq = 0.02; // How far the points need to be on the line for so that it can be considered a wall
+    public double wallLengthReq = 0.04; // How far the points need to be on the line for so that it can be considered a wall
     public int wallMeasureReq = 5; // How many points need to be on the line for so that it can be considered a wall
     public double firstAngle = 0; // This is assuming the first piece of data is backwards
     public double finalAngle = 360;
     public double deltaTheta = 1;
     public double gap = 8 / Utils.metersToInches;
-    public double gapOffset = .09;
+    public double gapOffset = .0;
     public double gapPrecision = .06;
 
     public Point toPoint(double l, double theta)   {return new Point(l * Math.cos(theta), l * Math.sin(theta));}
@@ -45,7 +45,9 @@ public class LidarSubsystem extends Subsystem{
     public double distanceToLine(Line l, Point p)  {return distance(p,intersection(perpindicular(l,p),l));}
     public boolean pointOnLine(Line l, Point p)    {return distanceToLine(l,p) < wallPrecision;}
     public boolean pointOffLine(Line l, Point p)   {return distanceToLine(l,p) > offWallPrecision;} // Not the same as not(pointOnLine)!!
-    public boolean isOrigin(Point p)               {return distance(p,new Point(0,0)) == 0;}
+    public double length(Point p)                  {return distance(p,new Point(0,0));}
+    public boolean isOrigin(Point p)               {return length(p) == 0;}
+    public Point angleOnLine(double theta, Line l) {return intersection(l, pointSlopeForm(new Point(0,0), Math.tan(theta)));}
 
     public double getLength(Hashtable<Double,Double> h, double angle){
         return h.containsKey(angle) ? h.get(angle) / 1000 : 0;
@@ -68,15 +70,9 @@ public class LidarSubsystem extends Subsystem{
             double l = getLengthI(polarPoints,i);
             points[i] = toPointDeg(l,indexToAngle(i));
         }
-        for(int i = 0; i < length; i++){
-            Point prevP = points[prevIndex(i,length)];
-            Point nextP = points[nextIndex(i,length)];
-            boolean inferrable = isOrigin(points[i]) &&
-                !isOrigin(prevP) &&
-                !isOrigin(nextP);
-            if (inferrable) 
-                points[i] = center(prevP,nextP);
-        }
+        for(int i = 0; i < length; i++)
+            inferPoint(points, i);
+        
         return points;
     }
 
@@ -133,6 +129,15 @@ public class LidarSubsystem extends Subsystem{
         return isWallSize(points, i1, i2);
     }
 
+    public void inferPoint(Point[] points, int i){
+        if (!isOrigin(points[i])) {return;}
+        int l = points.length;
+        Point leftInfer = isOrigin(points[prevIndex(i,l)]) ? points[makeIndexInRange(i - 2, l)] : points[prevIndex(i,l)];
+        Point rightInfer = isOrigin(points[nextIndex(i,l)]) ? points[makeIndexInRange(i + 2, l)] : points[nextIndex(i,l)];
+        if (isOrigin(leftInfer) || isOrigin(rightInfer)){return;}
+        points[i] = center(leftInfer,rightInfer);
+    }
+
     public Hashtable<String,Double> isHatch(Point[] points, int i1, int i2){
         Hashtable<String,Double> data = new Hashtable<String,Double>();
         if (isWall(points,i1,i2)) {
@@ -148,13 +153,22 @@ public class LidarSubsystem extends Subsystem{
         while(pointOffLine(wall,points[offWallEnd]) && offWallEnd != rightWallEnd){offWallEnd = nextIndex(offWallEnd,points.length);}
         boolean isLeftWall  = isWallSize(points,i1,leftWallEnd);
         boolean isRightWall = isWallSize(points,rightWallEnd,i2);
-        double hatchError = distance(points[leftWallEnd],points[rightWallEnd]) - (gap + gapOffset);
-        boolean isHatchGap = Math.abs(hatchError) < gapPrecision;
-        System.out.println("gap error: " + hatchError);
-        System.out.println("left wall: " + indexToAngle(leftWallEnd));
-        System.out.println("right wall: " + indexToAngle(rightWallEnd));
-        System.out.println("off wall: " + indexToAngle(offWallEnd));
-        data.put("detected", (isLeftWall && isRightWall & (offWallEnd >= rightWallEnd)) ? 1.0 : 0.0);
+        double leftAngle = Math.toRadians(indexToAngle(leftWallEnd));
+        double rightAngle = Math.toRadians(indexToAngle(rightWallEnd));
+        Point leftPoint = angleOnLine(leftAngle,wall);
+        Point rightPoint = angleOnLine(rightAngle,wall);
+        double hatchGap = distance(leftPoint,rightPoint);
+        double gapError = hatchGap - (gap + gapOffset);
+        boolean isHatchGap = Math.abs(gapError) < gapPrecision;
+        //System.out.println("gap: " + hatchGap);
+        //System.out.println("gap error: " + gapError);
+        //System.out.println("left wall: " + leftAngle);
+        //System.out.println("left distance: " + points[i1].x * Utils.metersToInches);
+        //System.out.println("right distance: " + points[i2].x * Utils.metersToInches);
+        //System.out.println("right wall: " + rightAngle);
+        //System.out.println("off wall: " + indexToAngle(offWallEnd));
+        //System.out.println("wall rotation: " + Math.toDegrees(Math.atan(wall.m)));
+        data.put("detected", (isLeftWall && isRightWall & (offWallEnd >= rightWallEnd) && isHatchGap) ? 1.0 : 0.0);
         if (data.get("detected") == 0) {return data;}
         int rightWallPoint = makeIndexInRange(rightWallEnd + wallMeasureReq,points.length);
         int leftWallPoint  = makeIndexInRange(leftWallEnd - wallMeasureReq, points.length);
