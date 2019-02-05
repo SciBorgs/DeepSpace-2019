@@ -4,7 +4,6 @@ import frc.robot.commands.*;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
@@ -17,8 +16,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import java.util.*;
 
 public class Robot extends IterativeRobot {
-//    private static final String kDefaultAuto = "Default";
-//    private static final String kCustomAuto = "My Auto";
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem;// = new LimelightSubsystem();
@@ -31,7 +28,6 @@ public class Robot extends IterativeRobot {
     public static ZLiftSubsystem zLiftSubsystem;// = new ZLiftSubsystem();
     public static LidarSubsystem lidarSubsystem = new LidarSubsystem();
     public static PigeonIMU pigeon;
-    public static CANSparkMax lf, lm, lb, rf, rm, rb;
     public static TalonSRX pigeonTalon;
     public static DigitalInput ballLimitSwitch, hatchLimitSwitch;
 	
@@ -45,16 +41,6 @@ public class Robot extends IterativeRobot {
 
        // new SwitchToCargoCommand().start();
 
-        /*
-        MotorType motorType = MotorType.kBrushed;
-        MotorType motorType2 = MotorType.kBrushless;
-		lf = new CANSparkMax(PortMap.LEFT_FRONT_SPARK,motorType2);
-		lm = new CANSparkMax(PortMap.LEFT_MIDDLE_SPARK,motorType2);
-        lb = new CANSparkMax(PortMap.LEFT_BACK_SPARK,motorType2);
-        
-		rf = new CANSparkMax(PortMap.RIGHT_FRONT_SPARK,motorType);
-		rm = new CANSparkMax(PortMap.RIGHT_MIDDLE_SPARK,motorType);
-		rb = new CANSparkMax(PortMap.RIGHT_BACK_SPARK,motorType);
 		pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
         pigeon = new PigeonIMU(pigeonTalon);
         ballLimitSwitch = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);
@@ -67,7 +53,7 @@ public class Robot extends IterativeRobot {
         //positioningSubsystem.updatePositionTank();
         Compressor c = new Compressor();
 //        c.stop();
-*/
+
                 
         try {
             System.out.println("LIDAR status: starting");
