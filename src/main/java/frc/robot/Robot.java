@@ -106,8 +106,7 @@ public class Robot extends IterativeRobot {
     
     @Override
     public void teleopInit() {
-        //new RobotCentricDriveCommand().start();
-        //gearShiftSubsystem.shiftDown();
+        new TankDriveCommand().start();
     }
 
     public void teleopPeriodic() {
