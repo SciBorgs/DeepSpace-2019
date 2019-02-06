@@ -24,7 +24,8 @@ public class LineupCommand extends Command {
 
     @Override protected void    initialize()  {Robot.lineupSubsystem.resetInfo(yChange, xChange, angleChange);}
     @Override protected void    execute()     {Robot.lineupSubsystem.move();}
-    @Override protected boolean isFinished()  {return Math.abs(Robot.lineupSubsystem.getShiftPID().getOutput()) < .001 && Math.abs(Robot.lineupSubsystem.getForwardPID().getOutput()) < .001;}
+    @Override protected boolean isFinished()  {return Robot.lineupSubsystem.getShiftPID().targetReached() &&
+                                                      Robot.lineupSubsystem.getForwardPID().targetReached();}
     @Override protected void    end()         {Robot.driveSubsystem.setSpeedTank(0, 0);}
     @Override protected void    interrupted() {end();}
 }
