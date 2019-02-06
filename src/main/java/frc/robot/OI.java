@@ -13,20 +13,23 @@ import frc.robot.commands.*;
 
 public class OI {
     public Joystick rightStick, leftStick;
-    public JoystickButton switchToRetroreflectiveButton, followBallButton, startZLift;
+    public JoystickButton switchToRetroreflectiveButton, followBallButton, lineupButton, startZLift;
 
     public OI() {
         rightStick = new Joystick(PortMap.JOYSTICK_RIGHT);
         leftStick = new Joystick(PortMap.JOYSTICK_LEFT);
 
-        switchToRetroreflectiveButton = new JoystickButton(rightStick, PortMap.JOYSTICK_LEFT_BUTTON);
+        switchToRetroreflectiveButton = new JoystickButton(rightStick, PortMap.JOYSTICK_TOGGLE_OBJECTIVE);
         switchToRetroreflectiveButton.whenPressed(new SwitchToRetroreflectiveCommand());
         switchToRetroreflectiveButton.whenReleased(new SwitchToCargoCommand());
-
-        followBallButton = new JoystickButton(leftStick, PortMap.JOYSTICK_TRIGGER);
+        
+        followBallButton = new JoystickButton(leftStick, PortMap.JOYSTICK_FOLLOW_CARGO_BUTTON);
         followBallButton.whileHeld(new CargoFollowCommand());
 
-        startZLift = new JoystickButton(rightStick, PortMap.JOYSTICK_TRIGGER);
+        lineupButton = new JoystickButton(leftStick, PortMap.JOYSTICK_LINEUP_BUTTON);
+        lineupButton.whenPressed(new LineupCommand());
+
+        startZLift = new JoystickButton(rightStick, PortMap.JOYSTICK_Z_LIFT_BUTTON);
         startZLift.whenPressed(new ZLiftCommand(false));
         startZLift.whenReleased(new ZLiftCommand(true));
     }
