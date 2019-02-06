@@ -7,10 +7,10 @@ public class PortMap {
 	public static final int JOYSTICK_LEFT = 0;
 	public static final int JOYSTICK_RIGHT = 1;
 
-	public static final int JOYSTICK_TRIGGER = 1;
-	public static final int JOYSTICK_CENTER_BUTTON = 2;
-	public static final int JOYSTICK_LEFT_BUTTON = 3;
-	public static final int JOYSTICK_RIGHT_BUTTON = 4;
+	public static final int JOYSTICK_LINEUP_BUTTON = 1;
+	public static final int JOYSTICK_Z_LIFT_BUTTON = 2;
+	public static final int JOYSTICK_FOLLOW_CARGO_BUTTON = 3;
+	public static final int JOYSTICK_TOGGLE_OBJECTIVE= 4;
 
 	public static final int[][] JOYSTICK_BUTTON_MATRIX_LEFT = { { 5, 6, 7 }, { 10, 9, 8 } };
 
