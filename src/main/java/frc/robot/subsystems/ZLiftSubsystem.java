@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import frc.robot.PortMap;
-import frc.robot.Robot;
-import frc.robot.Utils;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;

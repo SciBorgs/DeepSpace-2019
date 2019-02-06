@@ -12,11 +12,9 @@ import frc.robot.Robot;
 
 public class SwitchToCargoCommand extends Command {
 
-    public SwitchToCargoCommand() {
-        requires(Robot.cargoFollowSubsystem);
-    }
+    public SwitchToCargoCommand() {}
 
-    @Override protected void    initialize()  {Robot.cargoFollowSubsystem.modeToCargo();}
+    @Override protected void    initialize()  {Robot.cargoFollowing.modeToCargo();}
     @Override protected void    execute()     {return;}
     @Override protected boolean isFinished()  {return true;}
     @Override protected void    end()         {return;}
