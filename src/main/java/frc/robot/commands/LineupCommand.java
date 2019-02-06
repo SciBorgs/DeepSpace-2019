@@ -13,17 +13,19 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 
 
-public class TankDriveCommand extends Command {
-    private Joystick rightStick, leftStick;
+public class LineupCommand extends Command {
+    private double yChange, xChange, angleChange;
     
-    public TankDriveCommand() {
-        rightStick = Robot.oi.rightStick;
-        leftStick = Robot.oi.leftStick;
+    public LineupCommand() {
+        yChange = 1; //Temporary values
+        xChange = 1;
+        angleChange = 1;
     }
 
-    @Override protected void    initialize()  {Robot.driveSubsystem.setSpeedTank(0, 0);}
-    @Override protected void    execute()     {Robot.driveSubsystem.setSpeedRaw(leftStick, rightStick);}
-    @Override protected boolean isFinished()  {return false;}
+    @Override protected void    initialize()  {Robot.lineupSubsystem.resetInfo(yChange, xChange, angleChange);}
+    @Override protected void    execute()     {Robot.lineupSubsystem.move();}
+    @Override protected boolean isFinished()  {return Robot.lineupSubsystem.getShiftPID().targetReached() &&
+                                                      Robot.lineupSubsystem.getForwardPID().targetReached();}
     @Override protected void    end()         {Robot.driveSubsystem.setSpeedTank(0, 0);}
     @Override protected void    interrupted() {end();}
 }

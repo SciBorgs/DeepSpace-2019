@@ -1,9 +1,9 @@
 package frc.robot;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
+import frc.robot.helpers.*;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkMax;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
@@ -23,7 +23,7 @@ public class Robot extends IterativeRobot {
     public static LineupSubsystem lineupSubsystem;// = new LineupSubsystem();
     public static DriveSubsystem driveSubsystem;// = new DriveSubsystem();
 	public static PositioningSubsystem positioningSubsystem;// = new PositioningSubsystem();
-    public static CargoFollowSubsystem cargoFollowSubsystem;// = new CargoFollowSubsystem();
+    public static CargoFollowing cargoFollowing;// = new CargoFollowSubsystem();
     public static GearShiftSubsystem gearShiftSubsystem;// = new GearShiftSubsystem();
     public static ZLiftSubsystem zLiftSubsystem;// = new ZLiftSubsystem();
     public static LidarSubsystem lidarSubsystem = new LidarSubsystem();
