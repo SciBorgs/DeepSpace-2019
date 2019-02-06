@@ -30,7 +30,7 @@ public class LidarSubsystem extends Subsystem{
     public double deltaTheta = 1;
     public double gap = 8 / Utils.metersToInches;
     public double gapOffset = .0;
-    public double gapPrecision = .06;
+    public double gapPrecision = .15;
 
     public Point toPoint(double l, double theta)   {return new Point(l * Math.cos(theta), l * Math.sin(theta));}
     public Point toPointDeg(double l, double theta){return toPoint(l,Math.toRadians(theta));}
@@ -138,6 +138,34 @@ public class LidarSubsystem extends Subsystem{
         points[i] = center(leftInfer,rightInfer);
     }
 
+    public double minLength(Point[] points, int i1, int i2){
+        double minVal = length(points[i2]);
+        for (int i = i1; i != i2; i = nextIndex(i,points.length)){
+            double len = length(points[i]);
+            if (len < minVal && len != 0)
+                minVal = len;
+        }
+        return minVal;
+    }
+    public double minLength(double a1, double a2){
+        return minLength(fetchScan(),angleToIndex(a1),angleToIndex(a2));
+    }
+    
+    public int maxLengthIndex(Point[] points, int i1, int i2){
+        double maxVal = length(points[i2]);
+        int maxIndex = i2;
+        for (int i = i1; i != i2; i = nextIndex(i,points.length)){
+            double len = length(points[i]);
+            if (len > maxVal && len != 0)
+                maxVal = len;
+                maxIndex = i;
+        }
+        return maxIndex;
+    }
+    public double maxLengthAngle(double a1, double a2){
+        return indexToAngle(maxLengthIndex(fetchScan(),angleToIndex(a1),angleToIndex(a2)));
+    }
+
     public Hashtable<String,Double> isHatch(Point[] points, int i1, int i2){
         Hashtable<String,Double> data = new Hashtable<String,Double>();
         if (isWall(points,i1,i2)) {
@@ -168,7 +196,7 @@ public class LidarSubsystem extends Subsystem{
         //System.out.println("right wall: " + rightAngle);
         //System.out.println("off wall: " + indexToAngle(offWallEnd));
         //System.out.println("wall rotation: " + Math.toDegrees(Math.atan(wall.m)));
-        data.put("detected", (isLeftWall && isRightWall & (offWallEnd >= rightWallEnd) && isHatchGap) ? 1.0 : 0.0);
+        data.put("detected", (isLeftWall && isRightWall & (offWallEnd >= rightWallEnd)) ? 1.0 : 0.0);
         if (data.get("detected") == 0) {return data;}
         int rightWallPoint = makeIndexInRange(rightWallEnd + wallMeasureReq,points.length);
         int leftWallPoint  = makeIndexInRange(leftWallEnd - wallMeasureReq, points.length);

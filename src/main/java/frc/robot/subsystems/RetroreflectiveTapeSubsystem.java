@@ -115,10 +115,14 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         double degreeLength = tapeLength / (Math.sqrt((tapeLength/tapeWidth) * Robot.limelightSubsystem.imageHeight * Robot.limelightSubsystem.imageWidth * values.get(1).get("a")/100.));
         System.out.println("degree length: " + degreeLength);
         System.out.println("x shift degrees: " + centerPos[0]);
-        double shift = degreeLength * centerPos[0]; //Negative to the Left, Positive to the Right
+        double tx0 = values.get(0).get("x");
+        double tx2 = values.get(2).get("x");
+        double shift1 = leftPair(values) ? Math.tan(Math.toRadians(tx0)) : Math.tan(Math.toRadians(tx2)); //Negative to the Left, Positive to the Right
+        double shift2 = Math.tan(Math.toRadians(values.get(1).get("x")));
+        double shift = distance * (shift1 + shift2) / 2;
         double angle = theta(values);
         data.put("to print", Math.toDegrees(angle));
-        data.put("inprecise angle",angle);
+        data.put("angle",Math.atan(shift/distance));
         data.put("centerX",centerPos[0]);
         data.put("centerY", centerPos[1]);
         data.put("distance", distance);
