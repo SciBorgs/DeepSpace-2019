@@ -14,16 +14,16 @@ import edu.wpi.first.wpilibj.command.Command;
 
 
 public class LineupCommand extends Command {
-    private double yChange, xChange, angleChange;
     
     public LineupCommand() {
-        yChange = 1; //Temporary values
-        xChange = 1;
-        angleChange = 1;
     }
 
-    @Override protected void    initialize()  {Robot.lineupSubsystem.resetInfo(yChange, xChange, angleChange);}
-    @Override protected void    execute()     {Robot.lineupSubsystem.move();}
+    @Override protected void    initialize()  {Robot.lineupSubsystem.resetFound();}
+    @Override protected void    execute()     {
+        //Robot.lineupSubsystem.autoResetInfo();
+        Robot.lineupSubsystem.simpleResetInfo();
+        Robot.lineupSubsystem.move();
+    }
     @Override protected boolean isFinished()  {return Robot.lineupSubsystem.getShiftPID().targetReached() &&
                                                       Robot.lineupSubsystem.getForwardPID().targetReached();}
     @Override protected void    end()         {Robot.driveSubsystem.setSpeedTank(0, 0);}

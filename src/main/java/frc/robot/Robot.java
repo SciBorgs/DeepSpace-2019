@@ -18,14 +18,14 @@ import java.util.*;
 public class Robot extends IterativeRobot {
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
-    public static LimelightSubsystem limelightSubsystem;// = new LimelightSubsystem();
-    public static RetroreflectiveTapeSubsystem retroreflectiveSubsystem;// = new RetroreflectiveTapeSubsystem();
-    public static LineupSubsystem lineupSubsystem;// = new LineupSubsystem();
-    public static DriveSubsystem driveSubsystem;// = new DriveSubsystem();
-	public static PositioningSubsystem positioningSubsystem;// = new PositioningSubsystem();
-    public static CargoFollowing cargoFollowing;// = new CargoFollowSubsystem();
-    public static GearShiftSubsystem gearShiftSubsystem;// = new GearShiftSubsystem();
-    public static ZLiftSubsystem zLiftSubsystem;// = new ZLiftSubsystem();
+    public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
+    public static RetroreflectiveTapeSubsystem retroreflectiveSubsystem = new RetroreflectiveTapeSubsystem();
+    public static LineupSubsystem lineupSubsystem = new LineupSubsystem();
+    public static DriveSubsystem driveSubsystem = new DriveSubsystem();
+	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
+    public static CargoFollowing cargoFollowing = new CargoFollowSubsystem();
+    public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
+    public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
     public static LidarSubsystem lidarSubsystem = new LidarSubsystem();
     public static PigeonIMU pigeon;
     public static TalonSRX pigeonTalon;
@@ -50,7 +50,7 @@ public class Robot extends IterativeRobot {
         pigeon.enterCalibrationMode(CalibrationMode.Temperature, 10);
         oi = new OI();
         System.out.println("roboinited");
-        //positioningSubsystem.updatePositionTank();
+        positioningSubsystem.updatePositionTank();
         Compressor c = new Compressor();
 //        c.stop();
 
@@ -89,19 +89,8 @@ public class Robot extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
-        //System.out.println("rotation: " + Math.toDegrees(lidarSubsystem.wallRotation(350,10)));
-        //System.out.println("is wall?: " + lidarSubsystem.isWall(lidarSubsystem.fetchScan(), 345, 15));
-        Hashtable<String,Double> data = lidarSubsystem.hatchInfo(330, 30);
-        System.out.print("hatch detected?: ");
-        System.out.println(data.get("detected"));
-        if (data.get("detected") == 1){
-            System.out.print("angle: ");
-            System.out.println(Math.toDegrees(data.get("angle")));
-            System.out.print("parallel: ");
-            System.out.println(data.get("parallel") * Utils.metersToInches);
-            System.out.print("shift: ");
-            System.out.println(data.get("shift") * Utils.metersToInches);
-        }
+        positioningSubsystem.updatePositionTank();
+        positioningSubsystem.printPosition();
     }
     
     @Override

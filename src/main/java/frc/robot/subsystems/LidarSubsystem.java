@@ -31,6 +31,7 @@ public class LidarSubsystem extends Subsystem{
     public double gap = 8 / Utils.metersToInches;
     public double gapOffset = .0;
     public double gapPrecision = .15;
+    public double lidarShift = 0; // In meters away from the center
 
     public Point toPoint(double l, double theta)   {return new Point(l * Math.cos(theta), l * Math.sin(theta));}
     public Point toPointDeg(double l, double theta){return toPoint(l,Math.toRadians(theta));}
@@ -78,6 +79,9 @@ public class LidarSubsystem extends Subsystem{
 
     public Point[] fetchScan(){
         return polarHashToPoints(LidarServer.getInstance().lidarScan);
+    }
+    public double angleDistance(double angle){
+        return distance(fetchScan()[indexToAngle(angle)]);
     }
 
     public void printScan(){

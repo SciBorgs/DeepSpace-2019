@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import frc.robot.PID;
 import frc.robot.Robot;
 
+import java.util.*;
+
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class LineupSubsystem extends Subsystem {
@@ -14,8 +16,15 @@ public class LineupSubsystem extends Subsystem {
     private PID forwardPID; // PID for deciding our speed
     private double forwardGoal; // This is where we actually want to end up
     private double forwardScale = 0.8; // We're assuming that it goes an extra 20 percent.
+    private boolean retroFound;
+    private boolean lidarFound;
 
     public LineupSubsystem() {}
+
+    public void resetFound(){
+        retroFound = false; 
+        lidarFound = false;
+    }
     
     public void resetInfo(double forwardChange, double shiftChange, double angleChange) {
     	lineAngle = Robot.positioningSubsystem.getAngle() + angleChange;
@@ -25,7 +34,26 @@ public class LineupSubsystem extends Subsystem {
         shiftPID = new PID(.7,0,.13);
     	forwardPID = new PID(0.45,.02,0.05);
     	shiftPID.setSmoother(6);
-    	}
+        }
+        
+    public void autoResetInfo(){
+        if (retroFound && lidarFound){return;}
+        double angleChange = getRotation();
+        if (!retroFound){return;}
+        double shiftChange = getShift(angleChange);
+        double parallelChange = getParallel(angleChange);
+        System.out.println("angle change: " + angleChange);
+        System.out.println("parallel change: " + parallelChange);
+        System.out.println("shift change: " + shiftChange);
+        resetInfo(parallelChange,shiftChange,angleChange)
+    }
+
+    public void simpleResetInfo(){
+        if (retroFound){return;}
+        retroFound = getRetro("distance") != 0;
+        if (retroFound)
+            resetInfo(getRetro("parallel"),getRetro("shift"),0);
+    }
     
     public PID getShiftPID()   {return shiftPID;} 
     public PID getForwardPID() {return forwardPID;}
@@ -38,18 +66,61 @@ public class LineupSubsystem extends Subsystem {
     public double shiftError()    {return desiredShift - shiftCoordinate();}
     public double parallelError() {return desiredForward - parallelCoordinate();}
     public double deltaTheta()    {return Robot.positioningSubsystem.getAngle() - lineAngle;}
+
+    public Hashtable<String,Double> retroData(){
+        return robot.retroreflectiveSubsystem.extractData()
+    }
+    public double getRetro(String key){
+        return retroData().get(key);
+    }
+    public double getRotation() {
+        double lShift = getRetro("shiftL");
+        double rShift = getRetro("shiftR");
+        double distance = getRetro("distance");
+        double adjustBy = -Robot.lidarSubsystem.shift;
+        double lAngle = (int) Math.toDegrees(Math.atan(lShift + adjustBy))
+        double rAngle = (int) Math.toDegrees(Math.atan(rShift + adjustBy))
+        double leftD  = Robot.lidarRotation.angleDistance(lAngle);
+        double rightD = Robot.lidarRotation.angleDistance(rAngle);
+        if (lAngle == 0){
+            retroFound = false;
+            return 0;
+        }
+        retroFound = true;
+        if (leftD == 0 || rightD == 0){
+            lidarFound = false;
+            return 0;
+        }
+        double lidarRotation = Robot.lidarSubsystem.wallRotation(360 + lAngle,rAngle);
+        lidarFound = true;
+        return Math.PI/2 - lidarRotation;
+    }
+
+    double getShift(double deltaTheta){
+        double shift = getRetro("shift");
+        double parallel = getRetro("parallel");
+        double adjustedShift = shift(shift,parallel,deltaTheta);
+    }
+    double getParallel(double deltaTheta){
+        double shift = getRetro("shift");
+        double parallel = getRetro("parallel");
+        double adjustedShift = parallel(shift,parallel,deltaTheta);
+    }
     
     public void move(){
-    	if (parallelCoordinate() < desiredForward) {
+    	if (retroFound && parallelCoordinate() < desiredForward) {
         	shiftPID.add_measurement_d(shiftError(),Math.sin(deltaTheta())); // We use the sine of our change in angle as the derivative (that's the secret!)
 	        forwardPID.add_measurement(parallelError());
 	        double output =  shiftPID.getOutput();
 	        double defaultSpeed = forwardPID.getOutput();
 	        Robot.driveSubsystem.setSpeedTank(defaultSpeed * (1 + output), defaultSpeed * (1 - output)); // The output changes the percentage that goes to each side which makes it turn
-    	}
-    	else {
+        }
+    	else if (retroFound) {
     		Robot.driveSubsystem.setSpeedTank(0, 0);
-    	}
+        }
+        else {
+            Robot.driveSubsystem.setSpeedRaw(Robot.oi.leftStick, Robt.oi.rightStick);
+        }
     }
     
 
