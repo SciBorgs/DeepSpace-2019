@@ -45,7 +45,7 @@ public class LineupSubsystem extends Subsystem {
         System.out.println("angle change: " + angleChange);
         System.out.println("parallel change: " + parallelChange);
         System.out.println("shift change: " + shiftChange);
-        resetInfo(parallelChange,shiftChange,angleChange)
+        resetInfo(parallelChange,shiftChange,angleChange);
     }
 
     public void simpleResetInfo(){
@@ -68,7 +68,7 @@ public class LineupSubsystem extends Subsystem {
     public double deltaTheta()    {return Robot.positioningSubsystem.getAngle() - lineAngle;}
 
     public Hashtable<String,Double> retroData(){
-        return robot.retroreflectiveSubsystem.extractData()
+        return Robot.retroreflectiveSubsystem.extractData();
     }
     public double getRetro(String key){
         return retroData().get(key);
@@ -76,12 +76,11 @@ public class LineupSubsystem extends Subsystem {
     public double getRotation() {
         double lShift = getRetro("shiftL");
         double rShift = getRetro("shiftR");
-        double distance = getRetro("distance");
-        double adjustBy = -Robot.lidarSubsystem.shift;
-        double lAngle = (int) Math.toDegrees(Math.atan(lShift + adjustBy))
-        double rAngle = (int) Math.toDegrees(Math.atan(rShift + adjustBy))
-        double leftD  = Robot.lidarRotation.angleDistance(lAngle);
-        double rightD = Robot.lidarRotation.angleDistance(rAngle);
+        double adjustBy = -Robot.lidarSubsystem.lidarShift;
+        double lAngle = (int) Math.toDegrees(Math.atan(lShift + adjustBy));
+        double rAngle = (int) Math.toDegrees(Math.atan(rShift + adjustBy));
+        double leftD  = Robot.lidarSubsystem.angleDistance(lAngle);
+        double rightD = Robot.lidarSubsystem.angleDistance(rAngle);
         if (lAngle == 0){
             retroFound = false;
             return 0;
@@ -96,15 +95,15 @@ public class LineupSubsystem extends Subsystem {
         return Math.PI/2 - lidarRotation;
     }
 
-    double getShift(double deltaTheta){
+    public double getShift(double deltaTheta){
         double shift = getRetro("shift");
         double parallel = getRetro("parallel");
-        double adjustedShift = shift(shift,parallel,deltaTheta);
+        return shift(shift,parallel,deltaTheta);
     }
-    double getParallel(double deltaTheta){
+    public double getParallel(double deltaTheta){
         double shift = getRetro("shift");
         double parallel = getRetro("parallel");
-        double adjustedShift = parallel(shift,parallel,deltaTheta);
+        return parallel(shift,parallel,deltaTheta);
     }
     
     public void move(){
@@ -119,7 +118,7 @@ public class LineupSubsystem extends Subsystem {
     		Robot.driveSubsystem.setSpeedTank(0, 0);
         }
         else {
-            Robot.driveSubsystem.setSpeedRaw(Robot.oi.leftStick, Robt.oi.rightStick);
+            Robot.driveSubsystem.setSpeedRaw(Robot.oi.leftStick, Robot.oi.rightStick);
         }
     }
     

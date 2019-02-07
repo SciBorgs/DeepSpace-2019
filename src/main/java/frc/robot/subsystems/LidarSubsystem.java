@@ -81,7 +81,7 @@ public class LidarSubsystem extends Subsystem{
         return polarHashToPoints(LidarServer.getInstance().lidarScan);
     }
     public double angleDistance(double angle){
-        return distance(fetchScan()[indexToAngle(angle)]);
+        return length(fetchScan()[angleToIndex(angle)]);
     }
 
     public void printScan(){
