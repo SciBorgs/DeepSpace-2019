@@ -48,12 +48,18 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
     }
     public boolean facingLeft(double skew){return skew > -45;}
     public boolean facingRight(double skew) {return skew > -45;}
+
+    public double screenPrecentToDegrees(double screenPer){
+        return Math.atan(screenPer * Math.tan(Math.toDegrees(Robot.limelightSubsystem.imageWidth)));
+    }
+
     public Hashtable<String,Double> createData(NetworkTable t, int nth){
         // Takes a snapshot of data and the nth contour you want and converts it into a hashtable
         Hashtable<String, Double> end = new Hashtable<String, Double>();
         end.put("nth",(double) nth);
         end.put("a",get(t,"ta" + nth));
-        end.put("x",isContour(end) ? get(t,"tx" + nth) : Robot.limelightSubsystem.imageWidth + 1);
+        double txPer = isContour(end) ? get(t,"tx" + nth) : 1.01; // B/c we sort by tx, we want the data that isn't a contour to be off to the side
+        end.put("x",screenPrecentToDegrees(txPer));
         end.put("y",get(t,"ty" + nth));
         end.put("s",get(t,"ts" + nth));
         return end;
@@ -101,7 +107,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         // Extracts data from the given data. Currently: Center position, distance, shift 
         NetworkTable t = getTable();
         Hashtable<String,Double> data = new Hashtable<String,Double>();
-        String[] keys = new String[]{"centerX","centerY","distance","shift"};
+        String[] keys = new String[]{"centerX","centerY","distance","shift","angle","shiftL","shiftR"};
         for (String key : keys){data.put(key,0.0);}
         // Find the center of the two retroflective pieces of tape that are facing
         // twoards each other!
@@ -115,10 +121,17 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         double degreeLength = tapeLength / (Math.sqrt((tapeLength/tapeWidth) * Robot.limelightSubsystem.imageHeight * Robot.limelightSubsystem.imageWidth * values.get(1).get("a")/100.));
         System.out.println("degree length: " + degreeLength);
         System.out.println("x shift degrees: " + centerPos[0]);
-        double shift = degreeLength * centerPos[0]; //Negative to the Left, Positive to the Right
+        double tx0 = values.get(0).get("x");
+        double tx2 = values.get(2).get("x");
+        double adjustBy = Robot.limelightSubsystem.shift;
+        double shift1 = (leftPair(values) ? Math.tan(Math.toRadians(tx0)) : Math.tan(Math.toRadians(tx2))) + adjustBy; //Negative to the Left, Positive to the Right
+        double shift2 = Math.tan(Math.toRadians(values.get(1).get("x"))) + adjustBy;
+        double shift = distance * (shift1 + shift2) / 2;
         double angle = theta(values);
         data.put("to print", Math.toDegrees(angle));
-        data.put("inprecise angle",angle);
+        data.put("angle",Math.atan(shift/distance));
+        data.put("shiftL",shiftL);
+        data.put("shiftR",shiftR);
         data.put("centerX",centerPos[0]);
         data.put("centerY", centerPos[1]);
         data.put("distance", distance);

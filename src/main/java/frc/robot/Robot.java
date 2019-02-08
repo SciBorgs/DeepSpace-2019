@@ -1,10 +1,9 @@
 package frc.robot;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
+import frc.robot.helpers.*;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
@@ -17,20 +16,18 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import java.util.*;
 
 public class Robot extends IterativeRobot {
-//    private static final String kDefaultAuto = "Default";
-//    private static final String kCustomAuto = "My Auto";
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     public static RetroreflectiveTapeSubsystem retroreflectiveSubsystem = new RetroreflectiveTapeSubsystem();
     public static LineupSubsystem lineupSubsystem = new LineupSubsystem();
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
-	public static PositioningSubsystem positioningSubsystem;// = new PositioningSubsystem();
-    public static CargoFollowSubsystem cargoFollowSubsystem = new CargoFollowSubsystem();
+	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
+    public static CargoFollowing cargoFollowing = new CargoFollowing();
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
+    public static LidarSubsystem lidarSubsystem = new LidarSubsystem();
     public static PigeonIMU pigeon;
-    public static CANSparkMax lf, lm, lb, rf, rm, rb;
     public static TalonSRX pigeonTalon;
     public static DigitalInput ballLimitSwitch, hatchLimitSwitch;
 	
@@ -42,17 +39,8 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
 
 
-        new SwitchToCargoCommand().start();
+       // new SwitchToCargoCommand().start();
 
-        MotorType motorType = MotorType.kBrushed;
-        MotorType motorType2 = MotorType.kBrushless;
-		lf = new CANSparkMax(PortMap.LEFT_FRONT_SPARK,motorType2);
-		lm = new CANSparkMax(PortMap.LEFT_MIDDLE_SPARK,motorType2);
-        lb = new CANSparkMax(PortMap.LEFT_BACK_SPARK,motorType2);
-        
-		rf = new CANSparkMax(PortMap.RIGHT_FRONT_SPARK,motorType);
-		rm = new CANSparkMax(PortMap.RIGHT_MIDDLE_SPARK,motorType);
-		rb = new CANSparkMax(PortMap.RIGHT_BACK_SPARK,motorType);
 		pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
         pigeon = new PigeonIMU(pigeonTalon);
         ballLimitSwitch = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);
@@ -62,9 +50,10 @@ public class Robot extends IterativeRobot {
         pigeon.enterCalibrationMode(CalibrationMode.Temperature, 10);
         oi = new OI();
         System.out.println("roboinited");
-        //positioningSubsystem.updatePositionTank();
+        positioningSubsystem.updatePositionTank();
         Compressor c = new Compressor();
 //        c.stop();
+
                 
         try {
             System.out.println("LIDAR status: starting");
@@ -79,9 +68,10 @@ public class Robot extends IterativeRobot {
     }
 
     public void robotPeriodic() {
-        //positioningSubsystem.updatePositionTank();
-        retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
-        gearShiftSubsystem.shiftGear(); 	
+        positioningSubsystem.updatePositionTank();
+        positioningSubsystem.printPosition();
+        //retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
+        //gearShiftSubsystem.shiftGear(); 	
     }
 
     public static double getPigeonAngle(){
@@ -96,27 +86,15 @@ public class Robot extends IterativeRobot {
         System.out.println("Auto selected: " + m_autoSelected);
         //positioningSubsystem.resetPosition();
         m_autoSelected = m_chooser.getSelected();
-        gearShiftSubsystem.shiftUp();
+        //gearShiftSubsystem.shiftUp();
     }
 
     public void autonomousPeriodic() {
-        Hashtable<Double,Double> data = LidarServer.getInstance().lidarScan;
-
-        System.out.println("size: " + data.size());
-        if (data.size() > 0){
-            System.out.print("[");
-            for (double angle = 0; angle < 360; angle++){
-                if (data.containsKey(angle))
-                    System.out.print("(" + angle + "," + data.get(angle) + "), ");
-            }
-            System.out.println("]");
-        }
     }
     
     @Override
     public void teleopInit() {
-        new RobotCentricDriveCommand().start();
-        gearShiftSubsystem.shiftDown();
+        new TankDriveCommand().start();
     }
 
     public void teleopPeriodic() {
@@ -127,6 +105,6 @@ public class Robot extends IterativeRobot {
     }
 
     public void disabledInit() {
-        zLiftSubsystem.reset();
+        //zLiftSubsystem.reset();
     }
 }

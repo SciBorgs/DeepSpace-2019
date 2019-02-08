@@ -8,7 +8,7 @@ public class PID {
 	Timer timer;
 	private ArrayList<Double> times, errors;
 	private int maxSize = 4;
-	public double p, i, d, u, integral;
+	public double p, i, d, u, integral, deadband;
 	    
 	public PID(double p, double i, double d) {
 		timer = new Timer();
@@ -18,6 +18,7 @@ public class PID {
 		this.p = p;
 		this.i = i;
 		this.d = d;
+		deadband = .0001;
 	}
 	
 	public ArrayList<Double> getErrors(){return errors;}
@@ -49,4 +50,8 @@ public class PID {
 	  
 	public double getOutput() {return u;}
 	public double getLimitOutput(double limit) {return Utils.limitOutput(u,limit);}
+	public void setTolerance(double tolerance){deadband = tolerance;}
+	public boolean targetReached(){
+		return Math.abs(getOutput()) < deadband;
+	}
 }

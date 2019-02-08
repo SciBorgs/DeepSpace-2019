@@ -8,23 +8,24 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
-import frc.robot.subsystems.DriveSubsystem;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 
 
-public class RobotCentricDriveCommand extends Command {
-    private Joystick rightStick, leftStick;
+public class LineupCommand extends Command {
     
-    public RobotCentricDriveCommand() {
-        rightStick = Robot.oi.rightStick;
-        leftStick = Robot.oi.leftStick;
+    public LineupCommand() {
     }
 
-    @Override protected void    initialize()  {Robot.driveSubsystem.setSpeedTank(0, 0);}
-    @Override protected void    execute()     {Robot.driveSubsystem.setSpeedRaw(leftStick, rightStick);}
-    @Override protected boolean isFinished()  {return false;}
+    @Override protected void    initialize()  {Robot.lineupSubsystem.resetFound();}
+    @Override protected void    execute()     {
+        //Robot.lineupSubsystem.autoResetInfo();
+        Robot.lineupSubsystem.simpleResetInfo();
+        Robot.lineupSubsystem.move();
+    }
+    @Override protected boolean isFinished()  {return Robot.lineupSubsystem.getShiftPID().targetReached() &&
+                                                      Robot.lineupSubsystem.getForwardPID().targetReached();}
     @Override protected void    end()         {Robot.driveSubsystem.setSpeedTank(0, 0);}
     @Override protected void    interrupted() {end();}
 }

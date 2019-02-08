@@ -1,6 +1,14 @@
 package frc.robot.subsystems;
 
-public class Point{
+import java.io.Serializable;
+
+public class Point implements Serializable {
+    private static final long serialVersionUID = 2;
+
     public double x, y;
-    public Point(double point_x, double point_y) {x = point_x; y = point_y;}
+
+    public Point(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
 }
