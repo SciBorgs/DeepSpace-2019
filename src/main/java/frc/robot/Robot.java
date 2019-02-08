@@ -68,7 +68,8 @@ public class Robot extends IterativeRobot {
     }
 
     public void robotPeriodic() {
-        //positioningSubsystem.updatePositionTank();
+        positioningSubsystem.updatePositionTank();
+        positioningSubsystem.printPosition();
         //retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
         //gearShiftSubsystem.shiftGear(); 	
     }
@@ -89,8 +90,6 @@ public class Robot extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
-        positioningSubsystem.updatePositionTank();
-        positioningSubsystem.printPosition();
     }
     
     @Override
