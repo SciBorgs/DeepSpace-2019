@@ -130,8 +130,8 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         double angle = theta(values);
         data.put("to print", Math.toDegrees(angle));
         data.put("angle",Math.atan(shift/distance));
-        data.put("shiftL",shiftL);
-        data.put("shiftR",shiftR);
+        //data.put("shiftL",shiftL);
+        //data.put("shiftR",shiftR);
         data.put("centerX",centerPos[0]);
         data.put("centerY", centerPos[1]);
         data.put("distance", distance);
