@@ -36,7 +36,7 @@ public class ZLiftSubsystem extends Subsystem {
     public void lift() {
         anglePID.add_measurement(getYaw());
 
-        System.out.println(anglePID.getOutput() + " Angle: " + getYaw());
+        //System.out.println(anglePID.getOutput() + " Angle: " + getYaw());
 
         double speed = anglePID.getLimitOutput(maxOutput);
      

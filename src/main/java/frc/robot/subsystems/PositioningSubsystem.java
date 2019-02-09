@@ -58,8 +58,8 @@ public class PositioningSubsystem extends Subsystem {
         negated = new Hashtable<CANSparkMax,Boolean>();
         sparks = new ArrayList<CANSparkMax>();
 
-        keepTrackOf(Robot.driveSubsystem.lm,true); // true and false indicates whether the values must be negated
-        keepTrackOf(Robot.driveSubsystem.rm,false);
+        //keepTrackOf(Robot.driveSubsystem.lm,true); // true and false indicates whether the values must be negated
+        //keepTrackOf(Robot.driveSubsystem.rm,false);
 
         resetPosition();
         
@@ -148,13 +148,13 @@ public class PositioningSubsystem extends Subsystem {
     public void changePoint(double[] point){setPosition(point[0],point[1],point[2]);}
 
     public void updatePositionTank(){
-        changePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(Robot.driveSubsystem.lm), encUpdate(Robot.driveSubsystem.rm))); 
+        //achangePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(Robot.driveSubsystem.lm), encUpdate(Robot.driveSubsystem.rm))); 
     }
 
     public void printPosition(){
-        System.out.println("X: " + getX());
-        System.out.println("Y: " + getY());
-        System.out.println("Angle: " + getAngle());
+        //.out.println("X: " + getX());
+        //System.out.println("Y: " + getY());
+        //System.out.println("Angle: " + getAngle());
     }
 
     @Override

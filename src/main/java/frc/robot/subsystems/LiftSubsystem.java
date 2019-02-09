@@ -10,10 +10,14 @@ public class LiftSubsystem extends Subsystem {
 
     // TOOD: Maybe change the motor? xD
     public double getPos() {
-        return Robot.driveSubsystem.rb.getEncoder().getPosition();
+        //return Robot.driveSubsystem.rb.getEncoder().getPosition();
+        return 0;
     }
 
-    public void setSpeed(double speed) {Robot.driveSubsystem.rb.set(speed);}
+    public void setSpeed(double speed) {
+        //Robot.driveSubsystem.rb.set(speed);
+    }
+
 
     @Override
     protected void initDefaultCommand() {}

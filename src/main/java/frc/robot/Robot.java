@@ -75,9 +75,10 @@ public class Robot extends IterativeRobot {
     }
 
     public static double getPigeonAngle(){
-		double[] yawPitchRoll = new double[3];
-		pigeon.getYawPitchRoll(yawPitchRoll);
-		return Math.toRadians(yawPitchRoll[0] % 360.); //raw goes from 0 to 22 and we want from 0 to 360
+        return 0;
+        //double[] yawPitchRoll = new double[3];
+		//pigeon.getYawPitchRoll(yawPitchRoll);
+		//return Math.toRadians(yawPitchRoll[0] % 360.); //raw goes from 0 to 22 and we want from 0 to 360
 	}
     
     //TODO: make robot work lol

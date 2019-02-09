@@ -3,7 +3,8 @@ package frc.robot.subsystems;
 import frc.robot.PortMap;
 import frc.robot.Robot;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -13,11 +14,11 @@ public class DriveSubsystem extends Subsystem {
     double tankAngleP = 3;
 	double goalOmegaConstant = 1;
 	
-    public CANSparkMax lf, lm, lb, rf, rm, rb;
+    public TalonSRX lf, lm, lb, rf, rm, rb;
 
     // deadzones by Alejandro at Chris' request
-    private static final double DEADZONE = 1;
-    private static final double EXPONENT = 1;
+    private static final double DEADZONE = 0;
+    private static final double EXPONENT = 0;
     private static final double MAX_JOYSTICK = 1;
 
 	/**
@@ -25,13 +26,13 @@ public class DriveSubsystem extends Subsystem {
      */
     public DriveSubsystem(){
 
-		lf = new CANSparkMax(PortMap.LEFT_FRONT_SPARK,MotorType.kBrushless);
-		lm = new CANSparkMax(PortMap.LEFT_MIDDLE_SPARK,MotorType.kBrushless);
-        lb = new CANSparkMax(PortMap.LEFT_BACK_SPARK,MotorType.kBrushless);
+		lf = new TalonSRX(PortMap.LEFT_FRONT_SPARK);
+		lm = new TalonSRX(PortMap.LEFT_MIDDLE_SPARK);
+        lb = new TalonSRX(PortMap.LEFT_BACK_SPARK);
         
-		rf = new CANSparkMax(PortMap.RIGHT_FRONT_SPARK,MotorType.kBrushless);
-		rm = new CANSparkMax(PortMap.RIGHT_MIDDLE_SPARK,MotorType.kBrushless);
-		rb = new CANSparkMax(PortMap.RIGHT_BACK_SPARK,MotorType.kBrushless);
+		rf = new TalonSRX(PortMap.RIGHT_FRONT_SPARK);
+		rm = new TalonSRX(PortMap.RIGHT_MIDDLE_SPARK);
+		rb = new TalonSRX(PortMap.RIGHT_BACK_SPARK);
 	}
 
     /**
@@ -61,7 +62,7 @@ public class DriveSubsystem extends Subsystem {
         // somehow the input has exceeded the range of (-maxOutput, maxOutput)
         // this means that someone was playing with the code. Fix the maxOutput.
         } else {
-            return x;
+            return x*Math.abs(x);
         }
     }
 
@@ -73,8 +74,10 @@ public class DriveSubsystem extends Subsystem {
     }
 
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
-        setSpeedTankAngularControl(-processAxis(leftStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK),
-                -processAxis(rightStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK));
+        double left = -processAxis(leftStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK);
+        double right = -processAxis(rightStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK);
+        System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
+        setSpeedTank(left, right);
 	}
 	
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
@@ -83,13 +86,13 @@ public class DriveSubsystem extends Subsystem {
 	}
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
-		lf.set(leftSpeed);
-		lm.set(leftSpeed);
-		lb.set(leftSpeed);
+		lf.set(ControlMode.PercentOutput, leftSpeed);
+		lm.set(ControlMode.PercentOutput, leftSpeed);
+		lb.set(ControlMode.PercentOutput, leftSpeed);
 
-		rf.set(-rightSpeed);
-		rm.set(-rightSpeed);
-		rb.set(-rightSpeed);
+		rf.set(ControlMode.PercentOutput, -rightSpeed);
+		rm.set(ControlMode.PercentOutput, -rightSpeed);
+		rb.set(ControlMode.PercentOutput, -rightSpeed);
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {

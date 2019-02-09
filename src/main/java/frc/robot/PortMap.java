@@ -18,13 +18,13 @@ public class PortMap {
 
     //*******************SPARKS******************//
 
-    public static final int LEFT_FRONT_SPARK = 0; 
-    public static final int LEFT_MIDDLE_SPARK = 1; 
-    public static final int LEFT_BACK_SPARK = 2;
+    public static final int LEFT_FRONT_SPARK = 6; 
+    public static final int LEFT_MIDDLE_SPARK = 7; 
+    public static final int LEFT_BACK_SPARK = 8;
 
-    public static final int RIGHT_FRONT_SPARK = 3;
-    public static final int RIGHT_MIDDLE_SPARK = 4;
-    public static final int RIGHT_BACK_SPARK = 5;
+    public static final int RIGHT_FRONT_SPARK = 14;
+    public static final int RIGHT_MIDDLE_SPARK = 15;
+    public static final int RIGHT_BACK_SPARK = 16;
 
     //***************LIMIT*SWITCHES**************//
 
