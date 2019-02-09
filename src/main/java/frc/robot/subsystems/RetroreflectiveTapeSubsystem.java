@@ -107,7 +107,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         // Extracts data from the given data. Currently: Center position, distance, shift 
         NetworkTable t = getTable();
         Hashtable<String,Double> data = new Hashtable<String,Double>();
-        String[] keys = new String[]{"centerX","centerY","distance","shift","angle","shiftL","shiftR"};
+        String[] keys = new String[]{"detected","centerX","centerY","distance","shift","angle","shiftL","shiftR","rotation"};
         for (String key : keys){data.put(key,0.0);}
         // Find the center of the two retroflective pieces of tape that are facing
         // twoards each other!
@@ -127,11 +127,12 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         double shift1 = (leftPair(values) ? Math.tan(Math.toRadians(tx0)) : Math.tan(Math.toRadians(tx2))) + adjustBy; //Negative to the Left, Positive to the Right
         double shift2 = Math.tan(Math.toRadians(values.get(1).get("x"))) + adjustBy;
         double shift = distance * (shift1 + shift2) / 2;
-        double angle = theta(values);
-        data.put("to print", Math.toDegrees(angle));
+        double rotation = theta(values);
+        data.put("detected",1.0);
+        data.put("rotation", rotation);
         data.put("angle",Math.atan(shift/distance));
-        data.put("shiftL",shiftL);
-        data.put("shiftR",shiftR);
+        data.put("shiftL",shift1);
+        data.put("shiftR",shift2);
         data.put("centerX",centerPos[0]);
         data.put("centerY", centerPos[1]);
         data.put("distance", distance);

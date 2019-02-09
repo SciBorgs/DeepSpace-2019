@@ -50,9 +50,9 @@ public class LineupSubsystem extends Subsystem {
 
     public void simpleResetInfo(){
         if (retroFound){return;}
-        retroFound = getRetro("distance") != 0;
+        updateRetroFound();
         if (retroFound)
-            resetInfo(getRetro("parallel"),getRetro("shift"),0);
+            resetInfo(getRetro("parallel"),getRetro("shift"),getRetro("rotation")); // maybe simply make rotation 0
     }
     
     public PID getShiftPID()   {return shiftPID;} 
@@ -73,25 +73,21 @@ public class LineupSubsystem extends Subsystem {
     public double getRetro(String key){
         return retroData().get(key);
     }
+    public void updateRetroFound(){
+        retroFound = Robot.retroreflectiveSubsystem.extractData().get("found") == 1;
+    }
     public double getRotation() {
+        double adjustBy = -Robot.lidarSubsystem.lidarShift;
         double lShift = getRetro("shiftL");
         double rShift = getRetro("shiftR");
-        double adjustBy = -Robot.lidarSubsystem.lidarShift;
         double lAngle = (int) Math.toDegrees(Math.atan(lShift + adjustBy));
         double rAngle = (int) Math.toDegrees(Math.atan(rShift + adjustBy));
         double leftD  = Robot.lidarSubsystem.angleDistance(lAngle);
         double rightD = Robot.lidarSubsystem.angleDistance(rAngle);
-        if (lAngle == 0){
-            retroFound = false;
-            return 0;
-        }
-        retroFound = true;
-        if (leftD == 0 || rightD == 0){
-            lidarFound = false;
-            return 0;
-        }
+        updateRetroFound();
+        lidarFound = leftD != 0 && rightD != 0;
+        if (!lidarFound || !retroFound){return 0;}
         double lidarRotation = Robot.lidarSubsystem.wallRotation(360 + lAngle,rAngle);
-        lidarFound = true;
         return Math.PI/2 - lidarRotation;
     }
 
