@@ -35,7 +35,9 @@ public class DriveSubsystem extends Subsystem {
 	}
 
     /**
-     * Processes a given joystick axis value to match the given deadzone and shape as determined by the given exponent
+     * Processes a given joystick axis value to match the given deadzone and shape as determined by the given exponent.
+     *
+     * The equations were made by Bowen.
      * @param x raw axis input
      * @param deadzone given deadzone in either direction
      * @param exponent exponent of the power output curve. 0 is linear. Higher values give you more precision in the
@@ -47,10 +49,12 @@ public class DriveSubsystem extends Subsystem {
     private double processAxis(double x, double deadzone, double exponent, double maxOutput) {
         // positive input between deadzone and max
         if (deadzone < x && x < maxOutput) {
-            return Math.pow(x, exponent) * ((x - deadzone) / (maxOutput - deadzone));
+            return (maxOutput / axisFunction(x, deadzone, exponent, maxOutput)) *
+                    axisFunction(x, deadzone, exponent, maxOutput);
         // negative input between negative deadzone and negative max
         } else if (-maxOutput < x && x < -deadzone) {
-            return -Math.pow(-x, exponent) * ((-x - deadzone) / (maxOutput - deadzone));
+            return (-maxOutput / axisFunction(x, deadzone, exponent, maxOutput)) *
+                    axisFunction(-x, deadzone, exponent, maxOutput);
         // the input does not exceed the deadzone in either direction
         } else if (-deadzone < x && x < deadzone) {
             return 0;
@@ -59,6 +63,13 @@ public class DriveSubsystem extends Subsystem {
         } else {
             return x;
         }
+    }
+
+    /*
+     * Used by processAxis as the main function of the curves.
+     */
+    private double axisFunction(double x, double d, double p, double m) {
+        return Math.pow(x - d, p) * ((x - d) / (m - d));
     }
 
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
