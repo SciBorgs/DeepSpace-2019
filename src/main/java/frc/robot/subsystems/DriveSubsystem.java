@@ -7,14 +7,11 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.PID;
 import frc.robot.PortMap;
 import frc.robot.Robot;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -26,10 +23,8 @@ public class DriveSubsystem extends Subsystem {
     public CANSparkMax lf, lm, lb, rf, rm, rb;
 
     // deadzones by Alejandro at Chris' request
-    private static final double DEADZONE_LEFT = 0.1;
-    private static final double DEADZONE_RIGHT = 0.1;
-    private static final double LEFT_EXPONENT = 1;
-    private static final double RIGHT_EXPONENT = 1;
+    private static final double DEADZONE = 1;
+    private static final double EXPONENT = 1;
     private static final double MAX_JOYSTICK = 1;
 
 	/**
@@ -56,7 +51,7 @@ public class DriveSubsystem extends Subsystem {
      * @param maxOutput The maximum output this method returns. Set it to the max joystick output for best results.
      * @return the processed axis value. Send this to the motors.
      */
-    private double axisProcessed(double x, double deadzone, double exponent, double maxOutput) {
+    private double processAxis(double x, double deadzone, double exponent, double maxOutput) {
         // positive input between deadzone and max
         if (deadzone < x && x < maxOutput) {
             return Math.pow(x, exponent) * ((x - deadzone) / (maxOutput - deadzone));
@@ -74,13 +69,13 @@ public class DriveSubsystem extends Subsystem {
     }
 
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
-        setSpeedTankAngularControl(-axisProcessed(leftStick.getY(), DEADZONE_LEFT, LEFT_EXPONENT, MAX_JOYSTICK),
-                -axisProcessed(rightStick.getY(), DEADZONE_RIGHT, RIGHT_EXPONENT, MAX_JOYSTICK));
+        setSpeedTankAngularControl(-processAxis(leftStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK),
+                -processAxis(rightStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK));
 	}
 	
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
-		setSpeedTank(-axisProcessed(leftStick.getY(), DEADZONE_LEFT, LEFT_EXPONENT, MAX_JOYSTICK),
-                -axisProcessed(rightStick.getY(), DEADZONE_RIGHT, RIGHT_EXPONENT, MAX_JOYSTICK));
+		setSpeedTank(-processAxis(leftStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK),
+                -processAxis(rightStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK));
 	}
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
@@ -106,8 +101,8 @@ public class DriveSubsystem extends Subsystem {
     }
     
     public void setTurningPercentage(double turnMagnitude){
-		setSpeedTankForwardManual(-axisProcessed(Robot.oi.leftStick.getY(), DEADZONE_LEFT, LEFT_EXPONENT, MAX_JOYSTICK),
-                -axisProcessed(Robot.oi.rightStick.getY(), DEADZONE_RIGHT, RIGHT_EXPONENT, MAX_JOYSTICK), turnMagnitude);
+		setSpeedTankForwardManual(-processAxis(Robot.oi.leftStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK),
+                -processAxis(Robot.oi.rightStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK), turnMagnitude);
 	}
 
     @Override
