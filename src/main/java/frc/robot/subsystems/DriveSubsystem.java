@@ -1,20 +1,10 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.subsystems;
 
-import frc.robot.PID;
 import frc.robot.PortMap;
 import frc.robot.Robot;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -25,8 +15,12 @@ public class DriveSubsystem extends Subsystem {
 	
     public CANSparkMax lf, lm, lb, rf, rm, rb;
 
+    // deadzones by Alejandro at Chris' request
+    private static final double DEADZONE = 1;
+    private static final double EXPONENT = 1;
+    private static final double MAX_JOYSTICK = 1;
 
-	/** 
+	/**
      * Initialize robot's motors
      */
     public DriveSubsystem(){
@@ -40,12 +34,41 @@ public class DriveSubsystem extends Subsystem {
 		rb = new CANSparkMax(PortMap.RIGHT_BACK_SPARK,MotorType.kBrushless);
 	}
 
+    /**
+     * Processes a given joystick axis value to match the given deadzone and shape as determined by the given exponent
+     * @param x raw axis input
+     * @param deadzone given deadzone in either direction
+     * @param exponent exponent of the power output curve. 0 is linear. Higher values give you more precision in the
+     *                 lower ranges, and lower values give you more precision in the higher ranges.
+     *                 I, Alejandro, recommend values between -1-deadzone and 2.
+     * @param maxOutput The maximum output this method returns. Set it to the max joystick output for best results.
+     * @return the processed axis value. Send this to the motors.
+     */
+    private double processAxis(double x, double deadzone, double exponent, double maxOutput) {
+        // positive input between deadzone and max
+        if (deadzone < x && x < maxOutput) {
+            return Math.pow(x, exponent) * ((x - deadzone) / (maxOutput - deadzone));
+        // negative input between negative deadzone and negative max
+        } else if (-maxOutput < x && x < -deadzone) {
+            return -Math.pow(-x, exponent) * ((-x - deadzone) / (maxOutput - deadzone));
+        // the input does not exceed the deadzone in either direction
+        } else if (-deadzone < x && x < deadzone) {
+            return 0;
+        // somehow the input has exceeded the range of (-maxOutput, maxOutput)
+        // this means that someone was playing with the code. Fix the maxOutput.
+        } else {
+            return x;
+        }
+    }
+
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
-        setSpeedTankAngularControl(-leftStick.getY(),-rightStick.getY());
+        setSpeedTankAngularControl(-processAxis(leftStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK),
+                -processAxis(rightStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK));
 	}
 	
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
-		setSpeedTank(-leftStick.getY(),-rightStick.getY());
+		setSpeedTank(-processAxis(leftStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK),
+                -processAxis(rightStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK));
 	}
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
@@ -71,9 +94,10 @@ public class DriveSubsystem extends Subsystem {
     }
     
     public void setTurningPercentage(double turnMagnitude){
-		setSpeedTankForwardManual(-Robot.oi.leftStick.getY(),-Robot.oi.rightStick.getY(),turnMagnitude);
+		setSpeedTankForwardManual(-processAxis(Robot.oi.leftStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK),
+                -processAxis(Robot.oi.rightStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK), turnMagnitude);
 	}
-     
+
     @Override
     protected void initDefaultCommand() {
 		//IGNORE THIS METHOD
