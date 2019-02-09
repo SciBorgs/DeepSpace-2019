@@ -121,18 +121,19 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         double degreeLength = tapeLength / (Math.sqrt((tapeLength/tapeWidth) * Robot.limelightSubsystem.imageHeight * Robot.limelightSubsystem.imageWidth * values.get(1).get("a")/100.));
         System.out.println("degree length: " + degreeLength);
         System.out.println("x shift degrees: " + centerPos[0]);
-        double tx0 = values.get(0).get("x");
-        double tx2 = values.get(2).get("x");
+        double tx0 = Math.toRadians(values.get(0).get("x"));
+        double tx1 = Math.toRadians(values.get(0).get("x"));
+        double tx2 = Math.toRadians(values.get(2).get("x"));
         double adjustBy = Robot.limelightSubsystem.shift;
-        double shift1 = (leftPair(values) ? Math.tan(Math.toRadians(tx0)) : Math.tan(Math.toRadians(tx2))) + adjustBy; //Negative to the Left, Positive to the Right
-        double shift2 = Math.tan(Math.toRadians(values.get(1).get("x"))) + adjustBy;
-        double shift = distance * (shift1 + shift2) / 2;
+        double shiftL = (leftPair(values) ? Math.tan(tx0) : Math.tan(tx1)) + adjustBy; //Negative to the Left, Positive to the Right
+        double shiftR = (leftPair(values) ? Math.tan(tx1) : Math.tan(tx2)) + adjustBy;
+        double shift = distance * (shiftL + shiftR) / 2;
         double rotation = theta(values);
         data.put("detected",1.0);
         data.put("rotation", rotation);
         data.put("angle",Math.atan(shift/distance));
-        data.put("shiftL",shift1);
-        data.put("shiftR",shift2);
+        data.put("shiftL",shiftL);
+        data.put("shiftR",shiftR);
         data.put("centerX",centerPos[0]);
         data.put("centerY", centerPos[1]);
         data.put("distance", distance);
