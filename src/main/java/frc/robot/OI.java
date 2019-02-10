@@ -20,7 +20,8 @@ public class OI {
         followBallButton.whileHeld(new CargoFollowCommand());
 
         lineupButton = new JoystickButton(leftStick, PortMap.JOYSTICK_LINEUP_BUTTON);
-        lineupButton.whenPressed(new LineupCommand());
+        lineupButton.whenPressed(new ResetLineupInfoCommand());
+        lineupButton.whileHeld(new LineupCommand());
 
         startZLift = new JoystickButton(rightStick, PortMap.JOYSTICK_Z_LIFT_BUTTON);
         startZLift.whenPressed(new ZLiftCommand(false));

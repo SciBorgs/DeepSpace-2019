@@ -6,13 +6,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 
 
-public class LineupCommand extends Command {
+public class ResetLineupInfoCommand extends Command {
     
-    public LineupCommand(){}
+    public ResetLineupInfoCommand() {
+    }
 
     @Override protected void initialize(){
-        Robot.lineup.simpleResetInfo();
-        Robot.lineup.move();
+        Robot.lineup.resetFound();
     }
     @Override protected void execute(){
         return;
