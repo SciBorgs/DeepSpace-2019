@@ -11,14 +11,14 @@ public class LineupCommand extends Command {
     public LineupCommand() {
     }
 
-    @Override protected void    initialize()  {Robot.lineupSubsystem.resetFound();}
+    @Override protected void    initialize()  {Robot.lineup.resetFound();}
     @Override protected void    execute()     {
-        //Robot.lineupSubsystem.autoResetInfo();
-        Robot.lineupSubsystem.simpleResetInfo();
-        Robot.lineupSubsystem.move();
+        //Robot.lineup.autoResetInfo();
+        Robot.lineup.simpleResetInfo();
+        Robot.lineup.move();
     }
-    @Override protected boolean isFinished()  {return Robot.lineupSubsystem.getShiftPID().targetReached() &&
-                                                      Robot.lineupSubsystem.getForwardPID().targetReached();}
+    @Override protected boolean isFinished()  {return Robot.lineup.getShiftPID().targetReached() &&
+                                                      Robot.lineup.getForwardPID().targetReached();}
     @Override protected void    end()         {Robot.driveSubsystem.setSpeedTank(0, 0);}
     @Override protected void    interrupted() {end();}
 }
