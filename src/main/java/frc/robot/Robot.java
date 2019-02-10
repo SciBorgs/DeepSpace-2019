@@ -19,7 +19,6 @@ public class Robot extends IterativeRobot {
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-    public static LineupSubsystem lineupSubsystem = new LineupSubsystem();
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
 	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static CargoFollowing cargoFollowing = new CargoFollowing();

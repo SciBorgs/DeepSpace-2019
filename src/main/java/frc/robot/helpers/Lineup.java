@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.helpers;
 
 import frc.robot.PID;
 import frc.robot.Robot;
@@ -8,7 +8,7 @@ import java.util.*;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class LineupSubsystem extends Subsystem {
+public class Lineup {
 
 	private double lineAngle; // To line up with
     private double desiredForward; // This is where we will aim for b/c of overshooting
@@ -20,7 +20,7 @@ public class LineupSubsystem extends Subsystem {
     private boolean retroFound;
     private boolean lidarFound;
 
-    public LineupSubsystem() {}
+    public Lineup() {}
 
     public void resetFound(){
         retroFound = false; 
@@ -144,11 +144,5 @@ public class LineupSubsystem extends Subsystem {
         else {
             Robot.driveSubsystem.setSpeedRaw(Robot.oi.leftStick, Robot.oi.rightStick);
         }
-    }
-    
-
-    @Override
-    protected void initDefaultCommand() {
-        // LITTERALLY DIE
     }
 }
