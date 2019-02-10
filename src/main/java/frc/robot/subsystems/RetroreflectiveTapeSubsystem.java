@@ -46,11 +46,15 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         return new double[]{(data1.get("x") + data2.get("x"))/2,
                             (data1.get("y") + data2.get("y"))/2};
     }
-    public boolean facingLeft(double skew){return skew > -45;}
-    public boolean facingRight(double skew) {return skew < -45;}
+    public boolean facingLeft(double skew){
+        return skew > -45;
+    }
+    public boolean facingRight(double skew){
+        return skew < -45;
+    }
 
     public double screenPercentToDegrees(double screenPer){
-        return Math.atan(screenPer * Math.tan(Math.toRadians(Robot.limelightSubsystem.imageWidth)));
+        return Math.atan(screenPer * Math.tan(Math.toRadians(LimelightSubsystem.IMAGE_WIDTH)));
     }
 
     public Hashtable<String,Double> createData(NetworkTable t, int nth){
@@ -71,20 +75,24 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         return Math.acos(Math.tan(Math.toRadians(firstQuadAngle))/Math.tan(TAPE_ANGLE));
     }
 
+    public boolean areContours(ArrayList<Hashtable<String,Double>> values, int c1, int c2){
+        return isContour(values.get(c1)) && isContour(values.get(c2));
+    }
     public boolean leftPair(ArrayList<Hashtable<String,Double>> values){
-        return facingLeft(values.get(1).get("s")) && facingRight(values.get(0).get("s")) && isContour(values.get(1)) && isContour(values.get(0));
+        return facingLeft(values.get(1).get("s")) && areContours(values,0,1);
     }
     public boolean rightPair(ArrayList<Hashtable<String,Double>> values){
-        return facingRight(values.get(1).get("s")) && facingLeft(values.get(2).get("s")) && isContour(values.get(1)) && isContour(values.get(2));
+        return facingRight(values.get(1).get("s")) && areContours(values,1,2);
     }
 
     public double[] center(ArrayList<Hashtable<String,Double>> values){
-        if (leftPair(values))
+        if (leftPair(values)){
             return averagePos(values.get(0),values.get(1));
-        else if (rightPair(values))
+        } else if (rightPair(values)) {
             return averagePos(values.get(2),values.get(1));
-        else 
+        } else { 
             return new double[]{};
+        }
     }
 
     public double distance(Hashtable<String,Double> value){
@@ -128,7 +136,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         double tx0 = values.get(0).get("x");
         double tx1 = values.get(1).get("x");
         double tx2 = values.get(2).get("x");
-        double adjustBy = Robot.limelightSubsystem.shift;
+        double adjustBy = LimelightSubsystem.SHIFT;
         double shiftL = distance * (leftPair(values) ? Math.tan(tx0) : Math.tan(tx1)) + adjustBy; //Negative to the Left, Positive to the Right
         double shiftR = distance * (leftPair(values) ? Math.tan(tx1) : Math.tan(tx2)) + adjustBy;
         double shift = (shiftL + shiftR) / 2;

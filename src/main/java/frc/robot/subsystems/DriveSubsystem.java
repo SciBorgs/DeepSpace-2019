@@ -14,25 +14,28 @@ public class DriveSubsystem extends Subsystem {
     double tankAngleP = 3;
 	double goalOmegaConstant = 1;
 	
-    public TalonSRX lf, lm, lb, rf, rm, rb;
+    public CANSparkMax lf, lm, lb, rf, rm, rb;
 
     // deadzones by Alejandro at Chris' request
     private static final double DEADZONE = 0;
     private static final double EXPONENT = 0;
     private static final double MAX_JOYSTICK = 1;
 
+    private CANSparkMax newMotorObject(int port){
+        return new CANSparkMax(port,MotorType.kBrushless);
+    }
 	/**
      * Initialize robot's motors
      */
     public DriveSubsystem(){
 
-		lf = new TalonSRX(PortMap.LEFT_FRONT_SPARK);
-		lm = new TalonSRX(PortMap.LEFT_MIDDLE_SPARK);
-        lb = new TalonSRX(PortMap.LEFT_BACK_SPARK);
+		lf = newMotorObject(PortMap.LEFT_FRONT_SPARK);
+		lm = newMotorObject(PortMap.LEFT_MIDDLE_SPARK);
+        lb = newMotorObject(PortMap.LEFT_BACK_SPARK);
         
-		rf = new TalonSRX(PortMap.RIGHT_FRONT_SPARK);
-		rm = new TalonSRX(PortMap.RIGHT_MIDDLE_SPARK);
-		rb = new TalonSRX(PortMap.RIGHT_BACK_SPARK);
+		rf = newMotorObject(PortMap.RIGHT_FRONT_SPARK);
+		rm = newMotorObject(PortMap.RIGHT_MIDDLE_SPARK);
+		rb = newMotorObject(PortMap.RIGHT_BACK_SPARK);
 	}
 
     /**
@@ -78,21 +81,24 @@ public class DriveSubsystem extends Subsystem {
         double right = -processAxis(rightStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK);
         System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
         setSpeedTank(left, right);
-	}
+    }
+    
+    public double processStick(Joystick stick){
+        return processAxis(-stick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK);
+    }
 	
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
-		setSpeedTank(-processAxis(leftStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK),
-                -processAxis(rightStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK));
+		setSpeedTank(processStick(leftStick),processStick(rightStick));
 	}
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
-		lf.set(ControlMode.PercentOutput, leftSpeed);
-		lm.set(ControlMode.PercentOutput, leftSpeed);
-		lb.set(ControlMode.PercentOutput, leftSpeed);
+		lf.set(-leftSpeed);
+		lm.set(-leftSpeed);
+		lb.set(-leftSpeed);
 
-		rf.set(ControlMode.PercentOutput, -rightSpeed);
-		rm.set(ControlMode.PercentOutput, -rightSpeed);
-		rb.set(ControlMode.PercentOutput, -rightSpeed);
+		rf.set(rightSpeed);
+		rm.set(rightSpeed);
+		rb.set(rightSpeed);
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
@@ -108,8 +114,7 @@ public class DriveSubsystem extends Subsystem {
     }
     
     public void setTurningPercentage(double turnMagnitude){
-		setSpeedTankForwardManual(-processAxis(Robot.oi.leftStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK),
-                -processAxis(Robot.oi.rightStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK), turnMagnitude);
+        setSpeedTankForwardManual(processStick(Robot.oi.leftStick),processStick(Robot.oi.rightStick),turnMagnitude);
 	}
 
     @Override

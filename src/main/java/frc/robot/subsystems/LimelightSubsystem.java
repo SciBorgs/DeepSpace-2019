@@ -7,9 +7,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class LimelightSubsystem extends Subsystem{
 
-    public final static double imageWidth = 55.; // In degrees
-    public final static double imageHeight = 41.; // In degrees
-    public final static double shift = 0; // In meters away from the center
+    public final static double IMAGE_WIDTH = 27.; // In degrees
+    public final static double IMAGE_HEIGHT = 20.5; // In degrees
+    public final static double SHIFT = 0; // In meters away from the center
 
     public NetworkTable getCameraTable(){
         return NetworkTableInstance.getDefault().getTable("limelight");

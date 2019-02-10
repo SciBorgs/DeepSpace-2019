@@ -30,8 +30,12 @@ public class PositioningSubsystem extends Subsystem {
     private Hashtable<CANSparkMax,Boolean> negated;
     private ArrayList<CANSparkMax> sparks;
     
-    public ArrayList<Double> getRobotXs(){return robotXs;}   
-    public ArrayList<Double> getRobotYs(){return robotYs;}
+    public ArrayList<Double> getRobotXs(){
+        return robotXs;
+    }   
+    public ArrayList<Double> getRobotYs(){
+        return robotYs;
+    }
     public ArrayList<Double> getAngles() {
         ArrayList<Double> adjustedAngles = new ArrayList<Double>();
         for (Double angle : robotAngles){adjustedAngles.add(adjustTheta(angle));}
@@ -98,16 +102,34 @@ public class PositioningSubsystem extends Subsystem {
         Utils.trimAdd(arr, val, MEASURMENTS);
     }
 
-    public double adjustTheta(double theta) {return theta + GLOBAL_ORIGINAL_ANGLE - ORIGINAL_ANGLE;}
-    public double getAngle() {return adjustTheta(Utils.last(robotAngles));}
-    public double getX()     {return Utils.last(robotXs);}
-    public double getY()     {return Utils.last(robotYs);}
+    public double adjustTheta(double theta){
+        return theta + GLOBAL_ORIGINAL_ANGLE - ORIGINAL_ANGLE;
+    }
+    public double getAngle(){
+        return adjustTheta(Utils.last(robotAngles));
+    }
+    public double getX(){
+        return Utils.last(robotXs);
+    }
+    public double getY(){
+        return Utils.last(robotYs);
+    }
 
-    public boolean inRange(double n1, double n2, double error) {return Math.abs(n1 - n2) < error;}
-    public boolean xStatic() {return inRange(getX(),robotXs.get(0),STATIC_POSITION_ERROR);}
-    public boolean yStatic() {return inRange(getY(),robotYs.get(0),STATIC_POSITION_ERROR);}
-    public boolean angleStatic() {return inRange(getAngle(),robotAngles.get(0),STATIC_ANGLE_ERROR);}
-    public boolean robotStatic() {return xStatic() && yStatic() && angleStatic();}
+    public boolean inRange(double n1, double n2, double error){
+        return Math.abs(n1 - n2) < error;
+    }
+    public boolean xStatic(){
+        return inRange(getX(),robotXs.get(0),STATIC_POSITION_ERROR);
+    }
+    public boolean yStatic(){
+        return inRange(getY(),robotYs.get(0),STATIC_POSITION_ERROR);
+    }
+    public boolean angleStatic(){
+        return inRange(getAngle(),robotAngles.get(0),STATIC_ANGLE_ERROR);
+    }
+    public boolean robotStatic(){
+        return xStatic() && yStatic() && angleStatic();
+    }
     
     public double getAngularSpeed() {
     	return (getAngle() - adjustTheta(robotAngles.get(0))) / ((MEASURMENTS - 1) * INTERVAL_LENGTH);
@@ -145,16 +167,18 @@ public class PositioningSubsystem extends Subsystem {
         return nextPosPigeon(x,y,theta,changeAngles);
     }
 
-    public void changePoint(double[] point){setPosition(point[0],point[1],point[2]);}
+    public void changePoint(double[] point){
+        setPosition(point[0],point[1],point[2]);
+    }
 
     public void updatePositionTank(){
-        //achangePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(Robot.driveSubsystem.lm), encUpdate(Robot.driveSubsystem.rm))); 
+        changePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(Robot.driveSubsystem.lm), encUpdate(Robot.driveSubsystem.rm))); 
     }
 
     public void printPosition(){
-        //.out.println("X: " + getX());
-        //System.out.println("Y: " + getY());
-        //System.out.println("Angle: " + getAngle());
+        System.out.println("X: " + getX());
+        System.out.println("Y: " + getY());
+        System.out.println("Angle: " + getAngle());
     }
 
     @Override

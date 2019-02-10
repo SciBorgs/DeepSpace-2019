@@ -37,9 +37,13 @@ public class LineupSubsystem extends Subsystem {
         }
         
     public void autoResetInfo(){
-        if (retroFound && lidarFound){return;}
+        if (retroFound && lidarFound){
+            return;
+        }
         double angleChange = getRotation();
-        if (!retroFound){return;}
+        if (!retroFound){
+            return;
+        }
         double shiftChange = getShift(angleChange);
         double parallelChange = getParallel(angleChange);
         System.out.println("angle change: " + angleChange);
@@ -49,23 +53,44 @@ public class LineupSubsystem extends Subsystem {
     }
 
     public void simpleResetInfo(){
-        if (retroFound){return;}
+        if (retroFound){
+            return;
+        }
         updateRetroFound();
-        if (retroFound)
+        if (retroFound){
             resetInfo(getRetro("parallel"),getRetro("shift"),getRetro("rotation")); // maybe simply make rotation 0
+        }
     }
     
-    public PID getShiftPID()   {return shiftPID;} 
-    public PID getForwardPID() {return forwardPID;}
+    public PID getShiftPID(){
+        return shiftPID;
+    } 
+    public PID getForwardPID(){
+        return forwardPID;
+    }
     
-    public double    shift(double x, double y, double angle) {return x * Math.sin(angle) - y * Math.cos(angle);}
-    public double parallel(double x, double y, double angle) {return x * Math.cos(angle) + y * Math.sin(angle);}
-    public double shiftCoordinate()    {return shift(Robot.positioningSubsystem.getX(),Robot.positioningSubsystem.getY(),lineAngle);} // turns the line we are lining up with into the y-axis
-    public double parallelCoordinate() {return parallel(Robot.positioningSubsystem.getX(),Robot.positioningSubsystem.getY(),lineAngle);}
+    public double    shift(double x, double y, double angle) {
+        return x * Math.sin(angle) - y * Math.cos(angle);
+    }
+    public double parallel(double x, double y, double angle) {
+        return x * Math.cos(angle) + y * Math.sin(angle);
+    }
+    public double shiftCoordinate(){
+        return shift(Robot.positioningSubsystem.getX(),Robot.positioningSubsystem.getY(),lineAngle);
+    } // turns the line we are lining up with into the y-axis
+    public double parallelCoordinate(){
+        return parallel(Robot.positioningSubsystem.getX(),Robot.positioningSubsystem.getY(),lineAngle);
+    }
     
-    public double shiftError()    {return desiredShift - shiftCoordinate();}
-    public double parallelError() {return desiredForward - parallelCoordinate();}
-    public double deltaTheta()    {return Robot.positioningSubsystem.getAngle() - lineAngle;}
+    public double shiftError(){
+        return desiredShift - shiftCoordinate();
+    }
+    public double parallelError(){
+        return desiredForward - parallelCoordinate();
+    }
+    public double deltaTheta(){
+        return Robot.positioningSubsystem.getAngle() - lineAngle;
+    }
 
     public Hashtable<String,Double> retroData(){
         return Robot.retroreflectiveSubsystem.extractData();
@@ -77,7 +102,7 @@ public class LineupSubsystem extends Subsystem {
         retroFound = Robot.retroreflectiveSubsystem.extractData().get("found") == 1;
     }
     public double getRotation() {
-        double adjustBy = -Robot.lidarSubsystem.lidarShift;
+        double adjustBy = -Robot.lidarSubsystem.LIDAR_SHIFT;
         double lShift = getRetro("shiftL");
         double rShift = getRetro("shiftR");
         double lAngle = (int) Math.toDegrees(Math.atan(lShift + adjustBy));
@@ -86,7 +111,9 @@ public class LineupSubsystem extends Subsystem {
         double rightD = Robot.lidarSubsystem.angleDistance(rAngle);
         updateRetroFound();
         lidarFound = leftD != 0 && rightD != 0;
-        if (!lidarFound || !retroFound){return 0;}
+        if (!lidarFound || !retroFound){
+            return 0;
+        }
         double lidarRotation = Robot.lidarSubsystem.wallRotation(360 + lAngle,rAngle);
         return Math.PI/2 - lidarRotation;
     }
