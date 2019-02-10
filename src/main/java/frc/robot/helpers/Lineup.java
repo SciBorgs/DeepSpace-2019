@@ -59,7 +59,7 @@ public class Lineup {
         }
         updateRetroFound();
         if (retroFound){
-            resetInfo(getRetro("parallel"),getRetro("shift"),getRetro("rotation")); // maybe simply make rotation 0
+            resetInfo(getRetro("parallel"),getRetro("shift"),0); // maybe simply make rotation 0
         }
     }
     
@@ -142,7 +142,7 @@ public class Lineup {
     		Robot.driveSubsystem.setSpeedTank(0, 0);
         }
         else {
-            Robot.driveSubsystem.setSpeedRaw(Robot.oi.leftStick, Robot.oi.rightStick);
+            Robot.driveSubsystem.setSpeed(Robot.oi.leftStick, Robot.oi.rightStick);
         }
     }
 }

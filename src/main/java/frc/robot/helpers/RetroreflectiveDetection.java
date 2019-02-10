@@ -99,10 +99,10 @@ public class RetroreflectiveDetection {
         return Math.sqrt(METER_AREA / value.get("a")) + CAMERA_WIDTH;
     }
     public static double theta(ArrayList<Hashtable<String,Double>> values){
-        double d1 = rightPair(values) ? distance(values.get(2)) : distance(values.get(1));
-        double d2 = leftPair(values) ? distance(values.get(0)) : distance(values.get(1));
-        //System.out.println("d1: " + d1 * 39.37);
-        //System.out.println("d2: " + d2 * 39.37);
+        double d1 = distance(values.get(rightPair(values) ? 2 : 1));
+        double d2 = distance(values.get(leftPair(values)  ? 0 : 1));
+        System.out.println("d1: " + d1 * 39.37);
+        System.out.println("d2: " + d2 * 39.37);
         return Math.asin((d1 - d2)/SEPERATION); 
     }
     public static boolean isContour(Hashtable<String,Double> data){

@@ -19,12 +19,12 @@ public class Robot extends IterativeRobot {
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-    public static DriveSubsystem driveSubsystem = new DriveSubsystem();
-	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
-    public static CargoFollowing cargoFollowing = new CargoFollowing();
-    public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
-    public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
-    public static Lineup lineup = new Lineup();
+    public static DriveSubsystem driveSubsystem;// = new DriveSubsystem();
+	public static PositioningSubsystem positioningSubsystem;// = new PositioningSubsystem();
+    public static CargoFollowing cargoFollowing;// = new CargoFollowing();
+    public static GearShiftSubsystem gearShiftSubsystem;// = new GearShiftSubsystem();
+    public static ZLiftSubsystem zLiftSubsystem;// = new ZLiftSubsystem();
+    public static Lineup lineup;// = new Lineup();
     public static PigeonIMU pigeon;
     public static TalonSRX pigeonTalon;
     public static DigitalInput ballLimitSwitch, hatchLimitSwitch;
@@ -37,7 +37,7 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
 
 
-       // new SwitchToCargoCommand().start();
+        new SwitchToCargoCommand().start();
 
 		pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
         pigeon = new PigeonIMU(pigeonTalon);
@@ -82,7 +82,6 @@ public class Robot extends IterativeRobot {
     
     public void autonomousInit() {
         System.out.println("Auto selected: " + m_autoSelected);
-        //positioningSubsystem.resetPosition();
         m_autoSelected = m_chooser.getSelected();
         //gearShiftSubsystem.shiftUp();
     }
@@ -103,6 +102,6 @@ public class Robot extends IterativeRobot {
     }
 
     public void disabledInit() {
-        //zLiftSubsystem.reset();
+        zLiftSubsystem.reset();
     }
 }
