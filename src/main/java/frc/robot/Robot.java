@@ -19,14 +19,12 @@ public class Robot extends IterativeRobot {
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-    public static RetroreflectiveTapeSubsystem retroreflectiveSubsystem = new RetroreflectiveTapeSubsystem();
     public static LineupSubsystem lineupSubsystem = new LineupSubsystem();
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
 	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static CargoFollowing cargoFollowing = new CargoFollowing();
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
-    public static LidarSubsystem lidarSubsystem = new LidarSubsystem();
     public static PigeonIMU pigeon;
     public static TalonSRX pigeonTalon;
     public static DigitalInput ballLimitSwitch, hatchLimitSwitch;
@@ -54,7 +52,7 @@ public class Robot extends IterativeRobot {
         Compressor c = new Compressor();
 //        c.stop();
 
-                
+           /* STARTS THE LIDAR     
         try {
             System.out.println("LIDAR status: starting");
             boolean started = LidarServer.getInstance().start();
@@ -63,22 +61,21 @@ public class Robot extends IterativeRobot {
             System.out.println("LIDAR status: crashed -" + t);
             t.printStackTrace();
             throw t;
-        }
+        }*/
 
     }
 
     public void robotPeriodic() {
-        positioningSubsystem.updatePositionTank();
-        positioningSubsystem.printPosition();
+        //positioningSubsystem.updatePositionTank();
+        //positioningSubsystem.printPosition();
         //retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
         //gearShiftSubsystem.shiftGear(); 	
     }
 
     public static double getPigeonAngle(){
-        return 0;
-        //double[] yawPitchRoll = new double[3];
-		//pigeon.getYawPitchRoll(yawPitchRoll);
-		//return Math.toRadians(yawPitchRoll[0] % 360.); //raw goes from 0 to 22 and we want from 0 to 360
+        double[] yawPitchRoll = new double[3];
+		pigeon.getYawPitchRoll(yawPitchRoll);
+		return Math.toRadians(yawPitchRoll[0] % 360.); //raw goes from 0 to 22 and we want from 0 to 360
 	}
     
     //TODO: make robot work lol

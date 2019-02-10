@@ -1,14 +1,14 @@
-package frc.robot.subsystems;
+package frc.robot.helpers;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Hashtable;
 
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
+import frc.robot.subsystems.*;
 
-public class RetroreflectiveTapeSubsystem extends Subsystem {
+public class RetroreflectiveDetection {
 
     public final static double METER_AREA = 0.62; // In percent
     public final static double CAMERA_WIDTH = 0.015; // In meters
@@ -18,46 +18,46 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
     public final static double TAPE_ANGLE = .24434; // In radians, approximation according to FRC
     public final static double SEPERATION = .31; // Distance between the centers about
 
-    public void modeToRetroreflectiveByLimitSwitch() {
+    public static void modeToRetroreflectiveByLimitSwitch() {
         if (stateOfLimitSwitch()) {modeToRetroreflective();}
     }
 
-    public boolean stateOfLimitSwitch() { // True is closed, false is open
+    public static boolean stateOfLimitSwitch() { // True is closed, false is open
         return (!Robot.ballLimitSwitch.get() || !Robot.hatchLimitSwitch.get());
     }
 
-    public void modeToRetroreflective() {
+    public static void modeToRetroreflective() {
         Robot.limelightSubsystem.setCameraParams("ledMode", 3); // Force LED Off
         Robot.limelightSubsystem.setCameraParams("pipeline", 0); // Switch to Retroreflective Tape Pipeline
     }
 
-    public NetworkTable getTable() {
+    public static NetworkTable getTable() {
         return Robot.limelightSubsystem.getCameraTable();
     }
 
-    public double get(NetworkTable table, String variable) {
+    public static double get(NetworkTable table, String variable) {
         return Robot.limelightSubsystem.getTableData(table, variable);
     }
 
     // Below are helper functions for extractData()
-    public Comparator<Hashtable<String,Double>> dataCompare = 
+    public static Comparator<Hashtable<String,Double>> dataCompare = 
         (Hashtable<String,Double> pair1, Hashtable<String, Double> pair2) -> pair1.get("x") > pair2.get("x") ? 1 : -1; // Might need to paramaterize
-    public double[] averagePos(Hashtable<String,Double> data1, Hashtable<String,Double> data2){
+    public static double[] averagePos(Hashtable<String,Double> data1, Hashtable<String,Double> data2){
         return new double[]{(data1.get("x") + data2.get("x"))/2,
                             (data1.get("y") + data2.get("y"))/2};
     }
-    public boolean facingLeft(double skew){
+    public static boolean facingLeft(double skew){
         return skew > -45;
     }
-    public boolean facingRight(double skew){
+    public static boolean facingRight(double skew){
         return skew < -45;
     }
 
-    public double screenPercentToDegrees(double screenPer){
+    public static double screenPercentToDegrees(double screenPer){
         return Math.atan(screenPer * Math.tan(Math.toRadians(LimelightSubsystem.IMAGE_WIDTH)));
     }
 
-    public Hashtable<String,Double> createData(NetworkTable t, int nth){
+    public static Hashtable<String,Double> createData(NetworkTable t, int nth){
         // Takes a snapshot of data and the nth contour you want and converts it into a hashtable
         Hashtable<String, Double> end = new Hashtable<String, Double>();
         end.put("nth",(double) nth);
@@ -69,23 +69,23 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         return end;
     }
 
-    public double getAngle(double skew){
+    public static double getAngle(double skew){
         double firstQuadAngle = skew + 90;
         if (firstQuadAngle > 45) {firstQuadAngle = 90 - firstQuadAngle;}
         return Math.acos(Math.tan(Math.toRadians(firstQuadAngle))/Math.tan(TAPE_ANGLE));
     }
 
-    public boolean areContours(ArrayList<Hashtable<String,Double>> values, int c1, int c2){
+    public static boolean areContours(ArrayList<Hashtable<String,Double>> values, int c1, int c2){
         return isContour(values.get(c1)) && isContour(values.get(c2));
     }
-    public boolean leftPair(ArrayList<Hashtable<String,Double>> values){
+    public static boolean leftPair(ArrayList<Hashtable<String,Double>> values){
         return facingLeft(values.get(1).get("s")) && areContours(values,0,1);
     }
-    public boolean rightPair(ArrayList<Hashtable<String,Double>> values){
+    public static boolean rightPair(ArrayList<Hashtable<String,Double>> values){
         return facingRight(values.get(1).get("s")) && areContours(values,1,2);
     }
 
-    public double[] center(ArrayList<Hashtable<String,Double>> values){
+    public static double[] center(ArrayList<Hashtable<String,Double>> values){
         if (leftPair(values)){
             return averagePos(values.get(0),values.get(1));
         } else if (rightPair(values)) {
@@ -95,24 +95,21 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         }
     }
 
-    public double distance(Hashtable<String,Double> value){
+    public static double distance(Hashtable<String,Double> value){
         return Math.sqrt(METER_AREA / value.get("a")) + CAMERA_WIDTH;
     }
-    public double theta(ArrayList<Hashtable<String,Double>> values){
+    public static double theta(ArrayList<Hashtable<String,Double>> values){
         double d1 = rightPair(values) ? distance(values.get(2)) : distance(values.get(1));
         double d2 = leftPair(values) ? distance(values.get(0)) : distance(values.get(1));
         //System.out.println("d1: " + d1 * 39.37);
         //System.out.println("d2: " + d2 * 39.37);
         return Math.asin((d1 - d2)/SEPERATION); 
     }
-    public boolean isContour(Hashtable<String,Double> data){
+    public static boolean isContour(Hashtable<String,Double> data){
         return data.get("a") != 0;}
     // Above are helper functions for extractData()
 
-    public double totalTheta = 0;
-    public double totalMeasurments = 0;
-
-    public Hashtable<String,Double> extractData(){
+    public static Hashtable<String,Double> extractData(){
         // Extracts data from the given data. Currently: Center position, distance, shift 
         NetworkTable t = getTable();
         Hashtable<String,Double> data = new Hashtable<String,Double>();
@@ -153,8 +150,4 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         return data;
     }
 
-    @Override
-    protected void initDefaultCommand() {
-        // LITTERALLY DIE
-    }
 }

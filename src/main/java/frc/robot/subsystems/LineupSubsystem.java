@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.PID;
 import frc.robot.Robot;
+import frc.robot.helpers.*;
 
 import java.util.*;
 
@@ -93,28 +94,28 @@ public class LineupSubsystem extends Subsystem {
     }
 
     public Hashtable<String,Double> retroData(){
-        return Robot.retroreflectiveSubsystem.extractData();
+        return RetroreflectiveDetection.extractData();
     }
     public double getRetro(String key){
         return retroData().get(key);
     }
     public void updateRetroFound(){
-        retroFound = Robot.retroreflectiveSubsystem.extractData().get("found") == 1;
+        retroFound = RetroreflectiveDetection.extractData().get("found") == 1;
     }
     public double getRotation() {
-        double adjustBy = -Robot.lidarSubsystem.LIDAR_SHIFT;
+        double adjustBy = -LidarProcessing.LIDAR_SHIFT;
         double lShift = getRetro("shiftL");
         double rShift = getRetro("shiftR");
         double lAngle = (int) Math.toDegrees(Math.atan(lShift + adjustBy));
         double rAngle = (int) Math.toDegrees(Math.atan(rShift + adjustBy));
-        double leftD  = Robot.lidarSubsystem.angleDistance(lAngle);
-        double rightD = Robot.lidarSubsystem.angleDistance(rAngle);
+        double leftD  = LidarProcessing.angleDistance(lAngle);
+        double rightD = LidarProcessing.angleDistance(rAngle);
         updateRetroFound();
         lidarFound = leftD != 0 && rightD != 0;
         if (!lidarFound || !retroFound){
             return 0;
         }
-        double lidarRotation = Robot.lidarSubsystem.wallRotation(360 + lAngle,rAngle);
+        double lidarRotation = LidarProcessing.wallRotation(360 + lAngle,rAngle);
         return Math.PI/2 - lidarRotation;
     }
 
