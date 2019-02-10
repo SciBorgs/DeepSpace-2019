@@ -10,13 +10,13 @@ import frc.robot.Robot;
 
 public class RetroreflectiveTapeSubsystem extends Subsystem {
 
-    public final static double meterArea = 0.62; // In percent
-    public final static double cameraWidth = 0.015; // In meters
-    public final static double tapeLength = .1397; // In meters
-    public final static double tapeWidth = .0508; // In meters
+    public final static double METER_AREA = 0.62; // In percent
+    public final static double CAMERA_WIDTH = 0.015; // In meters
+    public final static double TAPE_LENGTH = .1397; // In meters
+    public final static double TAPE_WIDTH = .0508; // In meters
 
-    public final static double tapeAngle = .24434; // In radians, approximation according to FRC
-    public final static double seperation = .31; // Distance between the centers about
+    public final static double TAPE_ANGLE = .24434; // In radians, approximation according to FRC
+    public final static double SEPERATION = .31; // Distance between the centers about
 
     public void modeToRetroreflectiveByLimitSwitch() {
         if (stateOfLimitSwitch()) {modeToRetroreflective();}
@@ -47,10 +47,10 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
                             (data1.get("y") + data2.get("y"))/2};
     }
     public boolean facingLeft(double skew){return skew > -45;}
-    public boolean facingRight(double skew) {return skew > -45;}
+    public boolean facingRight(double skew) {return skew < -45;}
 
-    public double screenPrecentToDegrees(double screenPer){
-        return Math.atan(screenPer * Math.tan(Math.toDegrees(Robot.limelightSubsystem.imageWidth)));
+    public double screenPercentToDegrees(double screenPer){
+        return Math.atan(screenPer * Math.tan(Math.toRadians(Robot.limelightSubsystem.imageWidth)));
     }
 
     public Hashtable<String,Double> createData(NetworkTable t, int nth){
@@ -59,7 +59,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         end.put("nth",(double) nth);
         end.put("a",get(t,"ta" + nth));
         double txPer = isContour(end) ? get(t,"tx" + nth) : 1.01; // B/c we sort by tx, we want the data that isn't a contour to be off to the side
-        end.put("x",screenPrecentToDegrees(txPer));
+        end.put("x",screenPercentToDegrees(txPer));
         end.put("y",get(t,"ty" + nth));
         end.put("s",get(t,"ts" + nth));
         return end;
@@ -68,7 +68,7 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
     public double getAngle(double skew){
         double firstQuadAngle = skew + 90;
         if (firstQuadAngle > 45) {firstQuadAngle = 90 - firstQuadAngle;}
-        return Math.acos(Math.tan(Math.toRadians(firstQuadAngle))/Math.tan(tapeAngle));
+        return Math.acos(Math.tan(Math.toRadians(firstQuadAngle))/Math.tan(TAPE_ANGLE));
     }
 
     public boolean leftPair(ArrayList<Hashtable<String,Double>> values){
@@ -88,13 +88,14 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
     }
 
     public double distance(Hashtable<String,Double> value){
-        return Math.sqrt(meterArea / value.get("a")) + cameraWidth;}
+        return Math.sqrt(METER_AREA / value.get("a")) + CAMERA_WIDTH;
+    }
     public double theta(ArrayList<Hashtable<String,Double>> values){
         double d1 = rightPair(values) ? distance(values.get(2)) : distance(values.get(1));
         double d2 = leftPair(values) ? distance(values.get(0)) : distance(values.get(1));
-        System.out.println("d1: " + d1 * 39.37);
-        System.out.println("d2: " + d2 * 39.37);
-        return Math.asin((d1 - d2)/seperation); 
+        //System.out.println("d1: " + d1 * 39.37);
+        //System.out.println("d2: " + d2 * 39.37);
+        return Math.asin((d1 - d2)/SEPERATION); 
     }
     public boolean isContour(Hashtable<String,Double> data){
         return data.get("a") != 0;}
@@ -108,26 +109,29 @@ public class RetroreflectiveTapeSubsystem extends Subsystem {
         NetworkTable t = getTable();
         Hashtable<String,Double> data = new Hashtable<String,Double>();
         String[] keys = new String[]{"detected","centerX","centerY","distance","shift","angle","shiftL","shiftR","rotation"};
-        for (String key : keys){data.put(key,0.0);}
+        for (String key : keys){
+            data.put(key,0.0);
+        }
         // Find the center of the two retroflective pieces of tape that are facing
         // twoards each other!
         ArrayList<Hashtable<String,Double>> values = new ArrayList<Hashtable<String,Double>>();
-        for(int i = 0; i < 3; i++) {values.add(createData(t,i));}
+        for(int i = 0; i < 3; i++) {
+            values.add(createData(t,i));
+        }
         values.sort(dataCompare);
         double[] centerPos = center(values);
-        if (centerPos.length == 0){return data;}
+        if (centerPos.length == 0){
+            return data;
+        }
         System.out.println("detected");
         double distance = distance(values.get(1));
-        double degreeLength = tapeLength / (Math.sqrt((tapeLength/tapeWidth) * Robot.limelightSubsystem.imageHeight * Robot.limelightSubsystem.imageWidth * values.get(1).get("a")/100.));
-        System.out.println("degree length: " + degreeLength);
-        System.out.println("x shift degrees: " + centerPos[0]);
-        double tx0 = Math.toRadians(values.get(0).get("x"));
-        double tx1 = Math.toRadians(values.get(0).get("x"));
-        double tx2 = Math.toRadians(values.get(2).get("x"));
+        double tx0 = values.get(0).get("x");
+        double tx1 = values.get(1).get("x");
+        double tx2 = values.get(2).get("x");
         double adjustBy = Robot.limelightSubsystem.shift;
-        double shiftL = (leftPair(values) ? Math.tan(tx0) : Math.tan(tx1)) + adjustBy; //Negative to the Left, Positive to the Right
-        double shiftR = (leftPair(values) ? Math.tan(tx1) : Math.tan(tx2)) + adjustBy;
-        double shift = distance * (shiftL + shiftR) / 2;
+        double shiftL = distance * (leftPair(values) ? Math.tan(tx0) : Math.tan(tx1)) + adjustBy; //Negative to the Left, Positive to the Right
+        double shiftR = distance * (leftPair(values) ? Math.tan(tx1) : Math.tan(tx2)) + adjustBy;
+        double shift = (shiftL + shiftR) / 2;
         double rotation = theta(values);
         data.put("detected",1.0);
         data.put("rotation", rotation);
