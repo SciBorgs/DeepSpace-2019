@@ -3,8 +3,6 @@ package frc.robot.subsystems;
 import frc.robot.PortMap;
 import frc.robot.Robot;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -43,48 +41,44 @@ public class DriveSubsystem extends Subsystem {
      *
      * The equations were made by Bowen.
      * @param x raw axis input
-     * @param deadzone given deadzone in either direction
-     * @param exponent exponent of the power output curve. 0 is linear. Higher values give you more precision in the
-     *                 lower ranges, and lower values give you more precision in the higher ranges.
-     *                 I, Alejandro, recommend values between -1-deadzone and 2.
-     * @param maxOutput The maximum output this method returns. Set it to the max joystick output for best results.
      * @return the processed axis value. Send this to the motors.
      */
-    private double processAxis(double x, double deadzone, double exponent, double maxOutput) {
+    private double processAxis(double x) {
         // positive input between deadzone and max
-        if (deadzone < x && x < maxOutput) {
-            return (maxOutput / axisFunction(x, deadzone, exponent, maxOutput)) *
-                    axisFunction(x, deadzone, exponent, maxOutput);
+        if (DEADZONE < x && x <= MAX_JOYSTICK) {
+            return (MAX_JOYSTICK / axisFunction(x)) * axisFunction(MAX_JOYSTICK);
+
         // negative input between negative deadzone and negative max
-        } else if (-maxOutput < x && x < -deadzone) {
-            return (-maxOutput / axisFunction(x, deadzone, exponent, maxOutput)) *
-                    axisFunction(-x, deadzone, exponent, maxOutput);
+        } else if (-MAX_JOYSTICK <= x && x < -DEADZONE) {
+            return (-MAX_JOYSTICK / axisFunction(x)) * axisFunction(-MAX_JOYSTICK);
+
         // the input does not exceed the deadzone in either direction
-        } else if (-deadzone < x && x < deadzone) {
+        } else if (-DEADZONE <= x && x <= DEADZONE) {
             return 0;
-        // somehow the input has exceeded the range of (-maxOutput, maxOutput)
+
+        // somehow the input has exceeded the range of [-maxOutput, maxOutput]
         // this means that someone was playing with the code. Fix the maxOutput.
         } else {
-            return x*Math.abs(x);
+            return x;
         }
     }
 
     /*
      * Used by processAxis as the main function of the curves.
      */
-    private double axisFunction(double x, double d, double p, double m) {
-        return Math.pow(x - d, p) * ((x - d) / (m - d));
+    private double axisFunction(double x) {
+        return Math.pow(x - DEADZONE, EXPONENT) * ((x - DEADZONE) / (MAX_JOYSTICK - DEADZONE));
     }
 
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
-        double left = -processAxis(leftStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK);
-        double right = -processAxis(rightStick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK);
+        double left = processAxis(leftStick.getY());
+        double right = processAxis(rightStick.getY());
         System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
         setSpeedTank(left, right);
     }
     
     public double processStick(Joystick stick){
-        return processAxis(-stick.getY(), DEADZONE, EXPONENT, MAX_JOYSTICK);
+        return processAxis(-stick.getY());
     }
 	
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
