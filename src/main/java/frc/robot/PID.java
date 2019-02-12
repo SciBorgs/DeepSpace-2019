@@ -23,6 +23,12 @@ public class PID {
 	
 	public ArrayList<Double> getErrors(){return errors;}
 	public ArrayList<Double> getTimes() {return times;}
+	public void reset() {
+		u = 0;
+		integral = 0;
+		times = new ArrayList<Double>();
+		errors = new ArrayList<Double>();
+	}
 	
 	public void setP(double p) {this.p = p;}
 	public void setI(double i) {this.i = i;}

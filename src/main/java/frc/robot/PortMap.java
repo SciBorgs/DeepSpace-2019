@@ -26,6 +26,8 @@ public class PortMap {
     public static final int RIGHT_MIDDLE_SPARK = 15;
     public static final int RIGHT_BACK_SPARK = 16;
 
+    public static final int LIFT_SPARK = 10;
+
     //***************LIMIT*SWITCHES**************//
 
     public static final int BALL_LIMIT_SWITCH = 0;
