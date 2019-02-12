@@ -11,8 +11,8 @@ public class LineupCommand extends Command {
     public LineupCommand(){}
 
     @Override protected void initialize(){
-        Robot.lineup.simpleResetInfo();
-        Robot.lineup.move();
+        //Robot.lineup.simpleResetInfo();
+        //Robot.lineup.move();
     }
     @Override protected void execute(){
         return;

@@ -17,14 +17,14 @@ public class OI {
         switchToRetroreflectiveButton.whenReleased(new SwitchToCargoCommand());
         
         followBallButton = new JoystickButton(leftStick, PortMap.JOYSTICK_FOLLOW_CARGO_BUTTON);
-        followBallButton.whileHeld(new CargoFollowCommand());
+        //followBallButton.whileHeld(new CargoFollowCommand());
 
         lineupButton = new JoystickButton(leftStick, PortMap.JOYSTICK_LINEUP_BUTTON);
-        lineupButton.whenPressed(new ResetLineupInfoCommand());
+        //lineupButton.whenPressed(new ResetLineupInfoCommand());
         lineupButton.whileHeld(new LineupCommand());
 
         startZLift = new JoystickButton(rightStick, PortMap.JOYSTICK_Z_LIFT_BUTTON);
-        startZLift.whenPressed(new ZLiftCommand(false));
-        startZLift.whenReleased(new ZLiftCommand(true));
+        //startZLift.whenPressed(new ZLiftCommand(false));
+        //startZLift.whenReleased(new ZLiftCommand(true));
     }
 }

@@ -19,7 +19,7 @@ public class Robot extends IterativeRobot {
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-    public static DriveSubsystem driveSubsystem;// = new DriveSubsystem();
+    public static DriveSubsystem driveSubsystem = new DriveSubsystem();
 	public static PositioningSubsystem positioningSubsystem;// = new PositioningSubsystem();
     public static CargoFollowing cargoFollowing;// = new CargoFollowing();
     public static GearShiftSubsystem gearShiftSubsystem;// = new GearShiftSubsystem();
@@ -37,18 +37,18 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
 
 
-        new SwitchToCargoCommand().start();
+        //new SwitchToCargoCommand().start();
 
 		pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
         pigeon = new PigeonIMU(pigeonTalon);
         ballLimitSwitch = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);
         hatchLimitSwitch = new DigitalInput(PortMap.HATCH_LIMIT_SWITCH);
 
-        pigeon.setYaw(0., 0);
-        pigeon.enterCalibrationMode(CalibrationMode.Temperature, 10);
+        //pigeon.setYaw(0., 0);
+       //pigeon.enterCalibrationMode(CalibrationMode.Temperature, 10);
         oi = new OI();
         System.out.println("roboinited");
-        positioningSubsystem.updatePositionTank();
+        //positioningSubsystem.updatePositionTank();
         Compressor c = new Compressor();
 //        c.stop();
 
@@ -75,7 +75,7 @@ public class Robot extends IterativeRobot {
     public static double getPigeonAngle(){
         double[] yawPitchRoll = new double[3];
 		pigeon.getYawPitchRoll(yawPitchRoll);
-		return Math.toRadians(yawPitchRoll[0] % 360.); //raw goes from 0 to 22 and we want from 0 to 360
+        return 0;//Math.toRadians(yawPitchRoll[0] % 360.); //raw goes from 0 to 22 and we want from 0 to 360
 	}
     
     //TODO: make robot work lol
@@ -102,6 +102,6 @@ public class Robot extends IterativeRobot {
     }
 
     public void disabledInit() {
-        zLiftSubsystem.reset();
+        //zLiftSubsystem.reset();
     }
 }
