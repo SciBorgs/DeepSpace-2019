@@ -10,6 +10,7 @@ import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -24,11 +25,12 @@ public class Robot extends IterativeRobot {
     public static CargoFollowing cargoFollowing;// = new CargoFollowing();
     public static GearShiftSubsystem gearShiftSubsystem;// = new GearShiftSubsystem();
     public static ZLiftSubsystem zLiftSubsystem;// = new ZLiftSubsystem();
+    //public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
     public static Lineup lineup;// = new Lineup();
     public static PigeonIMU pigeon;
     public static TalonSRX pigeonTalon;
     public static DigitalInput ballLimitSwitch, hatchLimitSwitch;
-	
+
     public static final double ARM_P_CONSTANT = .1;
     public static final double ARM_D_CONSTANT = .1;    
 
@@ -73,8 +75,8 @@ public class Robot extends IterativeRobot {
     }
 
     public static double getPigeonAngle(){
-        double[] yawPitchRoll = new double[3];
-		pigeon.getYawPitchRoll(yawPitchRoll);
+        //double[] yawPitchRoll = new double[3];
+		//pigeon.getYawPitchRoll(yawPitchRoll);
         return 0;//Math.toRadians(yawPitchRoll[0] % 360.); //raw goes from 0 to 22 and we want from 0 to 360
 	}
     
@@ -87,6 +89,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
+        //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
     }
     
     @Override
@@ -95,6 +98,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
+        //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         Scheduler.getInstance().run();
     }
 

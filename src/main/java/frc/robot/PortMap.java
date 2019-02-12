@@ -42,4 +42,8 @@ public class PortMap {
 
     public static final int FORWARD_CHANNEL = 2;
     public static final int REVERSE_CHANNEL = 3;
+
+    //*******************MISC********************//
+
+    public static final int PRESSURE_SENSOR = 0;
 }
