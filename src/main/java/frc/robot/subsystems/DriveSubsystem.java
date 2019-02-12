@@ -14,11 +14,16 @@ public class DriveSubsystem extends Subsystem {
 	double goalOmegaConstant = 1;
     private TalonSRX lf, lm, lb, rf, rm, rb;
 
-    // deadzones by Alejandro at Chris' request
+    // deadzones by Alejandro at Chris' request. Graph them with the joystick function to understand the math.
+    // https://www.desmos.com/calculator/ch19ahiwol
     private static final double INPUT_DEADZONE = 0.06; // deadzone because the joysticks are bad and they detect input when there is none
-    private static final double OUTPUT_DEADZONE = -0.37473; // d value so that when x=INPUT_DEADZONE the wheels move
-    private static final double EXPONENT = 1; // x^exponent to in the graph. x=0 is linear. x>0 gives more control in low inputs
+    private static final double MOTOR_MOVEPOINT = 0.1; // motor controller output that gets the wheels to turn
+    private static final double EXPONENT = 10; // x^exponent to in the graph. x=0 is linear. x>0 gives more control in low inputs
     private static final double MAX_JOYSTICK = 1; // max joystick output value
+
+    // d value so that when x=INPUT_DEADZONE the wheels move
+    private static final double ALEJANDROS_CONSTANT = (MAX_JOYSTICK * Math.pow(MOTOR_MOVEPOINT / MAX_JOYSTICK, 1/(EXPONENT+1)) - INPUT_DEADZONE) /
+                                                    (Math.pow(MOTOR_MOVEPOINT / MAX_JOYSTICK, 1/(EXPONENT+1)) - 1);
 
     private TalonSRX newMotorObject(int port){
         return new TalonSRX(port);
@@ -68,7 +73,7 @@ public class DriveSubsystem extends Subsystem {
      * Used by processAxis as the main function of the curves.
      */
     private double axisFunction(double x) {
-        return Math.pow(x - OUTPUT_DEADZONE, EXPONENT) * ((x - OUTPUT_DEADZONE) / (MAX_JOYSTICK - OUTPUT_DEADZONE));
+        return Math.pow(x - ALEJANDROS_CONSTANT, EXPONENT) * ((x - ALEJANDROS_CONSTANT) / (MAX_JOYSTICK - ALEJANDROS_CONSTANT));
     }
 
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
