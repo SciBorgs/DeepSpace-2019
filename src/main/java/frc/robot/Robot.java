@@ -25,6 +25,7 @@ public class Robot extends IterativeRobot {
     public static CargoFollowing cargoFollowing;// = new CargoFollowing();
     public static GearShiftSubsystem gearShiftSubsystem;// = new GearShiftSubsystem();
     public static ZLiftSubsystem zLiftSubsystem;// = new ZLiftSubsystem();
+    public static LiftSubsystem liftSubsystem;// = new LiftSubsystem();
     //public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
     public static Lineup lineup;// = new Lineup();
     public static PigeonIMU pigeon;
