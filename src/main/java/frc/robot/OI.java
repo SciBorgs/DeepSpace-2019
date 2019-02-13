@@ -6,7 +6,7 @@ import frc.robot.commands.*;
 
 public class OI {
     public Joystick rightStick, leftStick;
-    public JoystickButton switchToRetroreflectiveButton, followBallButton, lineupButton, startZLift;
+    public JoystickButton switchToRetroreflectiveButton, followBallButton, lineupButton, startZLift, levelOneButton, levelTwoButton, levelThreeButton;
 
     public OI() {
         rightStick = new Joystick(PortMap.JOYSTICK_RIGHT);
@@ -26,5 +26,12 @@ public class OI {
         startZLift = new JoystickButton(rightStick, PortMap.JOYSTICK_Z_LIFT_BUTTON);
         //startZLift.whenPressed(new ZLiftCommand(false));
         //startZLift.whenReleased(new ZLiftCommand(true));
+
+        levelOneButton = new JoystickButton(rightStick, PortMap.JOYSTICK_BUTTON_MATRIX_LEFT[0][0]);
+        levelTwoButton = new JoystickButton(rightStick, PortMap.JOYSTICK_BUTTON_MATRIX_LEFT[0][1]);
+        levelThreeButton = new JoystickButton(rightStick, PortMap.JOYSTICK_BUTTON_MATRIX_LEFT[0][2]);
+        levelOneButton.whenPressed(new LiftToLevelOneCommand());
+        levelTwoButton.whenPressed(new LiftToLevelTwoCommand());
+        levelThreeButton.whenPressed(new LiftToLevelThreeCommand());
     }
 }
