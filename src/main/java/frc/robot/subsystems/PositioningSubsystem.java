@@ -12,18 +12,18 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class PositioningSubsystem extends Subsystem {
 
-	public final double INCHES_PER_METER = 39.37;
-    public final double WHEEL_RADIUS = 3. / INCHES_PER_METER; // In meters
-    public final double ENC_WHEEL_RATIO = (4. / 25.) * (1. / 1.2); // 4 rotations of the wheel is 25 rotations of the encoder
-    public final double ROBOT_RADIUS = 15.945 / INCHES_PER_METER; // Half the distance from wheel to wheel
-    public final double ROBOT_WIDTH = 2 * ROBOT_RADIUS;
+	public static final double INCHES_PER_METER = 39.37;
+    public static final double WHEEL_RADIUS = 3. / INCHES_PER_METER; // In meters
+    public static final double ENC_WHEEL_RATIO = (4. / 25.) * (1. / 1.2); // 4 rotations of the wheel is 25 rotations of the encoder
+    public static final double ROBOT_RADIUS = 15.945 / INCHES_PER_METER; // Half the distance from wheel to wheel
+    public static final double ROBOT_WIDTH = 2 * ROBOT_RADIUS;
 
-    public final double GLOBAL_ORIGINAL_ANGLE = Math.PI/2;
+    public static final double GLOBAL_ORIGINAL_ANGLE = Math.PI/2;
     public double ORIGINAL_ANGLE, ORIGINAL_X, ORIGINAL_Y;
-    public final int MEASURMENTS = 5; // How many values we keep track of for each encoder
-    public final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
-    public final double STATIC_POSITION_ERROR = .05;
-    public final double STATIC_ANGLE_ERROR = Math.toRadians(2);
+    public static final int MEASURMENTS = 5; // How many values we keep track of for each encoder
+    public static final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
+    public static final double STATIC_POSITION_ERROR = .05;
+    public static final double STATIC_ANGLE_ERROR = Math.toRadians(2);
 
     private ArrayList<Double> robotXs, robotYs, robotAngles;
     private Hashtable<CANSparkMax,ArrayList<Double>> encPoss;
