@@ -16,9 +16,11 @@ public class ZLiftSubsystem extends Subsystem {
     private PID anglePID;
     private double maxOutput = 0.1;
     private double defaultSpeed = 0.08;
-
+	
+	// Initializes anglePID values
     private double angleP = 0.005, angleI = 0.0, angleD = 0.0;
 
+    
     private DoubleSolenoid doubleSolenoid;
 
     public ZLiftSubsystem() {
@@ -33,6 +35,7 @@ public class ZLiftSubsystem extends Subsystem {
         reset();
     }
 
+    // Move Zlift using anglePID to maintain balance
     public void lift() {
         anglePID.add_measurement(getYaw());
 
@@ -50,7 +53,8 @@ public class ZLiftSubsystem extends Subsystem {
         pigeon.setYaw(0, 10);
         doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
-
+    
+    
     private double getYaw() {
         double[] angs = new double[3];
         pigeon.getYawPitchRoll(angs);
@@ -59,6 +63,12 @@ public class ZLiftSubsystem extends Subsystem {
 
     public void unlockPistons() {
         doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
+    
+    // Lock and unlock pistons
+    
+    public void lockPistons(){
+        doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
     @Override

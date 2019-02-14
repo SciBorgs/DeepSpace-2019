@@ -9,6 +9,9 @@ public class ZLiftCommand extends Command {
     public ZLiftCommand(boolean stop) {
         requires(Robot.zLiftSubsystem);
 
+        // m_stop tells ZLiftCommand whether to stop.
+        // m_stop is true when the button used for calling
+        // ZLiftCommand is released.
         m_stop = stop;
     }
 

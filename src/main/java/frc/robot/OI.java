@@ -28,8 +28,11 @@ public class OI {
         //startZLift.whenPressed(new ZLiftCommand(false));
         //startZLift.whenReleased(new ZLiftCommand(true));
 
-        //liftLow.whenPressed(new LiftCommand(Target.Low));
-        //liftMid.whenPressed(new LiftCommand(Target.Mid));
-        //liftHigh.whenPressed(new LiftCommand(Target.High));
+        liftLow = new JoystickButton(rightStick, PortMap.JOYSTICK_BUTTON_MATRIX_LEFT[0][0]);
+        liftMid = new JoystickButton(rightStick, PortMap.JOYSTICK_BUTTON_MATRIX_LEFT[0][1]);
+        liftHigh = new JoystickButton(rightStick, PortMap.JOYSTICK_BUTTON_MATRIX_LEFT[0][2]);
+        liftLow.whenPressed(new LiftCommand(Target.Low));
+        liftMid.whenPressed(new LiftCommand(Target.Mid));
+        liftHigh.whenPressed(new LiftCommand(Target.High));
     }
 }

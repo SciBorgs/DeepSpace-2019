@@ -50,30 +50,14 @@ public class DriveSubsystem extends Subsystem {
      * @return the processed axis value. Send this to the motors.
      */
     private double processAxis(double x) {
-        // filter input with its deadzone
-        if (Math.abs(x) < INPUT_DEADZONE) {
-            return 0;
-
-        // positive input between deadzone and max
-        } else if (INPUT_DEADZONE < x && x <= MAX_JOYSTICK) {
-            return (MAX_JOYSTICK / axisFunction(MAX_JOYSTICK)) * axisFunction(x);
-
-        // negative input between negative deadzone and negative max
-        } else if (-MAX_JOYSTICK <= x && x < -INPUT_DEADZONE) {
-            return (-MAX_JOYSTICK / axisFunction(MAX_JOYSTICK)) * axisFunction(-x);
-
-        // somehow the input has exceeded the range of [-MAX_JOYSTICK, MAX_JOYSTICK]
-        // this means that someone was playing with the code. Fix the MAX_JOYSTICK.
-        } else {
-            return x;
-        }
+        double sign = Math.abs(x) / x;
+        return sign * (MAX_JOYSTICK / axisFunction(MAX_JOYSTICK)) * axisFunction(Math.abs(x));
     }
 
-    /*
-     * Used by processAxis as the main function of the curves.
-     */
+    // Used by processAxis as the main function of the curves.
     private double axisFunction(double x) {
-        return Math.pow(x - ALEJANDROS_CONSTANT, EXPONENT) * ((x - ALEJANDROS_CONSTANT) / (MAX_JOYSTICK - ALEJANDROS_CONSTANT));
+        double adjustedX = Math.max(x - ALEJANDROS_CONSTANT, 0);
+        return Math.pow(adjustedX, EXPONENT) * ((adjustedX) / (MAX_JOYSTICK - ALEJANDROS_CONSTANT));
     }
 
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
