@@ -31,11 +31,13 @@ public class LiftSubsystem extends Subsystem{
 		}
 	};
 	public static final double MAX_HINGE_HEIGHT = Utils.inchesToMeters(40);
-	static final double ARM_MAX_ANGLE = 66; // In degrees
+	static final double ARM_MAX_ANGLE = Math.toRadians(66); // In degrees
 	static final double ARM_LENGTH = Utils.inchesToMeters(25.953);
+	static final double DESIRED_ANGLE = Math.toRadians(50);
 	static final double INITIAL_ANGLE = -Math.PI/2; // In radians
 	static final double INITIAL_HEIGHT = 0; // In meters
 	static final double HEIGHT_PRECISION = 0.05; // In meters
+	static final double ANGLE_PRECISION = Math.toRadians(3);
 	
 	public void initDefaultCommand() {
     }
@@ -50,11 +52,14 @@ public class LiftSubsystem extends Subsystem{
 	
 	public void moveToHeight(Target target) {
 		double targetHeight = HEIGHTS.get(target);
-		double targetLiftHeight = targetHeight - ARM_LENGTH * Math.sin(ARM_MAX_ANGLE);
-		double targetAngle  = ARM_MAX_ANGLE;
+		double targetLiftHeight = Math.min(targetHeight - ARM_LENGTH * Math.sin(ARM_MAX_ANGLE), MAX_HINGE_HEIGHT);
+		double minimumAngle = Math.asin(targetHeight - targetLiftHeight / ARM_LENGTH);
+		double targetAngle  = Math.max(DESIRED_ANGLE, minimumAngle);
 		double currentLiftHeight = getLiftHeight();
 		double currentArmAngle   = getArmAngle();
-		if (atMaxAngle() && Math.abs(currentLiftHeight) < HEIGHT_PRECISION){
+		boolean hitCorrectHeight = Math.abs(currentLiftHeight - targetLiftHeight) < HEIGHT_PRECISION;
+		boolean hitCorrectAngle  = Math.abs(currentArmAngle - targetAngle) < ANGLE_PRECISION;
+		if (hitCorrectHeight && hitCorrectAngle){
 			depositObject();
 		} else {
 		 armPID.add_measurement(targetAngle      - currentArmAngle);
@@ -91,14 +96,6 @@ public class LiftSubsystem extends Subsystem{
 	}
 	public void depositCargo(){
 		return;
-	}
-    
-    public DoubleSolenoid.Value getPanelOut() {
-        return panelSolenoidIntake.get();
-    }
-	
-    public DoubleSolenoid.Value getPanelTilt() {
-		return panelSolenoidTilt.get();
 	}
 
 	public boolean holdingHatch(){ // these need to be corrected
