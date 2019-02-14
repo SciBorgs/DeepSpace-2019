@@ -3,10 +3,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.*;
+import frc.robot.subsystems.LiftSubsystem.Target;
 
 public class OI {
     public Joystick rightStick, leftStick;
-    public JoystickButton switchToRetroreflectiveButton, followBallButton, lineupButton, startZLift;
+    public JoystickButton switchToRetroreflectiveButton, followBallButton, lineupButton, startZLift, liftLow, liftMid, liftHigh;
 
     public OI() {
         rightStick = new Joystick(PortMap.JOYSTICK_RIGHT);
@@ -26,5 +27,9 @@ public class OI {
         startZLift = new JoystickButton(rightStick, PortMap.JOYSTICK_Z_LIFT_BUTTON);
         //startZLift.whenPressed(new ZLiftCommand(false));
         //startZLift.whenReleased(new ZLiftCommand(true));
+
+        //liftLow.whenPressed(new LiftCommand(Target.Low));
+        //liftMid.whenPressed(new LiftCommand(Target.Mid));
+        //liftHigh.whenPressed(new LiftCommand(Target.High));
     }
 }

@@ -28,6 +28,14 @@ public class PortMap {
 
     public static final int LIFT_SPARK = 10;
 
+    //*******************TALONS******************//
+
+    public static final int PIGEON_TALON = 9;
+
+    public static final int LIFT_TALON = 6;
+    public static final int ARM_TILT_TALON_LEFT = 7;
+    public static final int ARM_TILT_TALON_RIGHT = 8;
+
     //***************LIMIT*SWITCHES**************//
 
     public static final int BALL_LIMIT_SWITCH = 0;
@@ -36,8 +44,6 @@ public class PortMap {
     //***************DOUBLE*SOLENOIDS*************//
 
     public static final int[] GEAR_SHIFTER_SOLENOID = {0, 1};
-
-    public static final int PIGEON_TALON = 6;
 
     public static final int LEFT_ZLIFT = 2;
     public static final int RIGHT_ZLIFT = 8;

@@ -4,7 +4,14 @@ import java.util.*;
 
 public class Utils{
 
-    public static double metersToInches = 39.37;
+    public static double METERS_TO_INCHES = 39.37;
+
+    public static double metersToInches(double meters){
+        return meters * METERS_TO_INCHES;
+    }
+    public static double inchesToMeters(double inches){
+        return inches / METERS_TO_INCHES;
+    }
 
     public static double last(ArrayList<Double> arr) {
         return arr.get(arr.size() - 1);
