@@ -112,12 +112,12 @@ public class LiftSubsystem extends Subsystem{
 	}
 
     public void setLiftSpeed(double speed) {
-    	liftTalon.set(ControlMode.PercentOutput, speed);
+    	Utils.setTalon(liftTalon, speed);
 	}
 	
 	public void setArmTiltSpeed(double speed) { 
-		armTiltTalonLeft.set(ControlMode.PercentOutput, speed);
-		armTiltTalonRight.set(ControlMode.PercentOutput, speed);
+		Utils.setTalon(armTiltTalonLeft, speed);
+		Utils.setTalon(armTiltTalonRight, speed);
 	}
     
 }	 

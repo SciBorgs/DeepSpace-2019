@@ -1,5 +1,8 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import java.util.*;
 
 public class Utils{
@@ -36,5 +39,9 @@ public class Utils{
             return -max;
         else
             return output;
+    }
+
+    public static void setTalon(TalonSRX talon, double speed){
+        talon.set(ControlMode.PercentOutput, speed);
     }
 }

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import frc.robot.PID;
+import frc.robot.Utils;
 
 public class ZLiftSubsystem extends Subsystem {
     private TalonSRX leftZLift, rightZLift;
@@ -16,8 +17,6 @@ public class ZLiftSubsystem extends Subsystem {
     private PID anglePID;
     private double maxOutput = 0.1;
     private double defaultSpeed = 0.08;
-	
-	// Initializes anglePID values
     private double angleP = 0.005, angleI = 0.0, angleD = 0.0;
 
     
@@ -35,27 +34,25 @@ public class ZLiftSubsystem extends Subsystem {
         reset();
     }
 
-    // Move Zlift using anglePID to maintain balance
     public void lift() {
         anglePID.add_measurement(getYaw());
-
         //System.out.println(anglePID.getOutput() + " Angle: " + getYaw());
-
         double speed = anglePID.getLimitOutput(maxOutput);
      
-        leftZLift.set(ControlMode.PercentOutput, -speed + defaultSpeed);
-        rightZLift.set(ControlMode.PercentOutput, speed + defaultSpeed);
+        Utils.setTalon(leftZLift,  defaultSpeed - speed);
+        Utils.setTalon(rightZLift, defaultSpeed + speed);
     }
 
     public void reset() {
         leftZLift.set(ControlMode.PercentOutput, 0);
         rightZLift.set(ControlMode.PercentOutput, 0);
-        pigeon.setYaw(0, 10);
+        pigeon.setYaw(0, 10); // resets pigeon angle
         doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
     
     
-    private double getYaw() {
+    private double getYaw() { 
+        // Get's the yaw of the pigeon for ZLift, differnet than the pigeon accessed in Robot
         double[] angs = new double[3];
         pigeon.getYawPitchRoll(angs);
         return angs[0];
@@ -63,10 +60,7 @@ public class ZLiftSubsystem extends Subsystem {
 
     public void unlockPistons() {
         doubleSolenoid.set(DoubleSolenoid.Value.kForward);
-    }
-    
-    // Lock and unlock pistons
-    
+    }    
     public void lockPistons(){
         doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
