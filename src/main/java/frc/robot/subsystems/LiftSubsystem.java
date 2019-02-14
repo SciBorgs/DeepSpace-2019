@@ -31,7 +31,7 @@ public class LiftSubsystem extends Subsystem{
 		}
 	};
 	public static final double MAX_HINGE_HEIGHT = Utils.inchesToMeters(40);
-	static final double ARM_MAX_ANGLE = Math.toRadians(66); // In degrees
+	static final double ARM_MAX_ANGLE = Math.toRadians(66);
 	static final double ARM_LENGTH = Utils.inchesToMeters(25.953);
 	static final double DESIRED_ANGLE = Math.toRadians(50);
 	static final double INITIAL_ANGLE = -Math.PI/2; // In radians
