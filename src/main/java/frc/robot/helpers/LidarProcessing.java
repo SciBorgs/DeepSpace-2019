@@ -27,7 +27,7 @@ public class LidarProcessing{
     public static final double FIRST_ANGLE = 0; // This is assuming the first piece of data is backwards
     public static final double FINAL_ANGLE = 360;
     public static final double DELTA_THETA = 1;
-    public static final double GAP = 8 / Utils.metersToInches;
+    public static final double GAP = 8 / Utils.METERS_TO_INCHES;
     public static final double GAP_OFFSET = .0;
     public static final double GAP_PRECISION = .15;
     public static final double LIDAR_SHIFT = 0; // In meters away from the center
