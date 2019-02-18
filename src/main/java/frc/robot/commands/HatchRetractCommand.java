@@ -1,15 +1,15 @@
 package frc.robot.commands;
 
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 
-public class SuckCommand extends InstantCommand {
+public class HatchRetractCommand extends InstantCommand {
 
-    public SuckCommand() {
+    public HatchRetractCommand() {
         requires(Robot.intakeSubsystem);
     }
 
     @Override protected void execute() {
-        Robot.intakeSubsystem.suck();
+        Robot.intakeSubsystem.retractHatchPanel();
     }
 }

@@ -7,16 +7,25 @@ import frc.robot.subsystems.LiftSubsystem.Target;
 
 public class OI {
     public Joystick rightStick, leftStick;
-    public JoystickButton followBallButton, lineupButton, startZLift, liftLow, liftMid, liftHigh, suckButton, spitButton;
+    public JoystickButton lineupButton, startZLift, liftLow, liftMid, liftHigh, suckButton, spitButton, depositPanelButton, intakeModeButton;
 
     public OI() {
         rightStick = new Joystick(PortMap.JOYSTICK_RIGHT);
         leftStick = new Joystick(PortMap.JOYSTICK_LEFT);
 
         suckButton = new JoystickButton(rightStick, PortMap.JOYSTICK_CENTER_BUTTON);
-        suckButton.whenPressed(new ConditionalSuckCommand());
+        suckButton.whileHeld(new ConditionalSuckCommand());
         
         spitButton = new JoystickButton(rightStick, PortMap.JOYSTICK_RIGHT_BUTTON);
+        spitButton.whileHeld(new CargoReleaseCommand());
+
+        depositPanelButton = new JoystickButton(leftStick, PortMap.JOYSTICK_RIGHT_BUTTON);
+        depositPanelButton.whenPressed(new HatchReleaseCommand());
+        depositPanelButton.whenReleased(new HatchRetractCommand());
+
+        intakeModeButton = new JoystickButton(rightStick, PortMap.JOYSTICK_TRIGGER);
+        intakeModeButton.whenPressed(new IntakeReverseCommand());
+        intakeModeButton.whenReleased(new IntakeUprightCommand());
 
         lineupButton = new JoystickButton(leftStick, PortMap.JOYSTICK_LEFT_BUTTON);
         lineupButton.whenPressed(new ResetLineupInfoCommand());
@@ -24,7 +33,6 @@ public class OI {
 
         startZLift = new JoystickButton(rightStick, PortMap.JOYSTICK_CENTER_BUTTON);
         startZLift.whenPressed(new ZLiftCommand(leftStick, rightStick));
-        //startZLift.whenReleased(new ZLiftCommand(true));
 
         liftLow = new JoystickButton(rightStick, PortMap.JOYSTICK_BUTTON_MATRIX_LEFT[0][0]);
         liftMid = new JoystickButton(rightStick, PortMap.JOYSTICK_BUTTON_MATRIX_LEFT[0][1]);

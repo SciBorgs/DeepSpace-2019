@@ -2,19 +2,16 @@ package frc.robot.subsystems;
 
 import frc.robot.helpers.*;
 import frc.robot.PortMap;
-import frc.robot.Utils;
 import frc.robot.Robot;
+import frc.robot.Utils;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import com.ctre.phoenix.Util;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import java.util.Hashtable;
 
-public class LiftSubsystem extends Subsystem{
-	public DoubleSolenoid panelSolenoidTilt, panelSolenoidIntake;
-	
+public class LiftSubsystem extends Subsystem {	
 
 	public enum Target { High, Mid, Low }
 	public TalonSRX liftTalon, armTiltTalonLeft, armTiltTalonRight;
@@ -24,13 +21,16 @@ public class LiftSubsystem extends Subsystem{
 	private double armP = 0.1, armI = 0.0, armD = 0.0, liftP = 0.1, liftI = 0.0, liftD = 0.0;
 	static final double TICKS_PER_REV = 10000;
 	static final double ARM_WHEEL_RADIUS = 1; // In meters, the radius of the wheel that is pulling up the lift
-	static final Hashtable<Target,Double> HEIGHTS = // In meters
+	static final double ROCKET_HATCH_GAP = Utils.inchesToMeters(28);
+	static final double LOW_HATCH_HEIGHT = Utils.inchesToMeters(19);
+	static final Hashtable<Target,Integer> HATCH_POSITIONS = // Gives how many hatches above the lowest one for each
 		new Hashtable<>(){{
-			put(Target.High,2.12);
-			put(Target.Mid,1.384);
-			put(Target.Low,.4826);
+			put(Target.High,2);
+			put(Target.Mid,1);
+			put(Target.Low,0);
 		}
 	};
+	static final double HATCH_TO_CARGO_DEPOSIT = Utils.inchesToMeters(8.5);
 	public static final double MAX_HINGE_HEIGHT = Utils.inchesToMeters(40);
 	static final double ARM_MAX_ANGLE = Math.toRadians(66);
 	static final double ARM_LENGTH = Utils.inchesToMeters(25.953);
@@ -53,23 +53,36 @@ public class LiftSubsystem extends Subsystem{
 		armPID  = new PID(armP, armI, armD);
 	}
 	
+	private double getTargetHeight(Target target){
+		double hatchTargetHeight = BOTTOM_HEIGHT + HATCH_POSITIONS.get(target) * ROCKET_HATCH_GAP;
+		// Target height will go to the defualt HATCH_HEIGHT if it is holding the hatch, otherwise it will add the gap b/w the hatch and the cargo deposit
+		return hatchTargetHeight + (Robot.intakeSubsystem.holdingHatch() ? 0 : HATCH_TO_CARGO_DEPOSIT);
+	}
+	
+	public void moveToTarget(double targetAngle, double targetLiftHeight){
+		armPID.add_measurement(getArmAngle() - targetAngle);
+		liftPID.add_measurement(getLiftHeight() - targetLiftHeight);
+		setLiftSpeed(liftPID.getOutput());
+		setArmTiltSpeed(armPID.getOutput());
+	}
+
 	public void moveToHeight(Target target) {
-		double targetHeight = HEIGHTS.get(target);
+		double targetHeight = getTargetHeight(target);
 		double targetLiftHeight = Math.min(targetHeight - ARM_LENGTH * Math.sin(ARM_MAX_ANGLE), MAX_HINGE_HEIGHT);
 		double minimumAngle = Math.asin(targetHeight - targetLiftHeight / ARM_LENGTH);
 		double targetAngle  = Math.max(DESIRED_ANGLE, minimumAngle);
-		double currentLiftHeight = getLiftHeight();
-		double currentArmAngle   = getArmAngle();
-		boolean hitCorrectHeight = Math.abs(currentLiftHeight - targetLiftHeight) < HEIGHT_PRECISION;
-		boolean hitCorrectAngle  = Math.abs(currentArmAngle - targetAngle) < ANGLE_PRECISION;
+		boolean hitCorrectHeight = Math.abs(getLiftHeight() - targetLiftHeight) < HEIGHT_PRECISION;
+		boolean hitCorrectAngle  = Math.abs(getArmAngle() - targetAngle) < ANGLE_PRECISION;
 		if (hitCorrectHeight && hitCorrectAngle){
-			//Robot.intakeSubsystem.depositObject(); Remove Method
+			setLiftSpeed(0);
+			setArmTiltSpeed(0);
 		} else {
-		 armPID.add_measurement(targetAngle      - currentArmAngle);
-		liftPID.add_measurement(targetLiftHeight - currentLiftHeight);
-		setLiftSpeed(liftPID.getOutput());
-		setArmTiltSpeed(armPID.getOutput());
+			moveToTarget(targetAngle, targetLiftHeight);
 		}
+	}
+
+	public void goDown(){
+		moveToTarget(INITIAL_ANGLE, INITIAL_HEIGHT);
 	}
 	
 	public boolean atMaxAngle(){

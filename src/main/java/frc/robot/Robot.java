@@ -35,12 +35,11 @@ public class Robot extends IterativeRobot {
     
 
     public void robotInit() {
-
         positioningSubsystem.getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
-//        Compressor c = new Compressor();
-//        c.stop();
+        new IntakeUprightCommand().start();
+        new HatchRetractCommand().start();
 
            /* STARTS THE LIDAR     
         try {

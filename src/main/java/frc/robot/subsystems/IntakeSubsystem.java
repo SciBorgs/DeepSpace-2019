@@ -1,10 +1,10 @@
 package frc.robot.subsystems;
 
-import frc.robot.Robot;
 import frc.robot.Utils;
 import frc.robot.PortMap;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class IntakeSubsystem extends Subsystem {
 
     private TalonSRX intakeTalon;
-	private DoubleSolenoid panelSolenoidIntake;
-	public static DigitalInput ballLimitSwitch, hatchLimitSwitch;
+	private DoubleSolenoid intakeModeSolenoid, hatchControlSolenoid;
+	private DigitalInput ballLimitSwitch, hatchLimitSwitch;
 	private double lastHeld;
 	private Timer timer;
 	public final static double SUCK_IF_OUT_PERIOD = 1; // The amount of time that the intake should suck if the ball stops pressing the button in seconds
@@ -26,7 +26,8 @@ public class IntakeSubsystem extends Subsystem {
 		lastHeld = timer.get() - SUCK_IF_OUT_PERIOD;
 
 		intakeTalon = new TalonSRX(PortMap.INTAKE_TALON);
-		//panelSolenoidIntake = new DoubleSolenoid(PortMap.INTAKE_SOLENOID[0], PortMap.INTAKE_SOLENOID[1]);
+		hatchControlSolenoid = new DoubleSolenoid(PortMap.HATCH_CONTROL_SOLENOID[0], PortMap.HATCH_CONTROL_SOLENOID[1]);
+		intakeModeSolenoid = new DoubleSolenoid(PortMap.INTAKE_MODE_SOLENOID[0], PortMap.INTAKE_MODE_SOLENOID[1]);
 		ballLimitSwitch = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);
         hatchLimitSwitch = new DigitalInput(PortMap.HATCH_LIMIT_SWITCH);
 	}
@@ -36,7 +37,19 @@ public class IntakeSubsystem extends Subsystem {
     }
 
     public void depositHatchPanel() {
-		//panelSolenoidIntake.set(DoubleSolenoid.Value.kForward);
+		hatchControlSolenoid.set(Value.kForward);
+	}
+
+	public void retractHatchPanel() {
+		hatchControlSolenoid.set(Value.kReverse);
+	}
+
+	public void uprightIntakeMode() {
+		intakeModeSolenoid.set(Value.kForward);
+	}
+
+	public void reverseIntakeMode() {
+		intakeModeSolenoid.set(Value.kReverse);
 	}
 
 	public boolean holdingHatch(){

@@ -6,7 +6,6 @@ import frc.robot.Robot;
 public class CargoFollowCommand extends InstantCommand {
 
     public CargoFollowCommand() {
-        super();
         requires(Robot.driveSubsystem);
     }
 

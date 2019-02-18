@@ -44,7 +44,8 @@ public class PortMap {
     //***************DOUBLE*SOLENOIDS*************//
 
     public static final int[] GEAR_SHIFTER_SOLENOID = {0, 1};
-    public static final int[] INTAKE_SOLENOID = {2, 3};
+    public static final int[] HATCH_CONTROL_SOLENOID = {2, 3};
+    public static final int[] INTAKE_MODE_SOLENOID = {4, 5};
 
     public static final int LEFT_ZLIFT = 2;
     public static final int RIGHT_ZLIFT = 8;
