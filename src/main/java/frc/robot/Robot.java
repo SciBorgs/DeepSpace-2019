@@ -5,7 +5,6 @@ import frc.robot.helpers.*;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -21,15 +20,15 @@ public class Robot extends IterativeRobot {
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
-	public static PositioningSubsystem positioningSubsystem;// = new PositioningSubsystem();
-    public static CargoFollowing cargoFollowing;// = new CargoFollowing();
-    public static GearShiftSubsystem gearShiftSubsystem;// = new GearShiftSubsystem();
-    public static ZLiftSubsystem zLiftSubsystem;// = new ZLiftSubsystem();
-    public static LiftSubsystem liftSubsystem;// = new LiftSubsystem();
+	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
+    public static CargoFollowing cargoFollowing = new CargoFollowing();
+    public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
+    public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
+    public static LiftSubsystem liftSubsystem = new LiftSubsystem();
     public static IntakeSubsystem intakeSubsystem;
-    //public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
-    public static Lineup lineup;// = new Lineup();
-    public static PigeonIMU pigeon;
+    public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
+    public static Lineup lineup = new Lineup();
+    public static Pigeon pigeon;
     public static TalonSRX pigeonTalon;
 
     public static final double ARM_P_CONSTANT = .1;
@@ -39,17 +38,13 @@ public class Robot extends IterativeRobot {
 
     public void robotInit() {
 
-
-        //new SwitchToCargoCommand().start();
-
 		pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
-        pigeon = new PigeonIMU(pigeonTalon);
+        pigeon = new Pigeon(pigeonTalon);
 
         //pigeon.setYaw(0., 0);
-       //pigeon.enterCalibrationMode(CalibrationMode.Temperature, 10);
         oi = new OI();
         System.out.println("roboinited");
-        //positioningSubsystem.updatePositionTank();
+        positioningSubsystem.updatePositionTank();
         Compressor c = new Compressor();
 //        c.stop();
 
@@ -67,24 +62,19 @@ public class Robot extends IterativeRobot {
     }
 
     public void robotPeriodic() {
-        //positioningSubsystem.updatePositionTank();
+        positioningSubsystem.updatePositionTank();
         //positioningSubsystem.printPosition();
         //retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
         //gearShiftSubsystem.shiftGear(); 	
+        intakeSubsystem.secureCargo();
+        if (intakeSubsystem.holdingGamePiece()){
+            RetroreflectiveDetection.modeToRetroreflective();
+        } else {
+            cargoFollowing.modeToCargo();
+        }
     }
-
-    public static double getPigeonAngle(){
-        //double[] yawPitchRoll = new double[3];
-		//pigeon.getYawPitchRoll(yawPitchRoll);
-        return 0;//Math.toRadians(yawPitchRoll[0] % 360.); //raw goes from 0 to 22 and we want from 0 to 360
-	}
-    
-    //TODO: make robot work lol
-    
+        
     public void autonomousInit() {
-        System.out.println("Auto selected: " + m_autoSelected);
-        m_autoSelected = m_chooser.getSelected();
-        //gearShiftSubsystem.shiftUp();
     }
 
     public void autonomousPeriodic() {
@@ -105,6 +95,6 @@ public class Robot extends IterativeRobot {
     }
 
     public void disabledInit() {
-        //zLiftSubsystem.reset();
+        zLiftSubsystem.reset();
     }
 }

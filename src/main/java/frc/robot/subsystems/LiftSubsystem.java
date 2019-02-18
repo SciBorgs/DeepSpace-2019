@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import frc.robot.PID;
+import frc.robot.helpers.*;
 import frc.robot.PortMap;
 import frc.robot.Utils;
 import frc.robot.Robot;
@@ -39,7 +39,9 @@ public class LiftSubsystem extends Subsystem{
 	static final double INITIAL_HEIGHT = 0; // In meters
 	static final double HEIGHT_PRECISION = 0.05; // In meters
 	static final double ANGLE_PRECISION = Math.toRadians(3);
-	
+	static final double IS_BOTTOM_PRECISION = 0.05; // In meters, precision as to whether it's at the bottom
+	static final double BOTTOM_HEIGHT = 0; // In meters, the height at the lift's lowest point
+
 	public void initDefaultCommand() {
     }
 	
@@ -82,9 +84,13 @@ public class LiftSubsystem extends Subsystem{
 		return getTalonAngle(liftTalon) * ARM_WHEEL_RADIUS + INITIAL_HEIGHT;
 	}
 	
-	private double getArmAngle() {
+	public double getArmAngle() {
 		return getTalonAngle(armTiltTalonLeft) + INITIAL_ANGLE;
 	}
+
+	public boolean liftAtBottom(){
+		return getLiftHeight() - BOTTOM_HEIGHT < IS_BOTTOM_PRECISION;
+	} 
 
     public void setLiftSpeed(double speed) {
     	Utils.setTalon(liftTalon, speed);

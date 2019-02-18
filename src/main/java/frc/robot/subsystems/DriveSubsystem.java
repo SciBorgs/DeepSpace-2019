@@ -7,12 +7,14 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class DriveSubsystem extends Subsystem {
     // Define tested error values here
     double tankAngleP = 3;
 	double goalOmegaConstant = 1;
-    private TalonSRX lf, lm, lb, rf, rm, rb;
+    private CANSparkMax lf, lm, lb, rf, rm, rb;
 
     // deadzones by Alejandro at Chris' request. Graph them with the joystick function to understand the math.
     // https://www.desmos.com/calculator/ch19ahiwol
@@ -25,8 +27,8 @@ public class DriveSubsystem extends Subsystem {
     private static final double ALEJANDROS_CONSTANT = (MAX_JOYSTICK * Math.pow(MOTOR_MOVEPOINT / MAX_JOYSTICK, 1/(EXPONENT+1)) - INPUT_DEADZONE) /
                                                     (Math.pow(MOTOR_MOVEPOINT / MAX_JOYSTICK, 1/(EXPONENT+1)) - 1);
 
-    private TalonSRX newMotorObject(int port){
-        return new TalonSRX(port);
+    private CANSparkMax newMotorObject(int port){
+        return new CANSparkMax(port, MotorType.kBrushless);
     }
 	/**
      * Initialize robot's motors
@@ -39,7 +41,13 @@ public class DriveSubsystem extends Subsystem {
         
 		rf = newMotorObject(PortMap.RIGHT_FRONT_SPARK);
 		rm = newMotorObject(PortMap.RIGHT_MIDDLE_SPARK);
-		rb = newMotorObject(PortMap.RIGHT_BACK_SPARK);
+        rb = newMotorObject(PortMap.RIGHT_BACK_SPARK);
+        
+        lm.follow(lf);
+        lb.follow(lf);
+
+        rm.follow(rf);
+        rb.follow(rf);
 	}
 
     /**
@@ -73,16 +81,15 @@ public class DriveSubsystem extends Subsystem {
 	
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
 		setSpeedTank(processStick(leftStick),processStick(rightStick));
-	}
+    }
+    
+    public void setMotorSpeed(CANSparkMax motor, double speed){
+        motor.set(speed);
+    }
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
-		lf.set(ControlMode.PercentOutput, -leftSpeed);
-		lm.set(ControlMode.PercentOutput, -leftSpeed);
-		lb.set(ControlMode.PercentOutput, -leftSpeed);
-
-		rf.set(ControlMode.PercentOutput, rightSpeed);
-		rm.set(ControlMode.PercentOutput, rightSpeed);
-		rb.set(ControlMode.PercentOutput, rightSpeed);
+		setMotorSpeed(lf, -leftSpeed);
+		setMotorSpeed(rf, rightSpeed);
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {

@@ -52,7 +52,7 @@ public class PositioningSubsystem extends Subsystem {
 
         ORIGINAL_X = 0;
         ORIGINAL_Y = 0;
-        ORIGINAL_ANGLE = Robot.getPigeonAngle();
+        ORIGINAL_ANGLE = Robot.pigeon.getAngle();
 
         robotXs     = new ArrayList<Double>();
         robotYs     = new ArrayList<Double>();
@@ -76,7 +76,7 @@ public class PositioningSubsystem extends Subsystem {
     }
     
     public void resetPosition() {
-    	ORIGINAL_ANGLE = Robot.getPigeonAngle();
+    	ORIGINAL_ANGLE = Robot.pigeon.getAngle();
         setPosition(ORIGINAL_X,ORIGINAL_Y,ORIGINAL_ANGLE);
         for (CANSparkMax spark : sparks)
             addEncPos(spark);
@@ -151,7 +151,7 @@ public class PositioningSubsystem extends Subsystem {
 
     public double[] nextPosPigeon(double x, double y, double theta, double[][] changeAngles){
         // Works for all forms of drive where the displacement is the average of the movement vectors over the wheels
-        double newTheta = Robot.getPigeonAngle();
+        double newTheta = Robot.pigeon.getAngle();
         double avgTheta = (theta + adjustTheta(newTheta))/2;
         for(double[] motorData : changeAngles){
             x += motorData[0] * Math.cos(avgTheta + motorData[1]) / changeAngles.length;
