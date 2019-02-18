@@ -16,27 +16,27 @@ import java.util.*;
 
 public class Robot extends IterativeRobot {
     private String m_autoSelected;
+    public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+    public static DriveSubsystem driveSubsystem = new DriveSubsystem();
+    public static LiftSubsystem liftSubsystem = new LiftSubsystem();
+    public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
+    public static OI oi = new OI();
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-    public static DriveSubsystem driveSubsystem = new DriveSubsystem();
 	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static CargoFollowing cargoFollowing = new CargoFollowing();
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
-    public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
-    public static LiftSubsystem liftSubsystem = new LiftSubsystem();
-    public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
     public static Lineup lineup = new Lineup();
 
     public static final double ARM_P_CONSTANT = .1;
     public static final double ARM_D_CONSTANT = .1;    
 
-    public static OI oi;
+    
 
     public void robotInit() {
 
         positioningSubsystem.getPigeon().setYaw(0., 5);
-        oi = new OI();
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
 //        Compressor c = new Compressor();

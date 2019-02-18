@@ -8,14 +8,14 @@ public class ZLiftCommand extends Command {
     private Joystick zLiftControl;
     private Joystick speedControl;
 
-    public ZLiftCommand() {
+    public ZLiftCommand(Joystick leftStick, Joystick rightStick) {
         requires(Robot.zLiftSubsystem);
 
         // m_stop tells ZLiftCommand whether to stop.
         // m_stop is true when the button used for calling
         // ZLiftCommand is released.
-        zLiftControl = Robot.oi.rightStick;
-        speedControl = Robot.oi.leftStick;
+        zLiftControl = rightStick;
+        speedControl = leftStick;
     }
 
     @Override

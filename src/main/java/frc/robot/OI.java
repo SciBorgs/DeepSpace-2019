@@ -23,7 +23,7 @@ public class OI {
         lineupButton.whileHeld(new LineupCommand());
 
         startZLift = new JoystickButton(rightStick, PortMap.JOYSTICK_CENTER_BUTTON);
-        startZLift.whenPressed(new ZLiftCommand());
+        startZLift.whenPressed(new ZLiftCommand(leftStick, rightStick));
         //startZLift.whenReleased(new ZLiftCommand(true));
 
         liftLow = new JoystickButton(rightStick, PortMap.JOYSTICK_BUTTON_MATRIX_LEFT[0][0]);

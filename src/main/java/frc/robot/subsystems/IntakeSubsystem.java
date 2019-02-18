@@ -26,7 +26,7 @@ public class IntakeSubsystem extends Subsystem {
 		lastHeld = timer.get() - SUCK_IF_OUT_PERIOD;
 
 		intakeTalon = new TalonSRX(PortMap.INTAKE_TALON);
-		panelSolenoidIntake = new DoubleSolenoid(PortMap.INTAKE_SOLENOID[0], PortMap.INTAKE_SOLENOID[1]);
+		//panelSolenoidIntake = new DoubleSolenoid(PortMap.INTAKE_SOLENOID[0], PortMap.INTAKE_SOLENOID[1]);
 		ballLimitSwitch = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);
         hatchLimitSwitch = new DigitalInput(PortMap.HATCH_LIMIT_SWITCH);
 	}
@@ -36,7 +36,7 @@ public class IntakeSubsystem extends Subsystem {
     }
 
     public void depositHatchPanel() {
-		panelSolenoidIntake.set(DoubleSolenoid.Value.kForward);
+		//panelSolenoidIntake.set(DoubleSolenoid.Value.kForward);
 	}
 
 	public boolean holdingHatch(){
