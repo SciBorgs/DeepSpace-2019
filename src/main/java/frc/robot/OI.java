@@ -7,18 +7,20 @@ import frc.robot.subsystems.LiftSubsystem.Target;
 
 public class OI {
     public Joystick rightStick, leftStick;
-    public JoystickButton switchToRetroreflectiveButton, followBallButton, lineupButton, startZLift, liftLow, liftMid, liftHigh;
+    public JoystickButton switchToRetroreflectiveButton, followBallButton, lineupButton, startZLift, liftLow, liftMid, liftHigh, suckButton, spitButton;
 
     public OI() {
         rightStick = new Joystick(PortMap.JOYSTICK_RIGHT);
         leftStick = new Joystick(PortMap.JOYSTICK_LEFT);
 
-        switchToRetroreflectiveButton = new JoystickButton(rightStick, PortMap.JOYSTICK_RIGHT_BUTTON);
-        switchToRetroreflectiveButton.whenPressed(new SwitchToRetroreflectiveCommand());
-        switchToRetroreflectiveButton.whenReleased(new SwitchToCargoCommand());
+        suckButton = new JoystickButton(rightStick, PortMap.JOYSTICK_CENTER_BUTTON);
+        suckButton.whenPressed(new ConditionalSuckCommand());
         
-        followBallButton = new JoystickButton(leftStick, PortMap.JOYSTICK_LEFT_BUTTON);
-        //followBallButton.whileHeld(new CargoFollowCommand());
+        spitButton = new JoystickButton(rightStick, PortMap.JOYSTICK_RIGHT_BUTTON);
+
+        //switchToRetroreflectiveButton = new JoystickButton(rightStick, PortMap.JOYSTICK_RIGHT_BUTTON);
+        //switchToRetroreflectiveButton.whenPressed(new SwitchToRetroreflectiveCommand());
+        //switchToRetroreflectiveButton.whenReleased(new SwitchToCargoCommand());
 
         lineupButton = new JoystickButton(leftStick, PortMap.JOYSTICK_TRIGGER);
         //lineupButton.whenPressed(new ResetLineupInfoCommand());
@@ -34,5 +36,6 @@ public class OI {
         liftLow.whenPressed(new LiftCommand(Target.Low));
         liftMid.whenPressed(new LiftCommand(Target.Mid));
         liftHigh.whenPressed(new LiftCommand(Target.High));
+
     }
 }

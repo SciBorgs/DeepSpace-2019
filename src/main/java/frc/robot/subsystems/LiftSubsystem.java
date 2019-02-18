@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import frc.robot.PID;
 import frc.robot.PortMap;
 import frc.robot.Utils;
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -60,7 +61,7 @@ public class LiftSubsystem extends Subsystem{
 		boolean hitCorrectHeight = Math.abs(currentLiftHeight - targetLiftHeight) < HEIGHT_PRECISION;
 		boolean hitCorrectAngle  = Math.abs(currentArmAngle - targetAngle) < ANGLE_PRECISION;
 		if (hitCorrectHeight && hitCorrectAngle){
-			depositObject();
+			//Robot.intakeSubsystem.depositObject(); Remove Method
 		} else {
 		 armPID.add_measurement(targetAngle      - currentArmAngle);
 		liftPID.add_measurement(targetLiftHeight - currentLiftHeight);
@@ -68,44 +69,21 @@ public class LiftSubsystem extends Subsystem{
 		setArmTiltSpeed(armPID.getOutput());
 		}
 	}
-
-	private void depositObject(){
-		setLiftSpeed(0);
-		setArmTiltSpeed(0);
-		if (holdingHatch()){
-			depositHatchPanel();
-		} else {
-				depositCargo();
-		}
-	}
 	
+	public boolean atMaxAngle(){
+		return false;
+	}
+
 	private double getTalonAngle(TalonSRX talon){
 		return talon.getSensorCollection().getQuadraturePosition() / (TICKS_PER_REV * 2 * Math.PI);
 	}
 
-	private double getLiftHeight() {
+	public double getLiftHeight() {
 		return getTalonAngle(liftTalon) * ARM_WHEEL_RADIUS + INITIAL_HEIGHT;
 	}
 	
 	private double getArmAngle() {
 		return getTalonAngle(armTiltTalonLeft) + INITIAL_ANGLE;
-	}
-
-	public void depositHatchPanel() {
-		panelSolenoidIntake.set(DoubleSolenoid.Value.kForward);
-	}
-	public void depositCargo(){
-		return;
-	}
-
-	public boolean holdingHatch(){ // these need to be corrected
-		return false;
-	}
-	public boolean holdingCargo(){
-		return true;
-	}
-	public boolean atMaxAngle(){
-		return false;
 	}
 
     public void setLiftSpeed(double speed) {

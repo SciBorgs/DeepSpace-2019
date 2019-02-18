@@ -26,11 +26,11 @@ public class Robot extends IterativeRobot {
     public static GearShiftSubsystem gearShiftSubsystem;// = new GearShiftSubsystem();
     public static ZLiftSubsystem zLiftSubsystem;// = new ZLiftSubsystem();
     public static LiftSubsystem liftSubsystem;// = new LiftSubsystem();
+    public static IntakeSubsystem intakeSubsystem;
     //public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
     public static Lineup lineup;// = new Lineup();
     public static PigeonIMU pigeon;
     public static TalonSRX pigeonTalon;
-    public static DigitalInput ballLimitSwitch, hatchLimitSwitch;
 
     public static final double ARM_P_CONSTANT = .1;
     public static final double ARM_D_CONSTANT = .1;    
@@ -44,8 +44,6 @@ public class Robot extends IterativeRobot {
 
 		pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
         pigeon = new PigeonIMU(pigeonTalon);
-        ballLimitSwitch = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);
-        hatchLimitSwitch = new DigitalInput(PortMap.HATCH_LIMIT_SWITCH);
 
         //pigeon.setYaw(0., 0);
        //pigeon.enterCalibrationMode(CalibrationMode.Temperature, 10);

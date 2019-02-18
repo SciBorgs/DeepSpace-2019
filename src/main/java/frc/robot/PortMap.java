@@ -34,6 +34,7 @@ public class PortMap {
     public static final int LIFT_TALON = 6;
     public static final int ARM_TILT_TALON_LEFT = 7;
     public static final int ARM_TILT_TALON_RIGHT = 8;
+    public static final int INTAKE_TALON = 10;
 
     //***************LIMIT*SWITCHES**************//
 
@@ -43,6 +44,7 @@ public class PortMap {
     //***************DOUBLE*SOLENOIDS*************//
 
     public static final int[] GEAR_SHIFTER_SOLENOID = {0, 1};
+    public static final int[] INTAKE_SOLENOID = {2, 3};
 
     public static final int LEFT_ZLIFT = 2;
     public static final int RIGHT_ZLIFT = 8;

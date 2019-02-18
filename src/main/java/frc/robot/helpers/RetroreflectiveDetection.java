@@ -19,12 +19,9 @@ public class RetroreflectiveDetection {
     public final static double SEPERATION = .31; // Distance between the centers about
 
     public static void modeToRetroreflectiveByLimitSwitch() {
-        if (stateOfLimitSwitch()) {modeToRetroreflective();}
+        if (Robot.intakeSubsystem.stateOfLimitSwitch()) {modeToRetroreflective();}
     }
 
-    public static boolean stateOfLimitSwitch() { // True is closed, false is open
-        return (!Robot.ballLimitSwitch.get() || !Robot.hatchLimitSwitch.get());
-    }
 
     public static void modeToRetroreflective() {
         Robot.limelightSubsystem.setCameraParams("ledMode", 3); // Force LED Off
