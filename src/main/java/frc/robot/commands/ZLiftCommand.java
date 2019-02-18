@@ -2,17 +2,18 @@ package frc.robot.commands;
 
 import frc.robot.*;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 public class ZLiftCommand extends Command {
-    private boolean m_stop;
+    private JoystickButton control;
 
-    public ZLiftCommand(boolean stop) {
+    public ZLiftCommand(JoystickButton control) {
         requires(Robot.zLiftSubsystem);
 
         // m_stop tells ZLiftCommand whether to stop.
         // m_stop is true when the button used for calling
         // ZLiftCommand is released.
-        m_stop = stop;
+        this.control = control;
     }
 
     @Override
@@ -28,7 +29,7 @@ public class ZLiftCommand extends Command {
 
     @Override
     protected boolean isFinished() {
-        return m_stop;
+        return !control.get();
     }
 
     @Override

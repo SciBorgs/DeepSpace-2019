@@ -1,29 +1,16 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
-
+import frc.robot.helpers.RetroreflectiveDetection;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 
 
-public class ResetLineupInfoCommand extends Command {
+public class ResetLineupInfoCommand extends InstantCommand {
     
-    public ResetLineupInfoCommand() {
-    }
+    public ResetLineupInfoCommand() {}
 
-    @Override protected void initialize(){
-        Robot.lineup.resetFound();
-    }
     @Override protected void execute(){
-        return;
-    }
-    @Override protected boolean isFinished(){
-        return true;
-    }
-    @Override protected void end(){
-        return;
-    }
-    @Override protected void interrupted(){
-        end();
+        Robot.lineup.resetFound();
     }
 }

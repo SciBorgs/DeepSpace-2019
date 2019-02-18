@@ -5,11 +5,10 @@ import frc.robot.subsystems.LiftSubsystem.Target;
 
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 
-public class LiftCommand extends Command {
+public class LiftCommand extends InstantCommand {
 	private Target target;
-	
 
 	public LiftCommand(Target target) {
 		requires(Robot.liftSubsystem);
@@ -17,16 +16,7 @@ public class LiftCommand extends Command {
 	}
 
 	@Override
-	protected boolean isFinished() {
-		return true;
-	}
-	@Override
-	protected void initialize(){
+	protected void execute(){
 		Robot.liftSubsystem.moveToHeight(target);
-	}
-	
-	@Override
-	protected void execute() {
-		return;
 	}
 }

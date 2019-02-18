@@ -11,6 +11,6 @@ public class ConditionalSuckCommand extends ConditionalCommand {
     }
 
     @Override protected boolean condition() {
-        return Robot.liftSubsystem.getLiftHeight() != 0;
+        return !Robot.intakeSubsystem.holdingGamePiece();
     }
 }

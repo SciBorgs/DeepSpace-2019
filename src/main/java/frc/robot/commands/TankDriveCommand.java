@@ -14,16 +14,16 @@ public class TankDriveCommand extends Command {
         leftStick = Robot.oi.leftStick;
     }
 
-    @Override protected void    initialize()  {
+    @Override protected void initialize() {
         Robot.driveSubsystem.setSpeedTank(0, 0);
     }
-    @Override protected void    execute()     {
+    @Override protected void execute() {
         Robot.driveSubsystem.setSpeed(leftStick, rightStick);
     }
         
-    @Override protected boolean isFinished()  {
+    @Override protected boolean isFinished() {
         return false;}
-    @Override protected void    end()         {
+    @Override protected void end() {
         Robot.driveSubsystem.setSpeedTank(0, 0);
     }
     @Override protected void    interrupted() {
