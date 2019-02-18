@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class IntakeSubsystem extends Subsystem {
 
+	public enum IntakeMode {Upright, Normal}
+	public enum HatchControl {Deposit, Normal}
     private TalonSRX intakeTalon;
 	private DoubleSolenoid intakeModeSolenoid, hatchControlSolenoid;
 	private DigitalInput ballLimitSwitch, hatchLimitSwitch;
@@ -36,20 +38,20 @@ public class IntakeSubsystem extends Subsystem {
         return (!ballLimitSwitch.get() || !hatchLimitSwitch.get());
     }
 
-    public void depositHatchPanel() {
-		hatchControlSolenoid.set(Value.kForward);
+	public void updateHatchControl (HatchControl control) {
+		if (control == HatchControl.Deposit) {
+			hatchControlSolenoid.set(Value.kForward);
+		} else {
+			hatchControlSolenoid.set(Value.kReverse);
+		}
 	}
 
-	public void retractHatchPanel() {
-		hatchControlSolenoid.set(Value.kReverse);
-	}
-
-	public void uprightIntakeMode() {
-		intakeModeSolenoid.set(Value.kForward);
-	}
-
-	public void reverseIntakeMode() {
-		intakeModeSolenoid.set(Value.kReverse);
+	public void updateIntakeMode (IntakeMode mode) {
+		if (mode == IntakeMode.Upright) {
+			intakeModeSolenoid.set(Value.kForward);
+		} else {
+			intakeModeSolenoid.set(Value.kReverse);
+		}
 	}
 
 	public boolean holdingHatch(){

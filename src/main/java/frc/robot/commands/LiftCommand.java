@@ -6,15 +6,12 @@ import frc.robot.subsystems.LiftSubsystem.Target;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class LiftCommand extends InstantCommand {
-	private Target target;
-
-	public LiftCommand(Target target) {
+	public LiftCommand() {
 		requires(Robot.liftSubsystem);
-		this.target = target;
 	}
 
 	@Override
 	protected void execute(){
-		Robot.liftSubsystem.moveToHeight(target);
+		Robot.liftSubsystem.moveToHeight(Robot.liftSubsystem.getTarget());
 	}
 }

@@ -4,21 +4,23 @@ import frc.robot.helpers.*;
 import frc.robot.PortMap;
 import frc.robot.Robot;
 import frc.robot.Utils;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.command.Subsystem;
-
 import com.ctre.phoenix.Util;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import java.util.Hashtable;
 
 public class LiftSubsystem extends Subsystem {	
 
-	public enum Target { High, Mid, Low }
+	public enum Target { High, Mid, Low, Initial }
 	public TalonSRX liftTalon, armTiltTalonLeft, armTiltTalonRight;
 
 	private PID armPID;
 	private PID liftPID;
 	private double armP = 0.1, armI = 0.0, armD = 0.0, liftP = 0.1, liftI = 0.0, liftD = 0.0;
+	private SimpleWidget levelCounterWidget;
+	private int levelCounter = 0;
 	static final double TICKS_PER_REV = 10000;
 	static final double ARM_WHEEL_RADIUS = 1; // In meters, the radius of the wheel that is pulling up the lift
 	static final double ROCKET_HATCH_GAP = Utils.inchesToMeters(28);
@@ -46,6 +48,8 @@ public class LiftSubsystem extends Subsystem {
     }
 	
 	public LiftSubsystem() {
+		ShuffleboardTab levelCounterTab = Shuffleboard.getTab("Level Counter");
+		levelCounterWidget = levelCounterTab.add("Level Counter", -1).withWidget("Text View").withPosition(1, 0).withSize(2, 2);
 		liftTalon       = new TalonSRX(PortMap.LIFT_TALON);
 		armTiltTalonLeft = new TalonSRX(PortMap.ARM_TILT_TALON_LEFT);
 		armTiltTalonRight = new TalonSRX(PortMap.ARM_TILT_TALON_RIGHT);
@@ -67,6 +71,9 @@ public class LiftSubsystem extends Subsystem {
 	}
 
 	public void moveToHeight(Target target) {
+		if (target == Target.Initial) {
+			goDown();
+		}
 		double targetHeight = getTargetHeight(target);
 		double targetLiftHeight = Math.min(targetHeight - ARM_LENGTH * Math.sin(ARM_MAX_ANGLE), MAX_HINGE_HEIGHT);
 		double minimumAngle = Math.asin(targetHeight - targetLiftHeight / ARM_LENGTH);
@@ -79,6 +86,35 @@ public class LiftSubsystem extends Subsystem {
 		} else {
 			moveToTarget(targetAngle, targetLiftHeight);
 		}
+	}
+
+	public void updateLevelCounter(int val) {
+		levelCounter += val;
+		if (levelCounter < 0) {
+			levelCounter = 0;
+		}
+		if (levelCounter > 4) {
+			levelCounter = 4;
+		}
+	}
+
+	public Target getTarget() {
+		switch (levelCounter) {
+			case 0:
+				return Target.Initial;
+			case 1:
+				return Target.Low;
+			case 2:
+				return Target.Mid;
+			case 3:
+				return Target.High;
+			default:
+				return Target.Initial;
+		}
+	}
+
+	public boolean updateLevelCounterWidget() {
+		return levelCounterWidget.getEntry().setNumber(levelCounter);
 	}
 
 	public void goDown(){

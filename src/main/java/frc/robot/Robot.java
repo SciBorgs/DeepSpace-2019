@@ -1,10 +1,10 @@
 package frc.robot;
+
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.IntakeSubsystem.HatchControl;
+import frc.robot.subsystems.IntakeSubsystem.IntakeMode;
 import frc.robot.commands.*;
 import frc.robot.helpers.*;
-
-
-
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -38,8 +38,8 @@ public class Robot extends IterativeRobot {
         positioningSubsystem.getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
-        new IntakeUprightCommand().start();
-        new HatchRetractCommand().start();
+        new IntakeModeCommand(IntakeMode.Upright).start();
+        new HatchControlCommand(HatchControl.Normal);
 
            /* STARTS THE LIDAR     
         try {
