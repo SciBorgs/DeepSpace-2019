@@ -3,8 +3,7 @@ import frc.robot.subsystems.*;
 import frc.robot.commands.*;
 import frc.robot.helpers.*;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.sensors.PigeonIMU;
+
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -25,11 +24,9 @@ public class Robot extends IterativeRobot {
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
     public static LiftSubsystem liftSubsystem = new LiftSubsystem();
-    public static IntakeSubsystem intakeSubsystem;
+    public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
     public static Lineup lineup = new Lineup();
-    public static Pigeon pigeon;
-    public static TalonSRX pigeonTalon;
 
     public static final double ARM_P_CONSTANT = .1;
     public static final double ARM_D_CONSTANT = .1;    
@@ -38,14 +35,11 @@ public class Robot extends IterativeRobot {
 
     public void robotInit() {
 
-		pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
-        pigeon = new Pigeon(pigeonTalon);
-
-        //pigeon.setYaw(0., 0);
+        positioningSubsystem.getPigeon().setYaw(0., 5);
         oi = new OI();
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
-        Compressor c = new Compressor();
+//        Compressor c = new Compressor();
 //        c.stop();
 
            /* STARTS THE LIDAR     
@@ -62,16 +56,16 @@ public class Robot extends IterativeRobot {
     }
 
     public void robotPeriodic() {
-        positioningSubsystem.updatePositionTank();
+        //positioningSubsystem.updatePositionTank();
         //positioningSubsystem.printPosition();
         //retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
         //gearShiftSubsystem.shiftGear(); 	
-        intakeSubsystem.secureCargo();
+        /*intakeSubsystem.secureCargo();
         if (intakeSubsystem.holdingGamePiece()){
             RetroreflectiveDetection.modeToRetroreflective();
         } else {
             cargoFollowing.modeToCargo();
-        }
+        }*/
     }
         
     public void autonomousInit() {

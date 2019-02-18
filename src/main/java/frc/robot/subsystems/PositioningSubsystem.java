@@ -3,18 +3,22 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import frc.robot.Robot;
-import frc.robot.Utils;
-
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.PortMap;
+import frc.robot.Robot;
+import frc.robot.Utils;
+import frc.robot.helpers.Pigeon;
 
 public class PositioningSubsystem extends Subsystem {
 
-	public static final double INCHES_PER_METER = 39.37;
+    public static final double INCHES_PER_METER = 39.37;
     public static final double WHEEL_RADIUS = 3. / INCHES_PER_METER; // In meters
-    public static final double ENC_WHEEL_RATIO = (4. / 25.) * (1. / 1.2); // 4 rotations of the wheel is 25 rotations of the encoder
+    public static final double ENC_WHEEL_RATIO = (4. / 25.) * (1. / 1.2); // 4 rotations of the wheel is 25 rotations of
+                                                                          // the encoder
     public static final double ROBOT_RADIUS = 15.945 / INCHES_PER_METER; // Half the distance from wheel to wheel
     public static final double ROBOT_WIDTH = 2 * ROBOT_RADIUS;
 
@@ -29,6 +33,8 @@ public class PositioningSubsystem extends Subsystem {
     private Hashtable<CANSparkMax,ArrayList<Double>> encPoss;
     private Hashtable<CANSparkMax,Boolean> negated;
     private ArrayList<CANSparkMax> sparks;
+    private Pigeon pigeon;
+    private TalonSRX pigeonTalon;
     
     public ArrayList<Double> getRobotXs(){
         return robotXs;
@@ -50,9 +56,12 @@ public class PositioningSubsystem extends Subsystem {
 
     public PositioningSubsystem(){
 
+        pigeonTalon = new TalonSRX(PortMap.PIGEON_TALON);
+        pigeon = new Pigeon(pigeonTalon);
+
         ORIGINAL_X = 0;
         ORIGINAL_Y = 0;
-        ORIGINAL_ANGLE = Robot.pigeon.getAngle();
+        ORIGINAL_ANGLE = pigeon.getAngle();
 
         robotXs     = new ArrayList<Double>();
         robotYs     = new ArrayList<Double>();
@@ -68,6 +77,10 @@ public class PositioningSubsystem extends Subsystem {
         resetPosition();
         
     }
+
+    public PigeonIMU getPigeon(){
+        return pigeon.getPigeon();
+    }
     
     public void setPosition(double robotX, double robotY, double angle) {
     	trimAddDef(robotXs,robotX);
@@ -76,7 +89,7 @@ public class PositioningSubsystem extends Subsystem {
     }
     
     public void resetPosition() {
-    	ORIGINAL_ANGLE = Robot.pigeon.getAngle();
+    	ORIGINAL_ANGLE = pigeon.getAngle();
         setPosition(ORIGINAL_X,ORIGINAL_Y,ORIGINAL_ANGLE);
         for (CANSparkMax spark : sparks)
             addEncPos(spark);
@@ -151,7 +164,7 @@ public class PositioningSubsystem extends Subsystem {
 
     public double[] nextPosPigeon(double x, double y, double theta, double[][] changeAngles){
         // Works for all forms of drive where the displacement is the average of the movement vectors over the wheels
-        double newTheta = Robot.pigeon.getAngle();
+        double newTheta = pigeon.getAngle();
         double avgTheta = (theta + adjustTheta(newTheta))/2;
         for(double[] motorData : changeAngles){
             x += motorData[0] * Math.cos(avgTheta + motorData[1]) / changeAngles.length;
