@@ -19,7 +19,9 @@ public class RetroreflectiveDetection {
     public final static double SEPERATION = .31; // Distance between the centers about
 
     public static void modeToRetroreflectiveByLimitSwitch() {
-        if (Robot.intakeSubsystem.stateOfLimitSwitch()) {modeToRetroreflective();}
+        if (Robot.intakeSubsystem.holdingGamePiece()) {
+            modeToRetroreflective();
+        }
     }
 
 

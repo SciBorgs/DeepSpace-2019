@@ -5,9 +5,9 @@ import frc.robot.Robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
+import com.revrobotics.CANSparkMax;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class DriveSubsystem extends Subsystem {
@@ -18,8 +18,8 @@ public class DriveSubsystem extends Subsystem {
 
     // deadzones by Alejandro at Chris' request. Graph them with the joystick function to understand the math.
     // https://www.desmos.com/calculator/ch19ahiwol
-    private static final double INPUT_DEADZONE = 0.09; // deadzone because the joysticks are bad and they detect input when there is none
-    private static final double MOTOR_MOVEPOINT = 0.1; // motor controller output that gets the wheels to turn
+    private static final double INPUT_DEADZONE = 0.11; // deadzone because the joysticks are bad and they detect input when there is none
+    private static final double MOTOR_MOVEPOINT = 0.07; // motor controller output that gets the wheels to turn
     private static final double EXPONENT = 10; // x^exponent to in the graph. x=0 is linear. x>0 gives more control in low inputs
     private static final double MAX_JOYSTICK = 1; // max joystick output value
 
@@ -30,6 +30,7 @@ public class DriveSubsystem extends Subsystem {
     private CANSparkMax newMotorObject(int port){
         return new CANSparkMax(port, MotorType.kBrushless);
     }
+
 	/**
      * Initialize robot's motors
      */
@@ -96,7 +97,7 @@ public class DriveSubsystem extends Subsystem {
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
         setMotorSpeed(lf, leftSpeed);
-        //setMotorSpeed(rf, -rightSpeed);
+        setMotorSpeed(rf, -rightSpeed);
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {

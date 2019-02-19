@@ -81,8 +81,8 @@ public class PositioningSubsystem extends Subsystem {
         
     }
 
-    public PigeonIMU getPigeon(){
-        return pigeon.getPigeon();
+    public Pigeon getPigeon(){
+        return pigeon;
     }
     
     public void setPosition(double robotX, double robotY, double angle) {

@@ -1,9 +1,10 @@
 package frc.robot;
+
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.IntakeSubsystem.HatchDepositControl;
+import frc.robot.subsystems.IntakeSubsystem.IntakeMode;
 import frc.robot.commands.*;
 import frc.robot.helpers.*;
-
-
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -35,12 +36,11 @@ public class Robot extends TimedRobot {
     
 
     public void robotInit() {
-
-        positioningSubsystem.getPigeon().setYaw(0., 5);
+        positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
-//        Compressor c = new Compressor();
-//        c.stop();
+        new IntakeModeCommand(IntakeMode.Upright).start();
+        new HatchControlCommand(HatchDepositControl.Hold);
 
            /* STARTS THE LIDAR     
         try {

@@ -1,11 +1,9 @@
 package frc.robot.helpers;
 
 import frc.robot.Robot;
-import frc.robot.helpers.*;
 
 import java.util.*;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Lineup {
 

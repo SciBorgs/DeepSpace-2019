@@ -10,13 +10,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Command;
 
-
 public class TankDriveCommand extends Command {
     private Joystick rightStick, leftStick;
     
     public TankDriveCommand() {
         rightStick = Robot.oi.rightStick;
-        leftStick = Robot.oi.leftStick;
+        leftStick  = Robot.oi.leftStick;
     }
 
     @Override protected void initialize() {
@@ -24,8 +23,9 @@ public class TankDriveCommand extends Command {
     }
     @Override protected void execute() {
         //Robot.driveSubsystem.setSpeed(leftStick, rightStick);
-        System.out.println("DI ball: "  + Robot.intakeSubsystem.ballLimitSwitch.get());
-        System.out.println("DI hatch: " + Robot.intakeSubsystem.hatchLimitSwitch.get());
+        //System.out.println("angle: " + Robot.positioningSubsystem.getPigeon().getAngle());
+        System.out.println("DI cargo: " + Robot.intakeSubsystem.holdingCargoSecure());
+        System.out.println("DI hatch: " + Robot.intakeSubsystem.holdingHatch());
     }
         
     @Override protected boolean isFinished() {

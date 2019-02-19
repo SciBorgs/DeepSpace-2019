@@ -2,8 +2,6 @@ package frc.robot.helpers;
 
 import frc.robot.Robot;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
-
 public class CargoFollowing {
 
     PID ballFollowerPID;
