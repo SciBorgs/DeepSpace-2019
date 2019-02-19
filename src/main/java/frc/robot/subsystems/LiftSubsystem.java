@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import java.util.Hashtable;
@@ -17,13 +19,16 @@ public class LiftSubsystem extends Subsystem{
 	
 
 	public enum Target { High, Mid, Low }
-	public TalonSRX liftTalon, armTiltTalonLeft, armTiltTalonRight;
+	public CANSparkMax liftSpark;
+	public TalonSRX armTiltTalon;
 
 	private PID armPID;
 	private PID liftPID;
 	private double armP = 0.1, armI = 0.0, armD = 0.0, liftP = 0.1, liftI = 0.0, liftD = 0.0;
-	static final double TICKS_PER_REV = 10000;
-	static final double ARM_WHEEL_RADIUS = 1; // In meters, the radius of the wheel that is pulling up the lift
+	static final double STATIC_INPUT = 0.1; // the input that will keep the cascade level
+	static final double SPARK_ENCODER_WHEEL_RATIO = 1;
+	static final double TALON_ENCODER_WHEEL_RATIO = 1;
+	static final double ARM_WHEEL_RADIUS = Utils.inchesToMeters(1.5); // In meters, the radius of the wheel that is pulling up the lift
 	static final Hashtable<Target,Double> HEIGHTS = // In meters
 		new Hashtable<>(){{
 			put(Target.High,2.12);
@@ -35,8 +40,8 @@ public class LiftSubsystem extends Subsystem{
 	static final double ARM_MAX_ANGLE = Math.toRadians(66);
 	static final double ARM_LENGTH = Utils.inchesToMeters(25.953);
 	static final double DESIRED_ANGLE = Math.toRadians(50);
-	static final double INITIAL_ANGLE = -Math.PI/2; // In radians
-	static final double INITIAL_HEIGHT = 0; // In meters
+	static final double INITIAL_HEIGHT = Utils.inchesToMeters(12); // In meters
+	static final double INITIAL_ANGLE = Math.asin(-INITIAL_HEIGHT / ARM_LENGTH); // In radians
 	static final double HEIGHT_PRECISION = 0.05; // In meters
 	static final double ANGLE_PRECISION = Math.toRadians(3);
 	static final double IS_BOTTOM_PRECISION = 0.05; // In meters, precision as to whether it's at the bottom
@@ -46,9 +51,8 @@ public class LiftSubsystem extends Subsystem{
     }
 	
 	public LiftSubsystem() {
-		liftTalon       = new TalonSRX(PortMap.LIFT_TALON);
-		armTiltTalonLeft = new TalonSRX(PortMap.ARM_TILT_TALON_LEFT);
-		armTiltTalonRight = new TalonSRX(PortMap.ARM_TILT_TALON_RIGHT);
+		liftSpark    = new CANSparkMax(PortMap.LIFT_SPARK, MotorType.kBrushless);
+		armTiltTalon = new TalonSRX(PortMap.ARM_TILT_TALON);
 		liftPID = new PID(liftP, liftI, liftD);
 		armPID  = new PID(armP, armI, armD);
 	}
@@ -75,17 +79,12 @@ public class LiftSubsystem extends Subsystem{
 	public boolean atMaxAngle(){
 		return false;
 	}
-
-	private double getTalonAngle(TalonSRX talon){
-		return talon.getSensorCollection().getQuadraturePosition() / (TICKS_PER_REV * 2 * Math.PI);
-	}
-
 	public double getLiftHeight() {
-		return getTalonAngle(liftTalon) * ARM_WHEEL_RADIUS + INITIAL_HEIGHT;
+		return SPARK_ENCODER_WHEEL_RATIO * Robot.positioningSubsystem.getSparkAngle(liftSpark) * ARM_WHEEL_RADIUS + INITIAL_HEIGHT;
 	}
 	
 	public double getArmAngle() {
-		return getTalonAngle(armTiltTalonLeft) + INITIAL_ANGLE;
+		return TALON_ENCODER_WHEEL_RATIO * Robot.positioningSubsystem.getTalonAngle(armTiltTalon) + INITIAL_ANGLE;
 	}
 
 	public boolean liftAtBottom(){
@@ -93,12 +92,11 @@ public class LiftSubsystem extends Subsystem{
 	} 
 
     public void setLiftSpeed(double speed) {
-    	Utils.setTalon(liftTalon, speed);
+    	Robot.driveSubsystem.setMotorSpeed(liftSpark, STATIC_INPUT + speed);
 	}
 	
 	public void setArmTiltSpeed(double speed) { 
-		Utils.setTalon(armTiltTalonLeft, speed);
-		Utils.setTalon(armTiltTalonRight, speed);
+		Robot.driveSubsystem.setMotorSpeed(armTiltTalon, speed);
 	}
     
 }	 

@@ -18,7 +18,7 @@ public class DriveSubsystem extends Subsystem {
 
     // deadzones by Alejandro at Chris' request. Graph them with the joystick function to understand the math.
     // https://www.desmos.com/calculator/ch19ahiwol
-    private static final double INPUT_DEADZONE = 0.06; // deadzone because the joysticks are bad and they detect input when there is none
+    private static final double INPUT_DEADZONE = 0.09; // deadzone because the joysticks are bad and they detect input when there is none
     private static final double MOTOR_MOVEPOINT = 0.1; // motor controller output that gets the wheels to turn
     private static final double EXPONENT = 10; // x^exponent to in the graph. x=0 is linear. x>0 gives more control in low inputs
     private static final double MAX_JOYSTICK = 1; // max joystick output value
@@ -76,8 +76,8 @@ public class DriveSubsystem extends Subsystem {
     }
 
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
-        double left = processStick(leftStick);
-        double right = -processStick(rightStick);
+        double left  = processStick(leftStick);
+        double right = processStick(rightStick);
         System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
         setSpeedTank(left, right);
     }
@@ -87,13 +87,16 @@ public class DriveSubsystem extends Subsystem {
     }
     
     public void setMotorSpeed(CANSparkMax motor, double speed){
-        System.out.println("setting " + motor.getDeviceId() + " to " + speed);
+        System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
         motor.set(speed);
+    }
+    public void setMotorSpeed(TalonSRX motor, double speed){
+        motor.set(ControlMode.PercentOutput, speed);
     }
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
-        setMotorSpeed(lf, -leftSpeed);
-        setMotorSpeed(rf, rightSpeed);
+        setMotorSpeed(lf, leftSpeed);
+        //setMotorSpeed(rf, -rightSpeed);
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {

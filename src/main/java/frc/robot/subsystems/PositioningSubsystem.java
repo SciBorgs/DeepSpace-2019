@@ -19,8 +19,11 @@ public class PositioningSubsystem extends Subsystem {
     public static final double WHEEL_RADIUS = 3. / INCHES_PER_METER; // In meters
     public static final double ENC_WHEEL_RATIO = (4. / 25.) * (1. / 1.2); // 4 rotations of the wheel is 25 rotations of
                                                                           // the encoder
+    public static final double TICKS_PER_REV = 4096;
     public static final double ROBOT_RADIUS = 15.945 / INCHES_PER_METER; // Half the distance from wheel to wheel
     public static final double ROBOT_WIDTH = 2 * ROBOT_RADIUS;
+
+    public static final double SPARK_TICKS_PER_ROTATION = 42;
 
     public static final double GLOBAL_ORIGINAL_ANGLE = Math.PI/2;
     public double ORIGINAL_ANGLE, ORIGINAL_X, ORIGINAL_Y;
@@ -93,13 +96,18 @@ public class PositioningSubsystem extends Subsystem {
         setPosition(ORIGINAL_X,ORIGINAL_Y,ORIGINAL_ANGLE);
         for (CANSparkMax spark : sparks)
             addEncPos(spark);
-    	}
+        }
+
+    public double getTalonAngle(TalonSRX talon){
+        return talon.getSensorCollection().getQuadraturePosition() / TICKS_PER_REV * 2 * Math.PI;
+    }
+	public double getSparkAngle(CANSparkMax spark){
+		return SPARK_TICKS_PER_ROTATION * spark.getEncoder().getPosition() * 2 * Math.PI;
+	}
 
     public double encPos(CANSparkMax motor) {
         // Returns the encoder position of a spark
-        double rotations = motor.getEncoder().getPosition();
-        //System.out.println(raw);
-        double value = rotations * ENC_WHEEL_RATIO * (2 * Math.PI * WHEEL_RADIUS);
+        double value = ENC_WHEEL_RATIO * getSparkAngle(motor) * WHEEL_RADIUS;
         return negated.get(motor) ? (0 - value) : value;
     }
 

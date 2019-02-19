@@ -18,6 +18,8 @@ public class IntakeSubsystem extends Subsystem {
 	public static DigitalInput ballLimitSwitch, hatchLimitSwitch;
 	private double lastHeld;
 	private Timer timer;
+	public final static double SUCK_SPEED = 0.5;
+	public final static double SPIT_SPEED = SUCK_SPEED * -2;
 	public final static double SUCK_IF_OUT_PERIOD = 1; // The amount of time that the intake should suck if the ball stops pressing the button in seconds
 
     public IntakeSubsystem() {
@@ -27,7 +29,7 @@ public class IntakeSubsystem extends Subsystem {
 
 		intakeTalon = new TalonSRX(PortMap.INTAKE_TALON);
 		//panelSolenoidIntake = new DoubleSolenoid(PortMap.INTAKE_SOLENOID[0], PortMap.INTAKE_SOLENOID[1]);
-		ballLimitSwitch = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);
+		ballLimitSwitch  = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);
         hatchLimitSwitch = new DigitalInput(PortMap.HATCH_LIMIT_SWITCH);
 	}
 
@@ -52,11 +54,11 @@ public class IntakeSubsystem extends Subsystem {
 	}
 
     public void suck() {
-        Utils.setTalon(intakeTalon, 1);
+        Utils.setTalon(intakeTalon, SUCK_SPEED);
     }
 
     public void spit() {
-        Utils.setTalon(intakeTalon, -1);
+        Utils.setTalon(intakeTalon, SPIT_SPEED);
 	}
 
 	public boolean cargoLoose() {
