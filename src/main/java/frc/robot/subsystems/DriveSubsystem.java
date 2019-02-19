@@ -14,7 +14,7 @@ public class DriveSubsystem extends Subsystem {
     // Define tested error values here
     double tankAngleP = 3;
 	double goalOmegaConstant = 1;
-    private CANSparkMax lf, lm, lb, rf, rm, rb;
+    public CANSparkMax lf, lm, lb, rf, rm, rb;
 
     // deadzones by Alejandro at Chris' request. Graph them with the joystick function to understand the math.
     // https://www.desmos.com/calculator/ch19ahiwol
@@ -42,7 +42,7 @@ public class DriveSubsystem extends Subsystem {
 		rf = newMotorObject(PortMap.RIGHT_FRONT_SPARK);
 		rm = newMotorObject(PortMap.RIGHT_MIDDLE_SPARK);
         rb = newMotorObject(PortMap.RIGHT_BACK_SPARK);
-        
+
         lm.follow(lf);
         lb.follow(lf);
 
@@ -58,25 +58,28 @@ public class DriveSubsystem extends Subsystem {
      * @return the processed axis value. Send this to the motors.
      */
     private double processAxis(double x) {
-        double sign = Math.abs(x) / x;
+        double sign = (x == 0) ? 1 : (Math.abs(x) / x);
         return sign * (MAX_JOYSTICK / axisFunction(MAX_JOYSTICK)) * axisFunction(Math.abs(x));
     }
 
     // Used by processAxis as the main function of the curves.
     private double axisFunction(double x) {
-        double adjustedX = Math.max(x - ALEJANDROS_CONSTANT, 0);
+        if (x < INPUT_DEADZONE){
+            return 0;
+        }
+        double adjustedX = x - ALEJANDROS_CONSTANT;
         return Math.pow(adjustedX, EXPONENT) * ((adjustedX) / (MAX_JOYSTICK - ALEJANDROS_CONSTANT));
-    }
-
-    public void setSpeed(Joystick leftStick, Joystick rightStick) {
-        double left = -processAxis(leftStick.getY());
-        double right = -processAxis(rightStick.getY());
-        System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
-        setSpeedTank(left, right);
     }
     
     public double processStick(Joystick stick){
         return processAxis(-stick.getY());
+    }
+
+    public void setSpeed(Joystick leftStick, Joystick rightStick) {
+        double left = processStick(leftStick);
+        double right = -processStick(rightStick);
+        System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
+        setSpeedTank(left, right);
     }
 	
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
@@ -84,12 +87,13 @@ public class DriveSubsystem extends Subsystem {
     }
     
     public void setMotorSpeed(CANSparkMax motor, double speed){
+        System.out.println("setting " + motor.getDeviceId() + " to " + speed);
         motor.set(speed);
     }
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
-		setMotorSpeed(lf, -leftSpeed);
-		setMotorSpeed(rf, rightSpeed);
+        setMotorSpeed(lf, -leftSpeed);
+        setMotorSpeed(rf, rightSpeed);
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
