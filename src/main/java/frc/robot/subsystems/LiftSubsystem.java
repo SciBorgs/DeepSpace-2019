@@ -18,7 +18,7 @@ public class LiftSubsystem extends Subsystem {
 
 	public CANSparkMax liftSpark;
 	public TalonSRX armTiltTalon;
-	public enum Target { High, Mid, Low, Initial }
+	public enum Target { High, Mid, Low, Initial, Slam }
 
 	private PID armPID;
 	private PID liftPID;
@@ -96,8 +96,8 @@ public class LiftSubsystem extends Subsystem {
 
 	public void updateLevelCounter(int val) {
 		levelCounter += val;
-		if (levelCounter < 0) {
-			levelCounter = 0;
+		if (levelCounter < -1) {
+			levelCounter = -1;
 		}
 		if (levelCounter > 4) {
 			levelCounter = 4;
@@ -106,6 +106,8 @@ public class LiftSubsystem extends Subsystem {
 
 	public Target getTarget() {
 		switch (levelCounter) {
+			case -1:
+				return Target.Slam;
 			case 0:
 				return Target.Initial;
 			case 1:
@@ -117,6 +119,10 @@ public class LiftSubsystem extends Subsystem {
 			default:
 				return Target.Initial;
 		}
+	}
+
+	public void pickupHatchFromGround(){
+		setArmTiltSpeed(PICKUP_HATCH_SPEED);
 	}
 
 	public boolean updateLevelCounterWidget() {
