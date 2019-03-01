@@ -55,11 +55,11 @@ public class IntakeSubsystem extends Subsystem {
 	}
 
 	public boolean holdingHatch(){
-		return hatchLimitSwitch.get();
+		return !(hatchLimitSwitch.get());
 	}
 
 	public boolean holdingCargoSecure(){
-		boolean holding = ballLimitSwitch.get();
+		boolean holding = !ballLimitSwitch.get();
 		if (holding){
 			lastHeld = timer.get();
 		}
@@ -74,12 +74,16 @@ public class IntakeSubsystem extends Subsystem {
 		return holdingCargoSecure() || cargoLoose();
 	}
 
+	public void setIntakeSpeed(double speed){
+		Utils.setTalon(intakeTalon, speed);
+	}
+
     public void suck() {
-        Utils.setTalon(intakeTalon, SUCK_SPEED);
+        setIntakeSpeed(SUCK_SPEED);
     }
 
     public void spit() {
-        Utils.setTalon(intakeTalon, SPIT_SPEED);
+        setIntakeSpeed(SPIT_SPEED);
 	}
 
 	public void pickupHatchFromGround(){

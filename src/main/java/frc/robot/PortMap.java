@@ -32,13 +32,13 @@ public class PortMap {
     public static final int PIGEON_TALON = 9;
 
     public static final int LIFT_TALON = 6;
-    public static final int ARM_TILT_TALON = 10;
-    public static final int INTAKE_TALON = 11;
+    public static final int ARM_TILT_TALON = 11; // CHANGE TO 10 FOR COMP
+    public static final int INTAKE_TALON = 12; // CHANGE TO 11 FOR COMP
 
     //***************LIMIT*SWITCHES**************//
 
-    public static final int BALL_LIMIT_SWITCH = 0;
-    public static final int HATCH_LIMIT_SWITCH = 1;
+    public static final int BALL_LIMIT_SWITCH = 8; // CHANGE TO 0 FOR COMP
+    public static final int HATCH_LIMIT_SWITCH = 9; // CHANGE TO 1 FOR COMP
 
     //***************DOUBLE*SOLENOIDS*************//
 

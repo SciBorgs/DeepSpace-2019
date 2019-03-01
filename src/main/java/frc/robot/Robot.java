@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
     }
 
     public void robotPeriodic() {
-        //positioningSubsystem.updatePositionTank();
+        positioningSubsystem.updatePositionTank();
         //positioningSubsystem.printPosition();
         //retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
         //gearShiftSubsystem.shiftGear(); 	

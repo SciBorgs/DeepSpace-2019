@@ -36,19 +36,20 @@ public class DriveSubsystem extends Subsystem {
      */
     public DriveSubsystem(){
 
+
 		lf = newMotorObject(PortMap.LEFT_FRONT_SPARK);
 		lm = newMotorObject(PortMap.LEFT_MIDDLE_SPARK);
-        lb = newMotorObject(PortMap.LEFT_BACK_SPARK);
+        //lb = newMotorObject(PortMap.LEFT_BACK_SPARK); // UNCOMMENT FOR ACTUAL ROBOT. COMMENTED OUT FOR PRACTICE B/C FALTY SPARK
         
 		rf = newMotorObject(PortMap.RIGHT_FRONT_SPARK);
 		rm = newMotorObject(PortMap.RIGHT_MIDDLE_SPARK);
-        rb = newMotorObject(PortMap.RIGHT_BACK_SPARK);
+        //rb = newMotorObject(PortMap.RIGHT_BACK_SPARK); // UNCOMMENT FOR ACTUAL ROBOT. COMMENTED OUT FOR PRACTICE B/C FALTY SPARK
 
         lm.follow(lf);
-        lb.follow(lf);
+        // lb.follow(lf); // UNCOMMENT FOR ACTUAL ROBOT. COMMENTED OUT FOR PRACTICE B/C FALTY SPARK
 
         rm.follow(rf);
-        rb.follow(rf);
+        //rb.follow(rf); // UNCOMMENT FOR ACTUAL ROBOT. COMMENTED OUT FOR PRACTICE B/C FALTY SPARK
 	}
 
     /**
@@ -79,8 +80,8 @@ public class DriveSubsystem extends Subsystem {
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
         double left  = processStick(leftStick);
         double right = processStick(rightStick);
-        System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
-        setSpeedTank(left, right);
+        //System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
+        setSpeedTankAngularControl(left, right);
     }
 	
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
@@ -88,7 +89,7 @@ public class DriveSubsystem extends Subsystem {
     }
     
     public void setMotorSpeed(CANSparkMax motor, double speed){
-        System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
+        //System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
         motor.set(speed);
     }
     public void setMotorSpeed(TalonSRX motor, double speed){
@@ -96,8 +97,8 @@ public class DriveSubsystem extends Subsystem {
     }
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
-        setMotorSpeed(lf, leftSpeed);
-        setMotorSpeed(rf, -rightSpeed);
+        setMotorSpeed(lf, leftSpeed * 1.5); // GET RID OF 1.5 MULTIPLIER FOR ACTUAL ROBOT. COMMENTED OUT FOR PRACTICE B/C FALTY SPARK
+        setMotorSpeed(rf, -rightSpeed * 1.5);
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {

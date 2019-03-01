@@ -23,9 +23,9 @@ public class LiftSubsystem extends Subsystem {
 	private PID armPID;
 	private PID liftPID;
 	private double armP = 0.1, armI = 0.0, armD = 0.0, liftP = 0.1, liftI = 0.0, liftD = 0.0;
-	static final double STATIC_INPUT = 0.09; // the input that will keep the cascade level
+	static final double STATIC_INPUT = 0.07; // the input that will keep the cascade level
 	static final double SPARK_ENCODER_WHEEL_RATIO = 1;
-	static final double TALON_ENCODER_WHEEL_RATIO = 1;
+	static final double TALON_ENCODER_WHEEL_RATIO = 1 / 3.44;
 	static final double ARM_WHEEL_RADIUS = Utils.inchesToMeters(1.5); // In meters, the radius of the wheel that is pulling up the lift
 	private SimpleWidget levelCounterWidget;
 	private int levelCounter = 0;
