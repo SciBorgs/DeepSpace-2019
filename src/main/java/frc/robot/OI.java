@@ -21,7 +21,7 @@ public class OI {
 
         liftLevelUpButton = new JoystickButton(leftStick, PortMap.JOYSTICK_CENTER_BUTTON);
         liftLevelUpButton.whenPressed(new LevelCounterUpdate(true));
-        liftLevelUpButton.whenReleased(new LiftCommand());
+        liftLevelUpButton.whenReleased(new ConditionalLiftCommand());
 
         depositPanelButton = new JoystickButton(leftStick, PortMap.JOYSTICK_RIGHT_BUTTON);
         depositPanelButton.whenPressed(new HatchControlCommand(HatchDepositControl.Deposit));
