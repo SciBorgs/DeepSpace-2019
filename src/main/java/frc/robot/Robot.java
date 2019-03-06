@@ -24,16 +24,11 @@ public class Robot extends TimedRobot {
     public static OI oi = new OI();
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
+    public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static CargoFollowing cargoFollowing = new CargoFollowing();
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
     public static Lineup lineup = new Lineup();
-
-    public static final double ARM_P_CONSTANT = .1;
-    public static final double ARM_D_CONSTANT = .1;    
-
-    
 
     public void robotInit() {
         positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
