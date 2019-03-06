@@ -50,6 +50,7 @@ public class LiftSubsystem extends Subsystem {
 	static final double ANGLE_PRECISION = Math.toRadians(3);
 	static final double IS_BOTTOM_PRECISION = 0.05; // In meters, precision as to whether it's at the bottom
 	static final double BOTTOM_HEIGHT = 0; // In meters, the height at the lift's lowest point
+	static final double PICKUP_HATCH_SPEED = 0; // The speed with which we slam and and pick up a hatch from the ground
 
 	public void initDefaultCommand() {
     }

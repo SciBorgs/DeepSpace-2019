@@ -4,15 +4,16 @@ import frc.robot.Robot;
 import frc.robot.subsystems.LiftSubsystem.Target;
 
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class ConditionalLiftCommand extends ConditionalCommand {
-	public LiftCommand() {
+	public ConditionalLiftCommand() {
 		super(new LiftCommand(), new SlamDownCommand());
         requires(Robot.liftSubsystem);
 	}
 
 	@Override protected boolean condition() {
-		return getTarget() != Target.Slam;
+		return Robot.liftSubsystem.getTarget() != Target.Slam;
 	}
 }
 
