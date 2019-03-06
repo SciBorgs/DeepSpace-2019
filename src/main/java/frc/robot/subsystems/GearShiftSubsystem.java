@@ -21,7 +21,7 @@ public class GearShiftSubsystem extends Subsystem {
         } else if (Math.abs((Robot.oi.leftStick.getY() - Robot.oi.rightStick.getY())/2.) <= joystickShiftDownThreshold) {
             countOfContinousCyclesBelowJoystickThreshold++;
             countOfContinousCyclesAboveJoystickThreshold = 0;
-        } else {}
+        }
     }
     
     public void updateGearShift() {
