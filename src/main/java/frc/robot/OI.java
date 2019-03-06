@@ -20,7 +20,7 @@ public class OI {
         lineupButton.whileHeld(new LineupCommand());
 
         liftLevelUpButton = new JoystickButton(leftStick, PortMap.JOYSTICK_CENTER_BUTTON);
-        liftLevelUpButton.whenPressed(new LevelCounterUpdate(true));
+        liftLevelUpButton.whenPressed(new LevelCounterUpdate(LevelCounterUpdate.LevelChange.Up));
         liftLevelUpButton.whenReleased(new ConditionalLiftCommand());
 
         depositPanelButton = new JoystickButton(leftStick, PortMap.JOYSTICK_RIGHT_BUTTON);
@@ -28,7 +28,7 @@ public class OI {
         depositPanelButton.whenReleased(new HatchControlCommand(HatchDepositControl.Hold));
 
         liftLevelDownButton = new JoystickButton(leftStick, PortMap.JOYSTICK_TRIGGER);
-        liftLevelDownButton.whenPressed(new LevelCounterUpdate(false));
+        liftLevelDownButton.whenPressed(new LevelCounterUpdate(LevelCounterUpdate.LevelChange.Down));
         liftLevelDownButton.whenReleased(new ConditionalLiftCommand());
 
         // Right Stick

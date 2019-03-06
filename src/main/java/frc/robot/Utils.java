@@ -44,4 +44,12 @@ public class Utils{
     public static void setTalon(TalonSRX talon, double speed){
         talon.set(ControlMode.PercentOutput, speed);
     }
+
+    public static int boolToInt(boolean b){
+        if (b) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }

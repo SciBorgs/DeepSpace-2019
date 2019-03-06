@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
 public class LevelCounterUpdate extends InstantCommand {
+    public static enum LevelChange {Up, Down}
+    private int change;
 
-    private int change; 
-
-    public LevelCounterUpdate(boolean val) {
-        change = val ? 1 : -1;
+    public LevelCounterUpdate(LevelChange change) {
+        this.change = change == LevelChange.Up ? 1 : -1;
     }
 
     @Override protected void execute() {

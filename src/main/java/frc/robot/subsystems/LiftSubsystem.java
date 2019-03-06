@@ -67,7 +67,11 @@ public class LiftSubsystem extends Subsystem {
 	private double getTargetHeight(Target target){
 		double hatchTargetHeight = BOTTOM_HEIGHT + HATCH_POSITIONS.get(target) * ROCKET_HATCH_GAP;
 		// Target height will go to the defualt HATCH_HEIGHT if it is holding the hatch, otherwise it will add the gap b/w the hatch and the cargo deposit
-		return hatchTargetHeight + (Robot.intakeSubsystem.holdingHatch() ? 0 : HATCH_TO_CARGO_DEPOSIT);
+		if (Robot.intakeSubsystem.holdingHatch()) {
+			return hatchTargetHeight;
+		} else {
+			return hatchTargetHeight + HATCH_TO_CARGO_DEPOSIT;
+		}
 	}
 	
 	public void moveToTarget(double targetAngle, double targetLiftHeight){
