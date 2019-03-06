@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
+import frc.robot.Utils;
 import frc.robot.subsystems.LiftSubsystem.Target;
 
 import com.revrobotics.CANSparkMax;
@@ -22,12 +23,14 @@ public class TankDriveCommand extends Command {
         Robot.driveSubsystem.setSpeedTank(0, 0);
     }
     @Override protected void execute() {
-        Robot.driveSubsystem.setSpeed(leftStick, rightStick);
-        Robot.positioningSubsystem.printPosition();
-        System.out.println("raw: " + Robot.positioningSubsystem.getSparkAngle(Robot.driveSubsystem.lm));
-        //Robot.intakeSubsystem.setIntakeSpeed(Robot.driveSubsystem.processStick(leftStick));
-        //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(rightStick));
-        //System.out.println(Math.toDegrees(Robot.liftSubsystem.getArmAngle()));
+        //Robot.driveSubsystem.setSpeed(leftStick, rightStick);
+        //Robot.positioningSubsystem.printPosition();
+        //System.out.println("raw: " + Robot.positioningSubsystem.getSparkAngle(Robot.driveSubsystem.lm));
+        Robot.liftSubsystem.setLiftSpeed(Robot.driveSubsystem.processStick(leftStick));
+        System.out.println("current speed: " + Robot.liftSubsystem.liftSpark.get());
+        Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(rightStick));
+        System.out.println("Cascade height: " + Utils.metersToInches(Robot.liftSubsystem.getLiftHeight()));
+        System.out.println(Math.toDegrees(Robot.liftSubsystem.getArmAngle()));
         //System.out.println("DI cargo: " + Robot.intakeSubsystem.holdingCargoSecure());
         //System.out.println("DI hatch: " + Robot.intakeSubsystem.holdingHatch());
     }

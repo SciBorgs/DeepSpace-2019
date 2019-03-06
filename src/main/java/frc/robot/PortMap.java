@@ -35,6 +35,9 @@ public class PortMap {
     public static final int ARM_TILT_TALON = 11; // CHANGE TO 10 FOR COMP
     public static final int INTAKE_TALON = 12; // CHANGE TO 11 FOR COMP
 
+    public static final int LEFT_ZLIFT = 2;
+    public static final int RIGHT_ZLIFT = 8;
+
     //***************LIMIT*SWITCHES**************//
 
     public static final int BALL_LIMIT_SWITCH = 8; // CHANGE TO 0 FOR COMP
@@ -43,14 +46,11 @@ public class PortMap {
     //***************DOUBLE*SOLENOIDS*************//
 
     public static final int[] GEAR_SHIFTER_SOLENOID = {0, 1};
-    public static final int[] DEPOSIT_HATCH_PANEL_SOLENOID = {6, 7};
-    public static final int[] INTAKE_MODE_SOLENOID = {4, 5};
+    public static final int[] DEPOSIT_HATCH_PANEL_SOLENOID = {4, 5}; // CHANGE TO 6 AND 7 FOR COMP
+    public static final int[] INTAKE_MODE_SOLENOID = {2, 3}; // CHANGE TO 4 AND 5 FOR COMP
 
-    public static final int LEFT_ZLIFT = 2;
-    public static final int RIGHT_ZLIFT = 8;
-
-    public static final int FORWARD_CHANNEL = 2;
-    public static final int REVERSE_CHANNEL = 3;
+    public static final int FORWARD_CHANNEL = 6; // CHANGE TO 2 FOR COMP
+    public static final int REVERSE_CHANNEL = 7; // CHANGE TO 3 FOR COMP
 
     //*******************MISC********************//
 

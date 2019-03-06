@@ -17,13 +17,12 @@ public class PositioningSubsystem extends Subsystem {
 
     public static final double INCHES_PER_METER = 39.37;
     public static final double WHEEL_RADIUS = 3. / INCHES_PER_METER; // In meters
-    public static final double ENC_WHEEL_RATIO = (4. / 25.) * (1. / 1.2); // 4 rotations of the wheel is 25 rotations of
+    public static final double ENC_WHEEL_RATIO = 1 / 9.07; // 1 rotations of the wheel is 9.07 rotations of
                                                                           // the encoder
-    public static final double TICKS_PER_REV = 4096;
+    public static final double NEO_TICKS_PER_REV = 42; // For sparks
+    public static final double ENC_TICKS_PER_REV = 4096; // For talons
     public static final double ROBOT_RADIUS = 15.945 / INCHES_PER_METER; // Half the distance from wheel to wheel
     public static final double ROBOT_WIDTH = 2 * ROBOT_RADIUS;
-
-    public static final double SPARK_TICKS_PER_ROTATION = 42;
 
     public static final double GLOBAL_ORIGINAL_ANGLE = Math.PI/2;
     public double ORIGINAL_ANGLE, ORIGINAL_X, ORIGINAL_Y;
@@ -74,8 +73,8 @@ public class PositioningSubsystem extends Subsystem {
         negated = new Hashtable<CANSparkMax,Boolean>();
         sparks = new ArrayList<CANSparkMax>();
 
-        //keepTrackOf(Robot.driveSubsystem.lm,true); // true and false indicates whether the values must be negated
-        //keepTrackOf(Robot.driveSubsystem.rm,false);
+        keepTrackOf(Robot.driveSubsystem.lm,true); // true and false indicates whether the values must be negated
+        keepTrackOf(Robot.driveSubsystem.rm,false);
 
         resetPosition();
         
@@ -99,10 +98,10 @@ public class PositioningSubsystem extends Subsystem {
         }
 
     public double getTalonAngle(TalonSRX talon){
-        return talon.getSensorCollection().getQuadraturePosition() / TICKS_PER_REV * 2 * Math.PI;
+        return talon.getSensorCollection().getQuadraturePosition() / ENC_TICKS_PER_REV * 2 * Math.PI;
     }
 	public double getSparkAngle(CANSparkMax spark){
-		return SPARK_TICKS_PER_ROTATION * spark.getEncoder().getPosition() * 2 * Math.PI;
+		return spark.getEncoder().getPosition() / NEO_TICKS_PER_REV * 2 * Math.PI;
 	}
 
     public double encPos(CANSparkMax motor) {
