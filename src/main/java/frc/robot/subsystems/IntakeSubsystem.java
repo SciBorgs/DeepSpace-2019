@@ -86,10 +86,6 @@ public class IntakeSubsystem extends Subsystem {
         setIntakeSpeed(SPIT_SPEED);
 	}
 
-	public void pickupHatchFromGround(){
-		Robot.liftSubsystem.setArmTiltSpeed(PICKUP_HATCH_SPEED);
-	}
-
 	public void secureCargo() {
 		if (cargoLoose()){
 			Utils.setTalon(intakeTalon, .6);

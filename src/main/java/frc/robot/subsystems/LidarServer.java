@@ -26,7 +26,7 @@ public class LidarServer {
     private boolean mEnding = false;
     public Hashtable<Double,Double> lidarScan = new Hashtable<Double,Double>();
     private Hashtable<Double,Integer> lidarZeros = new Hashtable<Double,Integer>();
-    private String lidarPath = "/home/root/chezy_lidar";
+    private String lidarPath = "/home/root/ultra_simple";
     private double minimumZeros = 5;
 
     public static LidarServer getInstance() {

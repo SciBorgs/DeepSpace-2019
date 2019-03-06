@@ -29,7 +29,7 @@ public class OI {
 
         liftLevelDownButton = new JoystickButton(leftStick, PortMap.JOYSTICK_TRIGGER);
         liftLevelDownButton.whenPressed(new LevelCounterUpdate(false));
-        liftLevelDownButton.whenReleased(new LiftCommand());
+        liftLevelDownButton.whenReleased(new ConditionalLiftCommand());
 
         // Right Stick
         startZLiftButton = new JoystickButton(rightStick, PortMap.JOYSTICK_LEFT_BUTTON);
