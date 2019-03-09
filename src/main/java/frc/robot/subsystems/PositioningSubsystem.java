@@ -17,9 +17,9 @@ public class PositioningSubsystem extends Subsystem {
 
     public static final double INCHES_PER_METER = 39.37;
     public static final double WHEEL_RADIUS = 3. / INCHES_PER_METER; // In meters
-    public static final double ENC_WHEEL_RATIO = 1 / 9.07; // 1 rotations of the wheel is 9.07 rotations of
+    public static final double ENC_WHEEL_RATIO = 1 / 9.0; // 1 rotations of the wheel is 9.0 rotations of
                                                                           // the encoder
-    public static final double NEO_TICKS_PER_REV = 42; // For sparks
+    public static final double NEO_TICKS_PER_REV = 1; // For sparks
     public static final double ENC_TICKS_PER_REV = 4096; // For talons
     public static final double ROBOT_RADIUS = 15.945 / INCHES_PER_METER; // Half the distance from wheel to wheel
     public static final double ROBOT_WIDTH = 2 * ROBOT_RADIUS;

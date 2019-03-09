@@ -16,8 +16,8 @@ public class IntakeSubsystem extends Subsystem {
 
 	public enum IntakeMode {Upright, Normal}
 	public enum HatchDepositControl {Deposit, Hold}
-    private TalonSRX intakeTalon;
-	private DoubleSolenoid intakeModeSolenoid, hatchControlSolenoid;
+    public TalonSRX intakeTalon;
+	public DoubleSolenoid intakeModeSolenoid, hatchControlSolenoid;
 	private DigitalInput ballLimitSwitch, hatchLimitSwitch;
 	private double lastHeld;
 	private Timer timer;
@@ -40,17 +40,17 @@ public class IntakeSubsystem extends Subsystem {
 
 	public void updateHatchControl (HatchDepositControl control) {
 		if (control == HatchDepositControl.Deposit) {
-			hatchControlSolenoid.set(Value.kForward);
-		} else {
 			hatchControlSolenoid.set(Value.kReverse);
+		} else {
+			hatchControlSolenoid.set(Value.kForward);
 		}
 	}
 
 	public void updateIntakeMode (IntakeMode mode) {
 		if (mode == IntakeMode.Upright) {
-			intakeModeSolenoid.set(Value.kForward);
-		} else {
 			intakeModeSolenoid.set(Value.kReverse);
+		} else {
+			intakeModeSolenoid.set(Value.kForward);
 		}
 	}
 

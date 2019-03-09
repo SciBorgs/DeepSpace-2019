@@ -22,6 +22,7 @@ public class DriveSubsystem extends Subsystem {
     private static final double MOTOR_MOVEPOINT = 0.07; // motor controller output that gets the wheels to turn
     private static final double EXPONENT = 10; // x^exponent to in the graph. x=0 is linear. x>0 gives more control in low inputs
     private static final double MAX_JOYSTICK = 1; // max joystick output value
+    private static final double DEFAULT_MAX_JERK = 0.2; // Doesn't allow a motor's output to change by more than this in one tick
 
     // d value so that when x=INPUT_DEADZONE the wheels move
     private static final double ALEJANDROS_CONSTANT = (MAX_JOYSTICK * Math.pow(MOTOR_MOVEPOINT / MAX_JOYSTICK, 1/(EXPONENT+1)) - INPUT_DEADZONE) /
@@ -87,12 +88,31 @@ public class DriveSubsystem extends Subsystem {
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
 		setSpeedTank(processStick(leftStick),processStick(rightStick));
     }
-    
+
+    public double limitJerk(double oldSpeed, double newSpeed, double maxJerk){
+        if (oldSpeed - newSpeed > maxJerk){
+            return oldSpeed - maxJerk;
+        } else if (newSpeed - oldSpeed > maxJerk){
+            return oldSpeed + maxJerk;
+        } else {
+            return newSpeed;
+        }
+    }
+
     public void setMotorSpeed(CANSparkMax motor, double speed){
-        //System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
+        setMotorSpeed(motor, speed, DEFAULT_MAX_JERK);
+    }
+    public void setMotorSpeed(CANSparkMax motor, double speed, double maxJerk){
+        speed = limitJerk(motor.get(), speed, maxJerk);
+        System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
         motor.set(speed);
     }
+
     public void setMotorSpeed(TalonSRX motor, double speed){
+        setMotorSpeed(motor, speed, DEFAULT_MAX_JERK);
+    }
+    public void setMotorSpeed(TalonSRX motor, double speed, double maxJerk){
+        speed = limitJerk(motor.getMotorOutputPercent(), speed, maxJerk);
         motor.set(ControlMode.PercentOutput, speed);
     }
         	

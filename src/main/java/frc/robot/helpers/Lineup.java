@@ -129,7 +129,7 @@ public class Lineup {
     
     public void move(){
     	if (retroFound && parallelCoordinate() < desiredForward) {
-        	shiftPID.add_measurement_d(shiftError(),Math.sin(deltaTheta())); // We use the sine of our change in angle as the derivative (that's the secret!)
+        	shiftPID.add_measurement_dd(shiftError(),Math.sin(deltaTheta())); // We use the sine of our change in angle as the derivative (that's the secret!)
 	        forwardPID.add_measurement(parallelError());
 	        double output =  shiftPID.getOutput();
 	        double defaultSpeed = forwardPID.getOutput();

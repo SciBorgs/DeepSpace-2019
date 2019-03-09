@@ -38,14 +38,23 @@ public class PID {
 	public void setSmoother(int amount) {maxSize = amount;}
 	  
 	public void add_measurement(double error) {
-		add_measurement_d(error,errors.isEmpty() ? 0 : error - errors.get(0)); /// delta error is the dd if nothing is specified
+		add_measurement_dd(error,errors.isEmpty() ? 0 : error - errors.get(0)); /// delta error is the dd if nothing is specified
+	}
+
+	public void add_measurement_dd(double error, double dd){
+		double dt;
+		if (errors.isEmpty()){
+			dt = 1;
+		} else  {
+			dt = timer.get() - times.get(0);
+		}
+		add_measurement_derivative(error, dd / dt);
 	}
 	  
-	public void add_measurement_d(double error, double dd) {
+	public void add_measurement_derivative(double error, double derivative) {
 		double currentTime = timer.get();
 		if (!(errors.isEmpty())) {
 		    double dt = currentTime - times.get(0);
-		    double derivative = dd / dt;
 		    integral += .5 * dt * (error + errors.get(0));
 		    u = p * error + d * derivative + i * integral;
 		}

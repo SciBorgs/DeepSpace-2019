@@ -17,7 +17,6 @@ public class ZLiftSubsystem extends Subsystem {
     private PID anglePID;
     private double maxOutput = 0.1;
     private double angleP = 0.005, angleI = 0.0, angleD = 0.0;
-
     
     private DoubleSolenoid doubleSolenoid;
 

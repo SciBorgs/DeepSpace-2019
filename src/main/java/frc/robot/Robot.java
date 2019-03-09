@@ -19,12 +19,12 @@ public class Robot extends TimedRobot {
     private String m_autoSelected;
     public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
+	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static LiftSubsystem liftSubsystem = new LiftSubsystem();
     public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
     public static OI oi = new OI();
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static CargoFollowing cargoFollowing = new CargoFollowing();
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
         }*/
 
     }
-
+ 
     public void robotPeriodic() {
         positioningSubsystem.updatePositionTank();
         //positioningSubsystem.printPosition();

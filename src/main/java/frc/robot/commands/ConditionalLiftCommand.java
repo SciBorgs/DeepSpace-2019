@@ -23,7 +23,7 @@ class LiftCommand extends InstantCommand {
 	}
 
 	@Override protected void execute(){
-		Robot.liftSubsystem.moveToHeight(Robot.liftSubsystem.getTarget());
+		Robot.liftSubsystem.moveToTargetHeight(Robot.liftSubsystem.getTarget());
 	}
 }
 
