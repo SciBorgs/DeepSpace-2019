@@ -1,9 +1,9 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class CargoReleaseCommand extends InstantCommand {
+public class CargoReleaseCommand extends Command {
 
     public CargoReleaseCommand() {
         requires(Robot.intakeSubsystem);
@@ -18,7 +18,7 @@ public class CargoReleaseCommand extends InstantCommand {
     }
 
     @Override protected boolean isFinished() {
-        return !Robot.oi.suckButton.get();
+        return !Robot.oi.spitButton.get();
     }
     @Override protected void end() {
         Robot.intakeSubsystem.setIntakeSpeed(0);

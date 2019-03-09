@@ -5,6 +5,8 @@ import frc.robot.subsystems.LiftSubsystem.Target;
 
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj.command.Command;
+
 
 public class ConditionalLiftCommand extends ConditionalCommand {
 	public ConditionalLiftCommand() {
@@ -17,22 +19,54 @@ public class ConditionalLiftCommand extends ConditionalCommand {
 	}
 }
 
-class LiftCommand extends InstantCommand {
+class LiftCommand extends Command {
 	public LiftCommand() {
 		requires(Robot.liftSubsystem);
+	}
+
+	@Override protected void initialize(){
+		return;
 	}
 
 	@Override protected void execute(){
 		Robot.liftSubsystem.moveToTargetHeight(Robot.liftSubsystem.getTarget());
 	}
+
+	@Override protected boolean isFinished(){
+		return Robot.liftSubsystem.isStatic();
+	}
+
+	@Override protected void end(){
+		return;
+	}
+
+	@Override protected void interrupted(){
+		return;
+	}
 }
 
-class SlamDownCommand extends InstantCommand {
+class SlamDownCommand extends Command {
 	public SlamDownCommand() {
 		requires(Robot.liftSubsystem);
 	}
 
+	@Override protected void initialize(){
+		return;
+	}
+
 	@Override protected void execute(){
 		Robot.liftSubsystem.pickupHatchFromGround();
+	}
+
+	@Override protected boolean isFinished(){
+		return Robot.liftSubsystem.isStatic();
+	}
+
+	@Override protected void end(){
+		return;
+	}
+
+	@Override protected void interrupted(){
+		return;
 	}
 }

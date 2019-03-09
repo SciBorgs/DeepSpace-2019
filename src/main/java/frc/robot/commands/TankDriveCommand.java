@@ -28,6 +28,7 @@ public class TankDriveCommand extends Command {
     }
     @Override protected void execute() {
         Robot.driveSubsystem.setSpeedRaw(leftStick, rightStick);
+        //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(leftStick));
     }
         
     @Override protected boolean isFinished() {
