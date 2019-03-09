@@ -30,17 +30,10 @@ public class Robot extends TimedRobot {
     public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
     public static Lineup lineup = new Lineup();
 
-    public static final double ARM_P_CONSTANT = .1;
-    public static final double ARM_D_CONSTANT = .1;    
-
-    
-
     public void robotInit() {
         positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
-        new IntakeModeCommand(IntakeMode.Upright).start();
-        new HatchControlCommand(HatchDepositControl.Hold);
 
            /* STARTS THE LIDAR     
         try {
