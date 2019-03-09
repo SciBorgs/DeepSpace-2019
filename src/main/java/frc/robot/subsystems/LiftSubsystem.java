@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import java.util.Hashtable;
 
@@ -22,14 +23,14 @@ public class LiftSubsystem extends Subsystem {
 
 	private PID armPID;
 	private PID liftPID;
-	private double armP = 1, armI = .0, armD = 0.25, liftP = 1.5, liftI = 0.01, liftD = 0.03;
+	private double armP = 1, armI = 0.0, armD = 0, liftP = 1.5, liftI = 0.01, liftD = 0.03;
 	static final double LIFT_STATIC_INPUT = 0.085; // the input that will keep the cascade level
 	static final double SPARK_ENCODER_WHEEL_RATIO = 1 / 9.08;
 	static final double TALON_ENCODER_WHEEL_RATIO = 18.0 / 62;
 	static final double LIFT_WHEEL_RADIUS = Utils.inchesToMeters(1.5); // In meters, the radius of the wheel that is pulling up the lift
 	private SimpleWidget levelCounterWidget;
 	private int levelCounter = 0;
-	private double ARM_OUTPUT_LIMIT = .7;
+	private double ARM_OUTPUT_LIMIT = 1;
 	static final double ROCKET_HATCH_GAP = Utils.inchesToMeters(28);
 	static final double LOW_HATCH_HEIGHT = Utils.inchesToMeters(19);
 	static final Hashtable<Target,Integer> HATCH_POSITIONS = // Gives how many hatches above the lowest one for each
@@ -49,7 +50,7 @@ public class LiftSubsystem extends Subsystem {
 	static final double INITIAL_GAP_TO_GROUND = Utils.inchesToMeters(1); // How far up the intake should be when it's sucking in cargo
 	static final double RESTING_ANGLE = Math.asin((INITIAL_GAP_TO_GROUND - RESTING_HEIGHT) / ARM_LENGTH); // In radians
 	static final double HEIGHT_PRECISION = 0.05; // In meters
-	static final double ANGLE_PRECISION = Math.toRadians(3);
+	static final double ANGLE_PRECISION = Math.toRadians(5);
 	static final double IS_BOTTOM_PRECISION = 0.05; // In meters, precision as to whether it's at the bottom
 	static final double BOTTOM_HEIGHT = 0; // In meters, the height at the lift's lowest point
 	static final double PICKUP_HATCH_SPEED = 0; // The speed with which we slam and and pick up a hatch from the ground
@@ -67,6 +68,7 @@ public class LiftSubsystem extends Subsystem {
 	public LiftSubsystem() {
 		liftSpark    = new CANSparkMax(PortMap.LIFT_SPARK, MotorType.kBrushless);
 		armTiltTalon = new TalonSRX(PortMap.ARM_TILT_TALON);
+		armTiltTalon.setNeutralMode(NeutralMode.Brake);
 		ShuffleboardTab levelCounterTab = Shuffleboard.getTab("Level Counter");
 		levelCounterWidget = levelCounterTab.add("Level Counter", -1).withWidget("Text View").withPosition(1, 0).withSize(2, 2);
 		liftPID = new PID(liftP, liftI, liftD);
@@ -95,6 +97,8 @@ public class LiftSubsystem extends Subsystem {
 		// System.out.println("active traj velocity: " + armTiltTalon.getActiveTrajectoryVelocity());
 		armPID.add_measurement(targetAngle - getArmAngle());
 		setArmTiltSpeed(armPID.getLimitOutput(ARM_OUTPUT_LIMIT));
+		System.out.println("arm angle: " + Math.toDegrees(getArmAngle()));
+		System.out.println("desired angle: " + Math.toDegrees(targetAngle));
 		System.out.println("output: " + armPID.getOutput());
 	}
 	
@@ -198,7 +202,7 @@ public class LiftSubsystem extends Subsystem {
 	}
 	
 	public void setArmTiltSpeed(double speed) {
-		Robot.driveSubsystem.setMotorSpeed(armTiltTalon, speed, 10);
+		Robot.driveSubsystem.setMotorSpeed(armTiltTalon, speed, .2);
 	}
     
 }	 

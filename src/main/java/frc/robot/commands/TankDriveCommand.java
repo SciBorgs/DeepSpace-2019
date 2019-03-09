@@ -6,6 +6,8 @@ import frc.robot.subsystems.LiftSubsystem.Target;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -25,26 +27,16 @@ public class TankDriveCommand extends Command {
         Robot.driveSubsystem.setSpeedTank(0, 0);
     }
     @Override protected void execute() {
-        //Robot.driveSubsystem.setSpeed(leftStick, rightStick);
-        //Robot.positioningSubsystem.printPosition();
-        //System.out.println("raw: " + Robot.positioningSubsystem.getSparkAngle(Robot.driveSubsystem.lm));
-        if (Robot.driveSubsystem.processStick(leftStick) == 0 && Robot.driveSubsystem.processStick(rightStick) == 0){
-            Robot.liftSubsystem.moveToHeight(Utils.inchesToMeters(30));
-        } else {
-            Robot.liftSubsystem.setLiftSpeed(Robot.driveSubsystem.processStick(leftStick));
-            Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(rightStick));
-        }
-        Robot.positioningSubsystem.printPosition();
-        //System.out.println("DI cargo: " + Robot.intakeSubsystem.holdingCargoSecure());
-        //System.out.println("DI hatch: " + Robot.intakeSubsystem.holdingHatch());
+        Robot.driveSubsystem.setSpeedRaw(leftStick, rightStick);
     }
         
     @Override protected boolean isFinished() {
-        return false;}
+        return false;
+    }
     @Override protected void end() {
         Robot.driveSubsystem.setSpeedTank(0, 0);
     }
-    @Override protected void    interrupted() {
+    @Override protected void interrupted() {
         end();
     }
 }

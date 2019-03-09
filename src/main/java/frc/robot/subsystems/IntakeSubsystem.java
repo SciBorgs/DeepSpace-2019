@@ -7,6 +7,7 @@ import frc.robot.Robot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -30,8 +31,8 @@ public class IntakeSubsystem extends Subsystem {
 		timer = new Timer();
 		timer.start();
 		lastHeld = timer.get() - SUCK_IF_OUT_PERIOD;
-
 		intakeTalon = new TalonSRX(PortMap.INTAKE_TALON);
+		intakeTalon.setNeutralMode(NeutralMode.Brake);
 		hatchControlSolenoid = new DoubleSolenoid(PortMap.DEPOSIT_HATCH_PANEL_SOLENOID[0], PortMap.DEPOSIT_HATCH_PANEL_SOLENOID[1]);
 		intakeModeSolenoid = new DoubleSolenoid(PortMap.INTAKE_MODE_SOLENOID[0], PortMap.INTAKE_MODE_SOLENOID[1]);
 		ballLimitSwitch = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);

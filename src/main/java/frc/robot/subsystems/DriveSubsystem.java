@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.PortMap;
 import frc.robot.Robot;
+import frc.robot.helpers.PID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -12,8 +13,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class DriveSubsystem extends Subsystem {
     // Define tested error values here
-    double tankAngleP = 3;
-	double goalOmegaConstant = 1;
+    double tankAngleP = .3, tankAngleD = 0.2, tankAngleI = 0;
+    double goalOmegaConstant = 2;
+    double maxOmegaGoal = 1 * goalOmegaConstant;
     public CANSparkMax lf, lm, lb, rf, rm, rb;
 
     // deadzones by Alejandro at Chris' request. Graph them with the joystick function to understand the math.
@@ -22,7 +24,8 @@ public class DriveSubsystem extends Subsystem {
     private static final double MOTOR_MOVEPOINT = 0.07; // motor controller output that gets the wheels to turn
     private static final double EXPONENT = 10; // x^exponent to in the graph. x=0 is linear. x>0 gives more control in low inputs
     private static final double MAX_JOYSTICK = 1; // max joystick output value
-    private static final double DEFAULT_MAX_JERK = 0.2; // Doesn't allow a motor's output to change by more than this in one tick
+    private static final double DEFAULT_MAX_JERK = 0.1; // Doesn't allow a motor's output to change by more than this in one tick
+    private PID tankAnglePID;
 
     // d value so that when x=INPUT_DEADZONE the wheels move
     private static final double ALEJANDROS_CONSTANT = (MAX_JOYSTICK * Math.pow(MOTOR_MOVEPOINT / MAX_JOYSTICK, 1/(EXPONENT+1)) - INPUT_DEADZONE) /
@@ -51,6 +54,8 @@ public class DriveSubsystem extends Subsystem {
 
         rm.follow(rf);
         //rb.follow(rf); // UNCOMMENT FOR ACTUAL ROBOT. COMMENTED OUT FOR PRACTICE B/C FALTY SPARK
+
+        tankAnglePID = new PID(tankAngleP, tankAngleI, tankAngleD);
 	}
 
     /**
@@ -104,7 +109,7 @@ public class DriveSubsystem extends Subsystem {
     }
     public void setMotorSpeed(CANSparkMax motor, double speed, double maxJerk){
         speed = limitJerk(motor.get(), speed, maxJerk);
-        System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
+        //System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
         motor.set(speed);
     }
 
@@ -113,6 +118,7 @@ public class DriveSubsystem extends Subsystem {
     }
     public void setMotorSpeed(TalonSRX motor, double speed, double maxJerk){
         speed = limitJerk(motor.getMotorOutputPercent(), speed, maxJerk);
+        //System.out.println("setting talon to " + speed);
         motor.set(ControlMode.PercentOutput, speed);
     }
         	
@@ -123,9 +129,14 @@ public class DriveSubsystem extends Subsystem {
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
 		double averageOutput = (leftSpeed + rightSpeed) / 2;
-		double goalOmega = goalOmegaConstant * (leftSpeed - rightSpeed);
-		double change = (goalOmega - Robot.positioningSubsystem.getAngularSpeed()) * tankAngleP;
-		setSpeedTank(averageOutput + change, averageOutput - change); 
+        double goalOmega = Math.min(goalOmegaConstant * (rightSpeed - leftSpeed), maxOmegaGoal);
+        System.out.println("angular speed: " + Robot.positioningSubsystem.getAngularSpeed());
+        System.out.println("desired angular speed: " + goalOmega);
+        double error = goalOmega - Robot.positioningSubsystem.getAngularSpeed();
+        tankAnglePID.add_measurement(error);
+        double change = tankAnglePID.getOutput();
+        System.out.println("Output: " + change);
+		setSpeedTank(averageOutput - change, averageOutput + change); 
 	}
 	
 	public void setSpeedTankForwardManual(double leftSpeed, double rightSpeed, double turnMagnitude) {

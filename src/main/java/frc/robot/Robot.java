@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         positioningSubsystem.updatePositionTank();
         //positioningSubsystem.printPosition();
+        //System.out.println("pigeon raw: " + positioningSubsystem.getPigeon().getAngle());
         //retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
         //gearShiftSubsystem.shiftGear(); 	
         /*intakeSubsystem.secureCargo();

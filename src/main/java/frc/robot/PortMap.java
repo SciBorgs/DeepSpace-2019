@@ -31,9 +31,8 @@ public class PortMap {
 
     public static final int PIGEON_TALON = 9;
 
-    public static final int LIFT_TALON = 6;
-    public static final int ARM_TILT_TALON = 11; // CHANGE TO 10 FOR COMP
-    public static final int INTAKE_TALON = 12; // CHANGE TO 11 FOR COMP
+    public static final int ARM_TILT_TALON = 12; // CHANGE TO 10 FOR COMP
+    public static final int INTAKE_TALON = 8; // CHANGE TO 11 FOR COMP
 
     public static final int LEFT_ZLIFT = 2;
     public static final int RIGHT_ZLIFT = 8;
