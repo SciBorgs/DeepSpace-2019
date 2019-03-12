@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ResetLiftCommand extends Command {
-	public ResetLiftCommand() {
+public class LiftCommand extends Command {
+	public LiftCommand() {
 		requires(Robot.liftSubsystem);
 	}
 
@@ -17,7 +17,7 @@ public class ResetLiftCommand extends Command {
 	}
 
 	@Override protected void execute(){
-		Robot.liftSubsystem.moveToTarget(Target.Initial);
+		Robot.liftSubsystem.moveToTarget(Robot.liftSubsystem.getTarget());
 	}
 
 	@Override protected boolean isFinished(){

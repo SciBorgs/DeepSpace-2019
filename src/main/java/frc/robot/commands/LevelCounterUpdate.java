@@ -12,7 +12,7 @@ public class LevelCounterUpdate extends InstantCommand {
     }
 
     @Override protected void execute() {
-        Robot.liftSubsystem.updateLevelCounter(change);
+        Robot.liftSubsystem.moveLevelCounter(change);
         Robot.liftSubsystem.updateLevelCounterWidget();
     }
 }

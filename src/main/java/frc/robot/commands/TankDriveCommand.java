@@ -12,8 +12,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.IntakeSubsystem.HatchDepositControl;
-import frc.robot.subsystems.IntakeSubsystem.IntakeMode;
 
 public class TankDriveCommand extends Command {
     private Joystick rightStick, leftStick;
@@ -27,7 +25,13 @@ public class TankDriveCommand extends Command {
         Robot.driveSubsystem.setSpeedTank(0, 0);
     }
     @Override protected void execute() {
-        Robot.driveSubsystem.setSpeedRaw(leftStick, rightStick);
+        //Robot.driveSubsystem.setSpeedRaw(leftStick, rightStick);
+        /*if (Robot.driveSubsystem.processStick(leftStick) == 0){
+            Robot.liftSubsystem.moveLiftToheight(Utils.inchesToMeters(45));
+        } else {
+             Robot.liftSubsystem.setLiftSpeed(Robot.driveSubsystem.processStick(leftStick));
+        }*/
+        System.out.println("omega: " + Robot.positioningSubsystem.getAngularSpeed());
         //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(leftStick));
     }
         
