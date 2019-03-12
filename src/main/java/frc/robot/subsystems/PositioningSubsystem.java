@@ -17,7 +17,7 @@ public class PositioningSubsystem extends Subsystem {
 
     public static final double INCHES_PER_METER = 39.37;
     public static final double WHEEL_RADIUS = 3. / INCHES_PER_METER; // In meters
-    public static final double ENC_WHEEL_RATIO = 1 / 9.0; // 1 rotations of the wheel is 9.0 rotations of
+    public static final double ENC_WHEEL_RATIO = 1 / 9.08; // 1 rotations of the wheel is 9.08 rotations of
                                                                           // the encoder
     public static final double NEO_TICKS_PER_REV = 1; // For sparks
     public static final double ENC_TICKS_PER_REV = 4096; // For talons
@@ -26,7 +26,8 @@ public class PositioningSubsystem extends Subsystem {
 
     public static final double GLOBAL_ORIGINAL_ANGLE = Math.PI/2;
     public double ORIGINAL_ANGLE, ORIGINAL_X, ORIGINAL_Y;
-    public static final int MEASURMENTS = 2; // How many values we keep track of for each encoder
+    public static final int ENC_MEASURMENTS = 5; // How many values we keep track of for each encoder
+    public static final int ANGLE_MEASURMENTS = 20;
     public static final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
     public static final double STATIC_POSITION_ERROR = .05;
     public static final double STATIC_ANGLE_ERROR = Math.toRadians(2);
@@ -85,9 +86,9 @@ public class PositioningSubsystem extends Subsystem {
     }
     
     public void setPosition(double robotX, double robotY, double angle) {
-    	trimAddDef(robotXs,robotX);
-    	trimAddDef(robotYs,robotY);
-    	trimAddDef(robotAngles,angle);
+    	trimAddEnc(robotXs,robotX);
+    	trimAddEnc(robotYs,robotY);
+    	trimAddAngle(robotAngles,angle);
     }
     
     public void resetPosition() {
@@ -110,16 +111,20 @@ public class PositioningSubsystem extends Subsystem {
         return negated.get(motor) ? (0 - value) : value;
     }
 
-    public void addEncPos(CANSparkMax spark){trimAddDef(encPoss.get(spark),encPos(spark));}
+    public void addEncPos(CANSparkMax spark){trimAddEnc(encPoss.get(spark),encPos(spark));}
     public double encUpdate(CANSparkMax spark){
         // Also returns the change
         double lastPos = lastEncPos(spark);
         addEncPos(spark);
         return lastEncPos(spark) - lastPos;}
 
-    private void trimAddDef(ArrayList<Double> arr, double val){
-        // Uses MEASURMENTS as the maxSize, Def is short for default
-        Utils.trimAdd(arr, val, MEASURMENTS);
+    private void trimAddEnc(ArrayList<Double> arr, double val){
+        // Uses ENC_MEASURMENTS as the maxSize, should work if you are adding to an array list of encoder measurmeants
+        Utils.trimAdd(arr, val, ENC_MEASURMENTS);
+    }
+    private void trimAddAngle(ArrayList<Double> arr, double val){
+        // Uses ANGLE_MEASURMENTS as the maxSize, should work if you are adding to an array list of angle (pigeonIMU) measurmeants
+        Utils.trimAdd(arr, val, ANGLE_MEASURMENTS);
     }
 
     public double adjustTheta(double theta){
@@ -152,7 +157,9 @@ public class PositioningSubsystem extends Subsystem {
     }
     
     public double getAngularSpeed() {
-    	return (getAngle() - adjustTheta(robotAngles.get(0))) / ((MEASURMENTS - 1) * INTERVAL_LENGTH);
+        System.out.println("current angle: " + getAngle());
+        System.out.println("last angle: " + adjustTheta(robotAngles.get(0)));
+    	return (getAngle() - adjustTheta(robotAngles.get(0))) / ((ANGLE_MEASURMENTS - 1) * INTERVAL_LENGTH);
     }
     
     public double lastEncPos(CANSparkMax spark)  {

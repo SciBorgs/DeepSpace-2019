@@ -42,11 +42,14 @@ public class PortMap {
     public static final int BALL_LIMIT_SWITCH = 8; // CHANGE TO 0 FOR COMP
     public static final int HATCH_LIMIT_SWITCH = 9; // CHANGE TO 1 FOR COMP
 
+    public static final int CASCADE_AT_BOTTOM_LIMIT_SWITCH = 2;
+    public static final int ARM_AT_TOP_LIMIT_SWITCH = 3;
+
     //***************DOUBLE*SOLENOIDS*************//
 
     public static final int[] GEAR_SHIFTER_SOLENOID = {0, 1};
-    public static final int[] DEPOSIT_HATCH_PANEL_SOLENOID = {4, 5}; // CHANGE TO 6 AND 7 FOR COMP
-    public static final int[] INTAKE_MODE_SOLENOID = {2, 3}; // CHANGE TO 4 AND 5 FOR COMP
+    public static final int[] SECURE_HATCH_SOLENOID = {4, 5};
+    public static final int[] SCOOP_SOLENOID = {2, 3}; // Flips up the hatch
 
     public static final int FORWARD_CHANNEL = 6; // CHANGE TO 2 FOR COMP
     public static final int REVERSE_CHANNEL = 7; // CHANGE TO 3 FOR COMP

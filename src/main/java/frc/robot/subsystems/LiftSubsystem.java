@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import java.util.Hashtable;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class LiftSubsystem extends Subsystem {	
 
@@ -63,6 +64,7 @@ public class LiftSubsystem extends Subsystem {
 	static final int MIN_LEVEL = -1;
 	static final int MAX_LEVEL = 3;
 	public Target lastTarget = Target.Ground;
+	public DigitalInput cascadeAtBottomLimitSwitch, armAtTopSwitch;
 
 	public void initDefaultCommand() {
     }
@@ -79,6 +81,8 @@ public class LiftSubsystem extends Subsystem {
 		armPID.setSmoother(ARM_PID_SMOOTHNESS);
 		realLiftHeightIs(INITIAL_HEIGHT);
 		realArmAngleIs(INITIAL_ANGLE);
+		cascadeAtBottomLimitSwitch = new DigitalInput(PortMap.CASCADE_AT_BOTTOM_LIMIT_SWITCH);
+		armAtTopSwitch = new DigitalInput(PortMap.ARM_AT_TOP_LIMIT_SWITCH);
 	}
 	
 	private double getTargetHeight(Target target){
@@ -217,14 +221,12 @@ public class LiftSubsystem extends Subsystem {
 	}
 
 	public boolean liftAtBottom(){
-		return getLiftHeight() - BOTTOM_HEIGHT < IS_BOTTOM_PRECISION;
-		// return !liftAtBottomLimitSwitch.get();
+		return !cascadeAtBottomLimitSwitch.get();
 	} 
 
 	public boolean armAtInitial(){
 		// Returns whether or not the arm (the carriage) is bent back until it hits the cascade, IE: is it at the starting positiong
-		return getArmAngle() >= INITIAL_ANGLE;
-		// return !armAtInitialLimitSwitch.get();
+		return !armAtTopSwitch.get();
 	}
 
 	public boolean isStatic(){

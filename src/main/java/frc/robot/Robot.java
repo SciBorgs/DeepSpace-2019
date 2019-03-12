@@ -1,8 +1,6 @@
 package frc.robot;
 
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.IntakeSubsystem.HatchDepositControl;
-import frc.robot.subsystems.IntakeSubsystem.IntakeMode;
 import frc.robot.commands.*;
 import frc.robot.helpers.*;
 
@@ -34,6 +32,7 @@ public class Robot extends TimedRobot {
         positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
+        //(new ConditionalLiftCommand()).start();
 
            /* STARTS THE LIDAR     
         try {
@@ -76,7 +75,27 @@ public class Robot extends TimedRobot {
 
     public void teleopPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
+        System.out.println("Lift current: " + Robot.liftSubsystem.liftSpark.getOutputCurrent());
         Scheduler.getInstance().run();
+
+        /*
+        if(Robot.oi.leftStick.getPOV() == 0){
+            Robot.liftSubsystem.setLiftSpeed(.4);
+        }else if(Robot.oi.leftStick.getPOV() == 180){
+            Robot.liftSubsystem.setLiftSpeed(-.4);
+        }else{
+            Robot.liftSubsystem.setLiftSpeed(0);
+        }
+
+        if(Robot.oi.rightStick.getPOV() == 0){
+            Robot.liftSubsystem.setArmTiltSpeed(.4);
+        }else if(Robot.oi.rightStick.getPOV() == 180){
+            Robot.liftSubsystem.setArmTiltSpeed(-.4);
+        }else{
+            Robot.liftSubsystem.setArmTiltSpeed(0);
+        }
+        */
+
     }
 
     public void testPeriodic() {
