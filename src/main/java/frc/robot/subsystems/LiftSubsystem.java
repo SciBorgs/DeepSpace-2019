@@ -132,7 +132,7 @@ public class LiftSubsystem extends Subsystem {
 		}
 	}
 
-	public boolean needsCascade(double height){
+	private boolean needsCascade(double height){
 		return height > (ARM_LENGTH * Math.sin(ARM_TARGET_ANGLE) + RESTING_HEIGHT);
 	}
 
@@ -157,7 +157,7 @@ public class LiftSubsystem extends Subsystem {
 
 	public void moveToInitial(){
 		conditionalSetLiftSpeed(-SLOW_LIFT_INPUT, !liftAtBottom());
-		conditionalSetArmTiltSpeed(SLOW_ARM_INPUT, !armAtInitial());
+		conditionalSetArmTiltSpeed(SLOW_ARM_INPUT, !armAtMaxAngle());
 	}
 
 	public void moveLevelCounter(int change) {
@@ -190,15 +190,11 @@ public class LiftSubsystem extends Subsystem {
 	public boolean updateLevelCounterWidget() {
 		return levelCounterWidget.getEntry().setNumber(levelCounter);
 	}
-	
-	public boolean atMaxAngle(){
-		return false;
-	}
 
-	public void realLiftHeightIs(double height){
+	private void realLiftHeightIs(double height){
 		offsetCascadeHeight += INITIAL_HEIGHT - getLiftHeight();
 	}
-	public void realArmAngleIs(double angle){
+	private void realArmAngleIs(double angle){
 		offsetArmAngle += INITIAL_ANGLE - getArmAngle();
 	}
 
@@ -212,7 +208,7 @@ public class LiftSubsystem extends Subsystem {
 	}
 	
 	public double getArmAngle() {
-		if (armAtInitial()){
+		if (armAtMaxAngle()){
 			realArmAngleIs(INITIAL_ANGLE);
 			return INITIAL_ANGLE;
 		} else {
@@ -224,7 +220,7 @@ public class LiftSubsystem extends Subsystem {
 		return !cascadeAtBottomLimitSwitch.get();
 	} 
 
-	public boolean armAtInitial(){
+	public boolean armAtMaxAngle(){
 		// Returns whether or not the arm (the carriage) is bent back until it hits the cascade, IE: is it at the starting positiong
 		return !armAtTopSwitch.get();
 	}
@@ -233,7 +229,7 @@ public class LiftSubsystem extends Subsystem {
 		return armTiltTalon.getMotorOutputPercent() == 0 && liftSpark.get() == 0;
 	}
 
-	public void conditionalSetLiftSpeed(double speed, boolean b){
+	private void conditionalSetLiftSpeed(double speed, boolean b){
 		// if the boolean is true it will simply do a set lift speed. Otherwise, it will set it to zero
 		if (b) {
 			setLiftSpeed(speed);
@@ -242,7 +238,7 @@ public class LiftSubsystem extends Subsystem {
 		}
 	}
 
-	public void conditionalSetArmTiltSpeed(double speed, boolean b){
+	private void conditionalSetArmTiltSpeed(double speed, boolean b){
 		// if the boolean is true it will simply do a set arm tilt speed. Otherwise, it will set it to zero
 		if (b) {
 			setArmTiltSpeed(speed);
