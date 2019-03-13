@@ -12,7 +12,7 @@ public class GearShiftSubsystem extends Subsystem {
     public int countOfContinousCyclesBelowJoystickThreshold;
     public double joystickShiftUpThreshold = .5;
     public double joystickShiftDownThreshold = .2;
-    public int cycleThreshold = 50; //50 Cycles is 1000 milliseconds diveided by 20ms per cycle
+    public int cycleThreshold = 10; //50 Cycles is 1000 milliseconds diveided by 20ms per cycle
 
     public void updateCycleCount() {
         if (Math.abs((Robot.oi.leftStick.getY() - Robot.oi.rightStick.getY())/2.) >= joystickShiftUpThreshold) {

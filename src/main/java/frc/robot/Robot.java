@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
 
     public void robotInit() {
         positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
+        gearShiftSubsystem.shiftDown();
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
 
@@ -76,6 +77,7 @@ public class Robot extends TimedRobot {
 
     public void teleopPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
+
         Scheduler.getInstance().run();
     }
 

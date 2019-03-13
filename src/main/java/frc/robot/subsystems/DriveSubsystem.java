@@ -25,6 +25,12 @@ public class DriveSubsystem extends Subsystem {
     private static final double EXPONENT = 10; // x^exponent to in the graph. x=0 is linear. x>0 gives more control in low inputs
     private static final double MAX_JOYSTICK = 1; // max joystick output value
     private static final double DEFAULT_MAX_JERK = 0.1; // Doesn't allow a motor's output to change by more than this in one tick
+    private static final double GEAR_SHIFT_OFFSET = 0.2;
+    private static final double GEAR_SHIFT_DEADZONE = 0.1;
+    private static final double GEAR_SHIFT_FUNC_POWER = 1.4;
+    private static final double HIGH_REDUCTION_END = 0.6;
+    private static final double LOW_REDUCTION_START = 0.5;
+    private boolean highReduction = true;
     private PID tankAnglePID;
 
     // d value so that when x=INPUT_DEADZONE the wheels move
@@ -81,6 +87,48 @@ public class DriveSubsystem extends Subsystem {
     
     public double processStick(Joystick stick){
         return processAxis(-stick.getY());
+    }
+
+    public double processFunc(double x){
+        return (1 + GEAR_SHIFT_OFFSET) * Math.pow(Math.abs(x - GEAR_SHIFT_DEADZONE), GEAR_SHIFT_FUNC_POWER)
+                / Math.pow((1 - GEAR_SHIFT_DEADZONE),GEAR_SHIFT_FUNC_POWER);
+    }
+
+    public double processStickHighReduction(double input){
+        highReduction = true;
+        if(input >= GEAR_SHIFT_DEADZONE){
+            return processFunc(input);
+        }else if(input <= -GEAR_SHIFT_DEADZONE){
+            return -Math.abs(processFunc(input + 2 * GEAR_SHIFT_DEADZONE));
+        }
+        return 0;
+    }
+
+    public double processStickLowReduction(double input){
+        highReduction = false;
+        if(input >= LOW_REDUCTION_START){
+            return processFunc(input) - GEAR_SHIFT_OFFSET;
+        }else if(input <= -LOW_REDUCTION_START){
+            return -Math.abs(processFunc(input + 2 * GEAR_SHIFT_DEADZONE)) + GEAR_SHIFT_OFFSET;
+        }else{
+            System.out.println("[ [ [ LOW REDUCTION JOYSTICK ERROR ] ] ]");
+        }
+        return 0;
+    }
+
+    public double processStickGearShift(Joystick stick){
+        double input = -stick.getY();
+        if(highReduction){
+            if(Math.abs(input) >= HIGH_REDUCTION_END){
+                return processStickLowReduction(input);
+            }
+            return processStickHighReduction(input);
+        }else{
+            if(Math.abs(input) <= LOW_REDUCTION_START){
+                return processStickHighReduction(input);
+            }
+            return processStickLowReduction(input);
+        }
     }
 
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
