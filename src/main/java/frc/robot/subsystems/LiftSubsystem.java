@@ -28,6 +28,7 @@ public class LiftSubsystem extends Subsystem {
 	static final double SPARK_ENCODER_WHEEL_RATIO = 1 / 20.0;
 	static final double TALON_ENCODER_WHEEL_RATIO = 18.0 / 62;
 	static final double LIFT_WHEEL_RADIUS = Utils.inchesToMeters(1.5); // In meters, the radius of the wheel that is pulling up the lift
+	static final double LIFT_STATIC_INPUT = .06;
 	private SimpleWidget levelCounterWidget;
 	private int levelCounter = 0;
 	private double ARM_OUTPUT_LIMIT = 1;
@@ -70,6 +71,8 @@ public class LiftSubsystem extends Subsystem {
     }
 	
 	public LiftSubsystem() {
+		cascadeAtBottomLimitSwitch = new DigitalInput(PortMap.CASCADE_AT_BOTTOM_LIMIT_SWITCH);
+		armAtTopSwitch = new DigitalInput(PortMap.ARM_AT_TOP_LIMIT_SWITCH);
 		liftSpark    = new CANSparkMax(PortMap.LIFT_SPARK, MotorType.kBrushless);
 		armTiltTalon = new TalonSRX(PortMap.ARM_TILT_TALON);
 		armTiltTalon.setNeutralMode(NeutralMode.Brake);
@@ -81,8 +84,6 @@ public class LiftSubsystem extends Subsystem {
 		armPID.setSmoother(ARM_PID_SMOOTHNESS);
 		realLiftHeightIs(INITIAL_HEIGHT);
 		realArmAngleIs(INITIAL_ANGLE);
-		cascadeAtBottomLimitSwitch = new DigitalInput(PortMap.CASCADE_AT_BOTTOM_LIMIT_SWITCH);
-		armAtTopSwitch = new DigitalInput(PortMap.ARM_AT_TOP_LIMIT_SWITCH);
 	}
 	
 	private double getTargetHeight(Target target){
@@ -247,9 +248,14 @@ public class LiftSubsystem extends Subsystem {
 		}
 	}
 
-    public void setLiftSpeed(double speed) {
-		System.out.println("speed: " + speed);
-    	Robot.driveSubsystem.setMotorSpeed(liftSpark, speed);
+    public void setLiftSpeedRaw(double speed) {
+		System.out.println("speed: " + (speed));
+		Robot.driveSubsystem.setMotorSpeed(liftSpark, speed);
+		System.out.println("get: " + liftSpark.get());
+		System.out.println("current: " + liftSpark.getOutputCurrent());
+	}
+	public void setLiftSpeed(double speed){
+		setLiftSpeedRaw(speed + LIFT_STATIC_INPUT);
 	}
 	
 	public void setArmTiltSpeed(double speed) {

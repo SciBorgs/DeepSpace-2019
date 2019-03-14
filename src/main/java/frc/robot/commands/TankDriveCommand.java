@@ -26,11 +26,11 @@ public class TankDriveCommand extends Command {
     }
     @Override protected void execute() {
         //Robot.driveSubsystem.setSpeedRaw(leftStick, rightStick);
-        /*if (Robot.driveSubsystem.processStick(leftStick) == 0){
+        if (Robot.driveSubsystem.processStick(leftStick) == 0){
             Robot.liftSubsystem.moveLiftToheight(Utils.inchesToMeters(45));
         } else {
              Robot.liftSubsystem.setLiftSpeed(Robot.driveSubsystem.processStick(leftStick));
-        }*/
+        }
         System.out.println("omega: " + Robot.positioningSubsystem.getAngularSpeed());
         //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(leftStick));
     }

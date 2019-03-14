@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class PickupHatchFromGroundCommand extends CommandGroup {
-    private final double SCOOP_UP_TO_SECURE_TIMEOUT   = .1;
+    private final double SCOOP_UP_TO_SECURE_TIMEOUT   = .1; // In seconds
     private final double SECURE_TO_SCOOP_DOWN_TIMEOUT = .1;
 
 	public PickupHatchFromGroundCommand() {
