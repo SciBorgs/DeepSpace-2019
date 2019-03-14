@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.*;
+import frc.robot.commands.LevelCounterUpdateCommand.LevelChange;
 
 public class OI {
     public Joystick leftStick, rightStick;
@@ -19,7 +20,7 @@ public class OI {
         lineupButton.whenPressed(new ResetLiftCommand());
 
         liftLevelUpButton = new JoystickButton(leftStick, PortMap.JOYSTICK_CENTER_BUTTON);
-        liftLevelUpButton.whenPressed(new LevelCounterUpdate(LevelCounterUpdate.LevelChange.Up));
+        liftLevelUpButton.whenPressed(new LevelCounterUpdateCommand(LevelChange.Up));
         liftLevelUpButton.whenPressed(new LiftCommand());
 
         depositPanelButton = new JoystickButton(leftStick, PortMap.JOYSTICK_RIGHT_BUTTON);
@@ -27,7 +28,7 @@ public class OI {
         //depositPanelButton.whenReleased(new HatchControlCommand(HatchDepositControl.Hold));  
 
         liftLevelDownButton = new JoystickButton(leftStick, PortMap.JOYSTICK_TRIGGER);
-        liftLevelDownButton.whenPressed(new LevelCounterUpdate(LevelCounterUpdate.LevelChange.Down));
+        liftLevelDownButton.whenPressed(new LevelCounterUpdateCommand(LevelChange.Down));
         liftLevelDownButton.whenPressed(new LiftCommand());
 
         // Right Stick
