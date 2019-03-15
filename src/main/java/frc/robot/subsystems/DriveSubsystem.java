@@ -134,6 +134,10 @@ public class DriveSubsystem extends Subsystem {
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
         double left  = processStick(leftStick);
         double right = processStick(rightStick);
+
+        //double left = processStickGearShift(leftStick);
+        //double right = processStickGearShift(rightStick);
+
         //System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
         setSpeedTankAngularControl(left, right);
     }
