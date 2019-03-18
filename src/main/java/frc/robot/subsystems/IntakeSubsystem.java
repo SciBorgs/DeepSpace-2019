@@ -15,10 +15,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class IntakeSubsystem extends Subsystem {
 
-	public enum IntakeMode {Upright, Normal}
-	public enum HatchDepositControl {Deposit, Hold}
     public TalonSRX intakeTalon;
-	public DoubleSolenoid intakeModeSolenoid, hatchControlSolenoid;
+	public DoubleSolenoid scoopSolenoid, secureHatchSolenoid;
 	private DigitalInput ballLimitSwitch, hatchLimitSwitch;
 	private double lastHeld;
 	private Timer timer;
@@ -26,6 +24,7 @@ public class IntakeSubsystem extends Subsystem {
 	public final static double SPIT_SPEED = SUCK_SPEED * -2;
 	public final static double PICKUP_HATCH_SPEED = -0.3;
 	public final static double SUCK_IF_OUT_PERIOD = 1; // The amount of time that the intake should suck if the ball stops pressing the button in seconds
+	public final static double SECURE_CARGO_SPEED = 0.6;
 
     public IntakeSubsystem() {
 		timer = new Timer();
@@ -33,26 +32,24 @@ public class IntakeSubsystem extends Subsystem {
 		lastHeld = timer.get() - SUCK_IF_OUT_PERIOD;
 		intakeTalon = new TalonSRX(PortMap.INTAKE_TALON);
 		intakeTalon.setNeutralMode(NeutralMode.Brake);
-		hatchControlSolenoid = new DoubleSolenoid(PortMap.DEPOSIT_HATCH_PANEL_SOLENOID[0], PortMap.DEPOSIT_HATCH_PANEL_SOLENOID[1]);
-		intakeModeSolenoid = new DoubleSolenoid(PortMap.INTAKE_MODE_SOLENOID[0], PortMap.INTAKE_MODE_SOLENOID[1]);
+		secureHatchSolenoid = new DoubleSolenoid(PortMap.SECURE_HATCH_SOLENOID[0], PortMap.SECURE_HATCH_SOLENOID[1]);
+		scoopSolenoid = new DoubleSolenoid(PortMap.SCOOP_SOLENOID[0], PortMap.SCOOP_SOLENOID[1]);
 		ballLimitSwitch = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);
         hatchLimitSwitch = new DigitalInput(PortMap.HATCH_LIMIT_SWITCH);
 	}
 
-	public void updateHatchControl (HatchDepositControl control) {
-		if (control == HatchDepositControl.Deposit) {
-			hatchControlSolenoid.set(Value.kReverse);
-		} else {
-			hatchControlSolenoid.set(Value.kForward);
-		}
+	public void scoopUp() {
+		scoopSolenoid.set(Value.kForward);
+	}
+	public void scoopDown(){ 
+		scoopSolenoid.set(Value.kReverse);
 	}
 
-	public void updateIntakeMode (IntakeMode mode) {
-		if (mode == IntakeMode.Upright) {
-			intakeModeSolenoid.set(Value.kReverse);
-		} else {
-			intakeModeSolenoid.set(Value.kForward);
-		}
+	public void releaseHatch(){
+		secureHatchSolenoid.set(Value.kForward);
+	}
+	public void secureHatch(){
+		secureHatchSolenoid.set(Value.kReverse);
 	}
 
 	public boolean holdingHatch(){
@@ -88,8 +85,8 @@ public class IntakeSubsystem extends Subsystem {
 	}
 
 	public void secureCargo() {
-		if (cargoLoose()){
-			Utils.setTalon(intakeTalon, .6);
+		if (cargoLoose() && intakeTalon.getMotorOutputPercent() == 0){
+			Utils.setTalon(intakeTalon, SECURE_CARGO_SPEED);
 		}
 	}
 

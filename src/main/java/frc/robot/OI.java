@@ -3,8 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.*;
-import frc.robot.subsystems.IntakeSubsystem.HatchDepositControl;
-import frc.robot.subsystems.IntakeSubsystem.IntakeMode;
+import frc.robot.commands.LevelCounterUpdateCommand.LevelChange;
 
 public class OI {
     public Joystick leftStick, rightStick;
@@ -16,24 +15,25 @@ public class OI {
 
         // Left Stick
         lineupButton = new JoystickButton(leftStick, PortMap.JOYSTICK_LEFT_BUTTON);
-        lineupButton.whenPressed(new ResetLineupInfoCommand());
-        lineupButton.whileHeld(new LineupCommand());
+        //lineupButton.whenPressed(new ResetLineupInfoCommand());
+        //lineupButton.whileHeld(new LineupCommand());
+        lineupButton.whenPressed(new ResetLiftCommand());
 
         liftLevelUpButton = new JoystickButton(leftStick, PortMap.JOYSTICK_CENTER_BUTTON);
-        liftLevelUpButton.whenPressed(new LevelCounterUpdate(LevelCounterUpdate.LevelChange.Up));
-        liftLevelUpButton.whenReleased(new ConditionalLiftCommand());
+        liftLevelUpButton.whenPressed(new LevelCounterUpdateCommand(LevelChange.Up));
+        liftLevelUpButton.whenPressed(new LiftCommand());
 
         depositPanelButton = new JoystickButton(leftStick, PortMap.JOYSTICK_RIGHT_BUTTON);
-        depositPanelButton.whenPressed(new HatchControlCommand(HatchDepositControl.Deposit));
-        depositPanelButton.whenReleased(new HatchControlCommand(HatchDepositControl.Hold));
+        //depositPanelButton.whenPressed(new HatchControlCommand(HatchDepositControl.Deposit));
+        //depositPanelButton.whenReleased(new HatchControlCommand(HatchDepositControl.Hold));  
 
         liftLevelDownButton = new JoystickButton(leftStick, PortMap.JOYSTICK_TRIGGER);
-        liftLevelDownButton.whenPressed(new LevelCounterUpdate(LevelCounterUpdate.LevelChange.Down));
-        liftLevelDownButton.whenReleased(new ConditionalLiftCommand());
+        liftLevelDownButton.whenPressed(new LevelCounterUpdateCommand(LevelChange.Down));
+        liftLevelDownButton.whenPressed(new LiftCommand());
 
         // Right Stick
-        startZLiftButton = new JoystickButton(rightStick, PortMap.JOYSTICK_LEFT_BUTTON);
-        startZLiftButton.whenPressed(new ZLiftCommand(leftStick, rightStick));
+        //startZLiftButton = new JoystickButton(rightStick, PortMap.JOYSTICK_LEFT_BUTTON);
+        //startZLiftButton.whenPressed(new ZLiftCommand(leftStick, rightStick));
 
         suckButton = new JoystickButton(rightStick, PortMap.JOYSTICK_CENTER_BUTTON);
         suckButton.whileHeld(new ConditionalSuckCommand());
@@ -42,8 +42,8 @@ public class OI {
         spitButton.whileHeld(new CargoReleaseCommand());
 
         intakeModeButton = new JoystickButton(rightStick, PortMap.JOYSTICK_TRIGGER);
-        intakeModeButton.whenPressed(new IntakeModeCommand(IntakeMode.Normal));
-        intakeModeButton.whenReleased(new IntakeModeCommand(IntakeMode.Upright));
+        //intakeModeButton.whenPressed(new IntakeModeCommand(IntakeMode.Normal));
+        //intakeModeButton.whenReleased(new IntakeModeCommand(IntakeMode.Upright));
 
     }
 }
