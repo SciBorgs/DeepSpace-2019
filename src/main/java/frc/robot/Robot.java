@@ -5,6 +5,7 @@ import frc.robot.commands.*;
 import frc.robot.helpers.*;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,12 +31,16 @@ public class Robot extends TimedRobot {
     public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
     public static Lineup lineup = new Lineup();
 
+    public static JoystickButton forw, back;
+
     public void robotInit() {
         positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         gearShiftSubsystem.shiftDown();
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
         zLiftSubsystem.unlockPistons();
+        forw = new JoystickButton(oi.leftStick, PortMap.JOYSTICK_TRIGGER);
+        back = new JoystickButton(oi.leftStick, PortMap.JOYSTICK_CENTER_BUTTON);
         //(new LiftCommand()).start();
 
            /* STARTS THE LIDAR     
@@ -82,6 +87,12 @@ public class Robot extends TimedRobot {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         System.out.println("Lift current: " + Robot.liftSubsystem.liftSpark.getOutputCurrent());
         Scheduler.getInstance().run();
+
+        if(forw.get()){
+            gearShiftSubsystem.shiftUp();
+        }else if(back.get()){
+            gearShiftSubsystem.shiftDown();
+        }
 
         /*
         if(Robot.oi.leftStick.getPOV() == 0){
