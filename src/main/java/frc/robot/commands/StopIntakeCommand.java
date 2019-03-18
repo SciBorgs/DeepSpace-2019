@@ -3,19 +3,20 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.Robot;
 
-public class CargoFollowCommand extends CommandGroup {
+public class StopIntakeCommand extends CommandGroup {
+    public static final double DELAY = .3; // In seconds
 
-    public CargoFollowCommand() {
+    public StopIntakeCommand() {
         requires(Robot.driveSubsystem);
-        addParallel(new SuckCommand());
+        addSequential(new CloseArmCommand());
+        addSequential(new StopIntakeWheelsCommand(), DELAY);
     }
 
     @Override protected void initialize() {
-        return;
     }
 
 	@Override protected void execute(){
-        Robot.cargoFollowing.followBall();
+        return;
 	}
 
 	@Override protected boolean isFinished(){

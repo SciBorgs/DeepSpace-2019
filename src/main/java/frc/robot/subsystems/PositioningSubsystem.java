@@ -157,8 +157,8 @@ public class PositioningSubsystem extends Subsystem {
     }
     
     public double getAngularSpeed() {
-        System.out.println("current angle: " + getAngle());
-        System.out.println("last angle: " + adjustTheta(robotAngles.get(0)));
+        //System.out.println("current angle: " + getAngle());
+        //System.out.println("last angle: " + adjustTheta(robotAngles.get(0)));
     	return (getAngle() - adjustTheta(robotAngles.get(0))) / ((ANGLE_MEASURMENTS - 1) * INTERVAL_LENGTH);
     }
     

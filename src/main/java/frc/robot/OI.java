@@ -34,9 +34,12 @@ public class OI {
 
         suckButton = new JoystickButton(leftStick, PortMap.JOYSTICK_LEFT_BUTTON);
         suckButton.whenPressed(new ConditionalSuckCommand());
+        suckButton.whenReleased(new CloseArmCommand());
+        suckButton.whenReleased(new SecureCargoCommand());
         
         spitButton = new JoystickButton(leftStick, PortMap.JOYSTICK_RIGHT_BUTTON);
         spitButton.whenPressed(new CargoReleaseCommand());
+        spitButton.whenReleased(new StopIntakeCommand());
 
         hatchSecureModeButton = new JoystickButton(rightStick, PortMap.JOYSTICK_TRIGGER);
         hatchSecureModeButton.whenPressed(new ReleaseHatchCommand());

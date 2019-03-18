@@ -14,8 +14,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class DriveSubsystem extends Subsystem {
     // Define tested error values here
-    double tankAngleP = .05, tankAngleD = 0.0, tankAngleI = 0;
-    double goalOmegaConstant = .6;
+    double tankAngleP = .07, tankAngleD = 0.0, tankAngleI = 0;
+    double goalOmegaConstant = 10;
     double maxOmegaGoal = 1 * goalOmegaConstant;
     public CANSparkMax lf, lm, lb, rf, rm, rb;
 
@@ -184,12 +184,12 @@ public class DriveSubsystem extends Subsystem {
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
 		double averageOutput = (leftSpeed + rightSpeed) / 2;
         double goalOmega = Utils.limitOutput(goalOmegaConstant * (rightSpeed - leftSpeed), maxOmegaGoal);
-        System.out.println("angular speed: " + Robot.positioningSubsystem.getAngularSpeed());
-        System.out.println("desired angular speed: " + goalOmega);
+        //System.out.println("angular speed: " + Robot.positioningSubsystem.getAngularSpeed());
+        //System.out.println("desired angular speed: " + goalOmega);
         double error = goalOmega - Robot.positioningSubsystem.getAngularSpeed();
         tankAnglePID.add_measurement(error);
         double change = tankAnglePID.getOutput();
-        System.out.println("Output: " + change);
+        //System.out.println("Output: " + change);
 		setSpeedTank(averageOutput - change, averageOutput + change); 
 	}
 	
