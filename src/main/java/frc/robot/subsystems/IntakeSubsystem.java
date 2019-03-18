@@ -19,11 +19,11 @@ public class IntakeSubsystem extends Subsystem {
 	public DoubleSolenoid scoopSolenoid, secureHatchSolenoid, armSolenoid;
 	private double lastHeld;
 	private Timer timer;
-	public final static double SUCK_SPEED = 2;
+	public final static double SUCK_SPEED = 1;
 	public final static double SPIT_SPEED = SUCK_SPEED * -1;
 	public final static double PICKUP_HATCH_SPEED = -0.3;
 	public final static double SUCK_IF_OUT_PERIOD = 1; // The amount of time that the intake should suck if the ball stops pressing the button in seconds
-	public final static double SECURE_CARGO_SPEED = 0.6;
+	public final static double SECURE_CARGO_SPEED = SUCK_SPEED / 2;
 	private boolean holdingHatch;
 	private boolean holdingCargo;
 
@@ -33,6 +33,9 @@ public class IntakeSubsystem extends Subsystem {
 		lastHeld = timer.get() - SUCK_IF_OUT_PERIOD;
 		intakeTalon = new TalonSRX(PortMap.INTAKE_TALON);
 		intakeTalon.setNeutralMode(NeutralMode.Brake);
+		intakeTalon.configContinuousCurrentLimit(10);
+		intakeTalon.configPeakCurrentLimit(10);
+		intakeTalon.enableCurrentLimit(true);
 		holdingHatch = false;
 		holdingCargo = false;
 		//secureHatchSolenoid = new DoubleSolenoid(PortMap.SECURE_HATCH_SOLENOID[0], PortMap.SECURE_HATCH_SOLENOID[1]);
@@ -95,6 +98,10 @@ public class IntakeSubsystem extends Subsystem {
     public void spit() {
 		holdingCargo = false;
         setIntakeSpeed(SPIT_SPEED);
+	}
+
+	public void secureCargo() {
+		setIntakeSpeed(SECURE_CARGO_SPEED);
 	}
 
 	public boolean holdingGamePiece() {

@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
         positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
-        zLiftSubsystem.unlockPistons();
+        //zLiftSubsystem.unlockPistons();
         //(new LiftCommand()).start();
 
            /* STARTS THE LIDAR     
@@ -79,7 +79,6 @@ public class Robot extends TimedRobot {
 
     public void teleopPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
-        System.out.println("Lift current: " + Robot.liftSubsystem.liftSpark.getOutputCurrent());
         Scheduler.getInstance().run();
 
         /*

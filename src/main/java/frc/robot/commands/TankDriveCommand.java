@@ -26,9 +26,10 @@ public class TankDriveCommand extends Command {
     }
     @Override protected void execute() {
         Robot.driveSubsystem.setSpeed(leftStick, rightStick);
+		System.out.println("talon current: " + Robot.intakeSubsystem.intakeTalon.getOutputCurrent());
         //System.out.println("omega: " + Robot.positioningSubsystem.getAngularSpeed());
         //Robot.zLiftSubsystem.lift(Robot.driveSubsystem.processStick(leftStick));
-        Robot.positioningSubsystem.printPosition();
+        //Robot.positioningSubsystem.printPosition();
         //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(leftStick));
         //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(leftStick));
     }
