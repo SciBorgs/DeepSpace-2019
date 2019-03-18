@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.PortMap;
 import frc.robot.Robot;
+import frc.robot.Utils;
 import frc.robot.helpers.PID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -13,8 +14,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class DriveSubsystem extends Subsystem {
     // Define tested error values here
-    double tankAngleP = .3, tankAngleD = 0.2, tankAngleI = 0;
-    double goalOmegaConstant = 2;
+    double tankAngleP = .05, tankAngleD = 0.0, tankAngleI = 0;
+    double goalOmegaConstant = .6;
     double maxOmegaGoal = 1 * goalOmegaConstant;
     public CANSparkMax lf, lm, lb, rf, rm, rb;
 
@@ -43,17 +44,17 @@ public class DriveSubsystem extends Subsystem {
 
 		lf = newMotorObject(PortMap.LEFT_FRONT_SPARK);
 		lm = newMotorObject(PortMap.LEFT_MIDDLE_SPARK);
-        //lb = newMotorObject(PortMap.LEFT_BACK_SPARK); // UNCOMMENT FOR ACTUAL ROBOT. COMMENTED OUT FOR PRACTICE B/C FALTY SPARK
+        lb = newMotorObject(PortMap.LEFT_BACK_SPARK);
         
 		rf = newMotorObject(PortMap.RIGHT_FRONT_SPARK);
 		rm = newMotorObject(PortMap.RIGHT_MIDDLE_SPARK);
-        //rb = newMotorObject(PortMap.RIGHT_BACK_SPARK); // UNCOMMENT FOR ACTUAL ROBOT. COMMENTED OUT FOR PRACTICE B/C FALTY SPARK
+        rb = newMotorObject(PortMap.RIGHT_BACK_SPARK);
 
         lm.follow(lf);
-        // lb.follow(lf); // UNCOMMENT FOR ACTUAL ROBOT. COMMENTED OUT FOR PRACTICE B/C FALTY SPARK
+        lb.follow(lf);
 
         rm.follow(rf);
-        //rb.follow(rf); // UNCOMMENT FOR ACTUAL ROBOT. COMMENTED OUT FOR PRACTICE B/C FALTY SPARK
+        rb.follow(rf);
 
         tankAnglePID = new PID(tankAngleP, tankAngleI, tankAngleD);
 	}
@@ -118,18 +119,19 @@ public class DriveSubsystem extends Subsystem {
     }
     public void setMotorSpeed(TalonSRX motor, double speed, double maxJerk){
         speed = limitJerk(motor.getMotorOutputPercent(), speed, maxJerk);
-        //System.out.println("setting talon to " + speed);
+        System.out.println("setting talon to " + speed);
         motor.set(ControlMode.PercentOutput, speed);
+        System.out.println("checking: " + motor.getMotorOutputPercent());
     }
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
-        setMotorSpeed(lf, leftSpeed * 1.5); // GET RID OF 1.5 MULTIPLIER FOR ACTUAL ROBOT. COMMENTED OUT FOR PRACTICE B/C FALTY SPARK
-        setMotorSpeed(rf, -rightSpeed * 1.5);
+        setMotorSpeed(lf, leftSpeed);
+        setMotorSpeed(rf, -rightSpeed);
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
 		double averageOutput = (leftSpeed + rightSpeed) / 2;
-        double goalOmega = Math.min(goalOmegaConstant * (rightSpeed - leftSpeed), maxOmegaGoal);
+        double goalOmega = Utils.limitOutput(goalOmegaConstant * (rightSpeed - leftSpeed), maxOmegaGoal);
         System.out.println("angular speed: " + Robot.positioningSubsystem.getAngularSpeed());
         System.out.println("desired angular speed: " + goalOmega);
         double error = goalOmega - Robot.positioningSubsystem.getAngularSpeed();

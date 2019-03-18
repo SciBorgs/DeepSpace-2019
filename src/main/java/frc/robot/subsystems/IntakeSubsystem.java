@@ -16,15 +16,16 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class IntakeSubsystem extends Subsystem {
 
     public TalonSRX intakeTalon;
-	public DoubleSolenoid scoopSolenoid, secureHatchSolenoid;
-	private DigitalInput ballLimitSwitch, hatchLimitSwitch;
+	public DoubleSolenoid scoopSolenoid, secureHatchSolenoid, armSolenoid;
 	private double lastHeld;
 	private Timer timer;
-	public final static double SUCK_SPEED = 0.5;
-	public final static double SPIT_SPEED = SUCK_SPEED * -2;
+	public final static double SUCK_SPEED = 2;
+	public final static double SPIT_SPEED = SUCK_SPEED * -1;
 	public final static double PICKUP_HATCH_SPEED = -0.3;
 	public final static double SUCK_IF_OUT_PERIOD = 1; // The amount of time that the intake should suck if the ball stops pressing the button in seconds
 	public final static double SECURE_CARGO_SPEED = 0.6;
+	private boolean holdingHatch;
+	private boolean holdingCargo;
 
     public IntakeSubsystem() {
 		timer = new Timer();
@@ -32,16 +33,17 @@ public class IntakeSubsystem extends Subsystem {
 		lastHeld = timer.get() - SUCK_IF_OUT_PERIOD;
 		intakeTalon = new TalonSRX(PortMap.INTAKE_TALON);
 		intakeTalon.setNeutralMode(NeutralMode.Brake);
-		secureHatchSolenoid = new DoubleSolenoid(PortMap.SECURE_HATCH_SOLENOID[0], PortMap.SECURE_HATCH_SOLENOID[1]);
-		scoopSolenoid = new DoubleSolenoid(PortMap.SCOOP_SOLENOID[0], PortMap.SCOOP_SOLENOID[1]);
-		ballLimitSwitch = new DigitalInput(PortMap.BALL_LIMIT_SWITCH);
-        hatchLimitSwitch = new DigitalInput(PortMap.HATCH_LIMIT_SWITCH);
+		holdingHatch = false;
+		holdingCargo = false;
+		//secureHatchSolenoid = new DoubleSolenoid(PortMap.SECURE_HATCH_SOLENOID[0], PortMap.SECURE_HATCH_SOLENOID[1]);
+		//scoopSolenoid = new DoubleSolenoid(PortMap.SCOOP_SOLENOID[0], PortMap.SCOOP_SOLENOID[1]);
+		armSolenoid = new DoubleSolenoid(PortMap.ARM_SOLENOID[0], PortMap.ARM_SOLENOID[1]);
 	}
 
 	public void scoopUp() {
 		scoopSolenoid.set(Value.kForward);
 	}
-	public void scoopDown(){ 
+	public void scoopDown(){
 		scoopSolenoid.set(Value.kReverse);
 	}
 
@@ -52,24 +54,33 @@ public class IntakeSubsystem extends Subsystem {
 		secureHatchSolenoid.set(Value.kReverse);
 	}
 
-	public boolean holdingHatch(){
-		return !(hatchLimitSwitch.get());
+	public void openArm(){
+		armSolenoid.set(Value.kForward);
 	}
-
-	public boolean holdingCargoSecure(){
-		boolean holding = !ballLimitSwitch.get();
-		if (holding){
-			lastHeld = timer.get();
+	public void closeArm(){
+		armSolenoid.set(Value.kReverse);
+	}
+	public boolean isArmOpen(){
+		return armSolenoid.get() == Value.kForward;
+	}
+	public void toggleArm(){
+		if (isArmOpen()){
+			closeArm();
+		} else {
+			openArm();
 		}
-		return holding;
 	}
 
-	public boolean cargoLoose() {
-		return !holdingCargoSecure() && (timer.get() - lastHeld) < SUCK_IF_OUT_PERIOD;
+	public void updateHoldingHatch(boolean holdingHatch){
+		this.holdingHatch = holdingHatch;
 	}
 
-	public boolean holdingCargo() {
-		return holdingCargoSecure() || cargoLoose();
+	public boolean holdingHatch(){ // assumes when the driver tries to secure a hatch, the robot actually has it
+		return holdingHatch;
+	}
+
+	public boolean holdingCargo() { // assumes when the drvier tries to intake cargo, the robot actually has it
+		return holdingCargo;
 	}
 
 	public void setIntakeSpeed(double speed){
@@ -77,17 +88,13 @@ public class IntakeSubsystem extends Subsystem {
 	}
 
     public void suck() {
+		holdingCargo = true; // We assume that sucknig means we have the cargo. W/o limit switches it is the best we can do
         setIntakeSpeed(SUCK_SPEED);
     }
 
     public void spit() {
+		holdingCargo = false;
         setIntakeSpeed(SPIT_SPEED);
-	}
-
-	public void secureCargo() {
-		if (cargoLoose() && intakeTalon.getMotorOutputPercent() == 0){
-			Utils.setTalon(intakeTalon, SECURE_CARGO_SPEED);
-		}
 	}
 
 	public boolean holdingGamePiece() {

@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 import java.util.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 public class Robot extends TimedRobot {
     private String m_autoSelected;
     public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
@@ -32,7 +34,8 @@ public class Robot extends TimedRobot {
         positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
-        //(new ConditionalLiftCommand()).start();
+        zLiftSubsystem.unlockPistons();
+        //(new LiftCommand()).start();
 
            /* STARTS THE LIDAR     
         try {
@@ -66,6 +69,7 @@ public class Robot extends TimedRobot {
 
     public void autonomousPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
+   
     }
     
     @Override
