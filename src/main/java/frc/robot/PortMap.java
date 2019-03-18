@@ -32,9 +32,9 @@ public class PortMap {
     public static final int PIGEON_TALON = 9;
 
     public static final int ARM_TILT_TALON = 12; // CHANGE TO 10 FOR COMP
-    public static final int INTAKE_TALON = 8; // CHANGE TO 11 FOR COMP
+    public static final int INTAKE_TALON = 10; // CHANGE TO 11 FOR COMP
 
-    public static final int LEFT_ZLIFT = 2;
+    public static final int LEFT_ZLIFT = 9;
     public static final int RIGHT_ZLIFT = 8;
 
     //***************LIMIT*SWITCHES**************//
@@ -42,14 +42,15 @@ public class PortMap {
     public static final int BALL_LIMIT_SWITCH = 8; // CHANGE TO 0 FOR COMP
     public static final int HATCH_LIMIT_SWITCH = 9; // CHANGE TO 1 FOR COMP
 
-    public static final int CASCADE_AT_BOTTOM_LIMIT_SWITCH = 2;
+    public static final int CASCADE_AT_BOTTOM_LIMIT_SWITCH = 0;
     public static final int ARM_AT_TOP_LIMIT_SWITCH = 3;
 
     //***************DOUBLE*SOLENOIDS*************//
 
     public static final int[] GEAR_SHIFTER_SOLENOID = {0, 1};
     public static final int[] SECURE_HATCH_SOLENOID = {4, 5};
-    public static final int[] SCOOP_SOLENOID = {2, 3}; // Flips up the hatch
+    public static final int[] SCOOP_SOLENOID = {6, 7}; // Flips up the hatch
+    public static final int[] ARM_SOLENOID = {2, 3};
 
     public static final int FORWARD_CHANNEL = 6; // CHANGE TO 2 FOR COMP
     public static final int REVERSE_CHANNEL = 7; // CHANGE TO 3 FOR COMP

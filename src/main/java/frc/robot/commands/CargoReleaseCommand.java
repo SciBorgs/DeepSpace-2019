@@ -10,6 +10,7 @@ public class CargoReleaseCommand extends Command {
     }
 
     @Override protected void initialize() {
+        Robot.intakeSubsystem.openArm();
         Robot.intakeSubsystem.spit();
     }
 
@@ -22,6 +23,7 @@ public class CargoReleaseCommand extends Command {
     }
     @Override protected void end() {
         Robot.intakeSubsystem.setIntakeSpeed(0);
+        Robot.intakeSubsystem.closeArm();
     }
     @Override protected void interrupted() {
         end();

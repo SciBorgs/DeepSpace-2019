@@ -8,6 +8,8 @@ public class ReleaseHatchCommand extends InstantCommand {
     public ReleaseHatchCommand(){}
 
     @Override protected void execute(){
-        Robot.intakeSubsystem.scoopDown();
+        Robot.intakeSubsystem.releaseHatch();
+        Robot.intakeSubsystem.closeArm();
+        Robot.intakeSubsystem.updateHoldingHatch(false);
     }
 }

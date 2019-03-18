@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.PortMap;
+import frc.robot.Robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -21,10 +22,10 @@ public class ZLiftSubsystem extends Subsystem {
     private DoubleSolenoid doubleSolenoid;
 
     public ZLiftSubsystem() {
-        leftZLift = new TalonSRX(PortMap.LEFT_ZLIFT);
+        leftZLift  = new TalonSRX(PortMap.LEFT_ZLIFT);
         rightZLift = new TalonSRX(PortMap.RIGHT_ZLIFT);
 
-        pigeon = new PigeonIMU(rightZLift);
+        // pigeon = new PigeonIMU(rightZLift);
         anglePID = new PID(angleP, angleI, angleD);
 
         doubleSolenoid = new DoubleSolenoid(PortMap.FORWARD_CHANNEL, PortMap.REVERSE_CHANNEL);
@@ -33,18 +34,17 @@ public class ZLiftSubsystem extends Subsystem {
     }
 
     public void lift(double defaultSpeed) {
-        anglePID.add_measurement(getYaw());
+        //anglePID.add_measurement(getYaw());
         //System.out.println(anglePID.getOutput() + " Angle: " + getYaw());
-        double speed = anglePID.getLimitOutput(maxOutput);
-     
-        Utils.setTalon(leftZLift,  defaultSpeed - speed);
-        Utils.setTalon(rightZLift, defaultSpeed + speed);
+        double speed = 0; //anglePID.getLimitOutput(maxOutput);
+        Robot.driveSubsystem.setMotorSpeed(leftZLift,  defaultSpeed - speed);
+        Robot.driveSubsystem.setMotorSpeed(rightZLift, defaultSpeed + speed);
     }
 
     public void reset() {
         leftZLift.set(ControlMode.PercentOutput, 0);
         rightZLift.set(ControlMode.PercentOutput, 0);
-        pigeon.setYaw(0, 10); // resets pigeon angle
+        // pigeon.setYaw(0, 10); // resets pigeon angle
         doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
     

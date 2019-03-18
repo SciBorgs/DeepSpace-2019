@@ -27,7 +27,7 @@ public class PositioningSubsystem extends Subsystem {
     public static final double GLOBAL_ORIGINAL_ANGLE = Math.PI/2;
     public double ORIGINAL_ANGLE, ORIGINAL_X, ORIGINAL_Y;
     public static final int ENC_MEASURMENTS = 5; // How many values we keep track of for each encoder
-    public static final int ANGLE_MEASURMENTS = 20;
+    public static final int ANGLE_MEASURMENTS = 5;
     public static final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
     public static final double STATIC_POSITION_ERROR = .05;
     public static final double STATIC_ANGLE_ERROR = Math.toRadians(2);
