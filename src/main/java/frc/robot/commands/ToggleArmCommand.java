@@ -9,5 +9,8 @@ public class ToggleArmCommand extends InstantCommand {
 
     @Override protected void execute(){
         Robot.intakeSubsystem.toggleArm();
+        if (Robot.intakeSubsystem.isArmOpen()){
+            Robot.intakeSubsystem.updateHoldingHatch(true);
+        }
     }
 }
