@@ -9,9 +9,5 @@ public class SecureHatchCommand extends InstantCommand {
 
     @Override protected void execute(){
         Robot.intakeSubsystem.secureHatch();
-        Robot.intakeSubsystem.toggleHoldingHatch();
-        if (Robot.intakeSubsystem.holdingHatch()){
-            Robot.intakeSubsystem.openArm();
-        }
     }
 }
