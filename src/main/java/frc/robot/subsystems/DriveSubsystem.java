@@ -162,7 +162,7 @@ public class DriveSubsystem extends Subsystem {
     }
     public void setMotorSpeed(CANSparkMax motor, double speed, double maxJerk){
         speed = limitJerk(motor.get(), speed, maxJerk);
-        System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
+        //System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
         motor.set(speed);
     }
 

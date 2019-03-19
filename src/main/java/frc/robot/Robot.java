@@ -38,8 +38,8 @@ public class Robot extends TimedRobot {
         gearShiftSubsystem.shiftDown();
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
-        forw = new JoystickButton(oi.leftStick, PortMap.JOYSTICK_TRIGGER);
-        back = new JoystickButton(oi.leftStick, PortMap.JOYSTICK_CENTER_BUTTON);
+        forw = new JoystickButton(oi.leftStick, 12);
+        back = new JoystickButton(oi.leftStick, 11);
         //zLiftSubsystem.unlockPistons();
         //(new LiftCommand()).start();
 

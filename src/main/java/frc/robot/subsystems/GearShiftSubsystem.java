@@ -38,14 +38,20 @@ public class GearShiftSubsystem extends Subsystem {
 
     public DoubleSolenoid gearShiftSolenoid;
     public void shiftUp() {
+        System.out.println(gearShiftSolenoid.get() != DoubleSolenoid.Value.kForward);
         if (gearShiftSolenoid.get() != DoubleSolenoid.Value.kForward) {
             gearShiftSolenoid.set(DoubleSolenoid.Value.kForward);
+            System.out.println("Shifted up");
         }
+        System.out.println("Shifted up done");
     }
     public void shiftDown() {
+        System.out.println(gearShiftSolenoid.get() != DoubleSolenoid.Value.kReverse);
         if (gearShiftSolenoid.get() != DoubleSolenoid.Value.kReverse) {
             gearShiftSolenoid.set(DoubleSolenoid.Value.kReverse);
+            System.out.println("Shifted down");
         }
+        System.out.println("Shifted down done");
     }
 
     public GearShiftSubsystem() {
