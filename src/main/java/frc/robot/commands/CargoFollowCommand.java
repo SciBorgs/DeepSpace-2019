@@ -11,15 +11,16 @@ public class CargoFollowCommand extends CommandGroup {
     }
 
     @Override protected void initialize() {
-        return;
+        Robot.cargoFollowing.modeToCargo();
     }
 
 	@Override protected void execute(){
+		System.out.println("here");
         Robot.cargoFollowing.followBall();
 	}
 
 	@Override protected boolean isFinished(){
-		return true;
+		return !Robot.oi.suckButton.get();
 	}
 
 	@Override protected void end(){

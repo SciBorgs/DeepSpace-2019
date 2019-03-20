@@ -32,7 +32,7 @@ public class OI {
         //startZLiftButton.whenPressed(new ZLiftCommand(leftStick, rightStick));
 
         suckButton = new JoystickButton(leftStick, PortMap.JOYSTICK_LEFT_BUTTON);
-        suckButton.whenPressed(new ConditionalSuckCommand());
+        suckButton.whenPressed(new CargoFollowCommand());
         suckButton.whenReleased(new CloseArmCommand());
         suckButton.whenReleased(new SecureCargoCommand());
         
