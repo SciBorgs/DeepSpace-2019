@@ -17,13 +17,13 @@ public class RetroreflectiveDetection {
 
     public final static double TAPE_ANGLE = .24434; // In radians, approximation according to FRC
     public final static double SEPERATION = .31; // Distance between the centers about
+    public final static double SOROUNDING_BOX_WIDTH = TAPE_WIDTH + TAPE_LENGTH * Math.sin(TAPE_ANGLE); // The horizontal distance between the top left and bottom right corners
 
-    public static void modeToRetroreflectiveByLimitSwitch() {
+    public static void autoModeToRetroreflective() {
         if (Robot.intakeSubsystem.holdingGamePiece()) {
             modeToRetroreflective();
         }
     }
-
 
     public static void modeToRetroreflective() {
         Robot.limelightSubsystem.setCameraParams("ledMode", 3); // Force LED Off
@@ -65,6 +65,7 @@ public class RetroreflectiveDetection {
         end.put("x",screenPercentToDegrees(txPer));
         end.put("y",get(t,"ty" + nth));
         end.put("s",get(t,"ts" + nth));
+        end.put("h",get(t,"th" + nth));
         return end;
     }
 
@@ -94,15 +95,11 @@ public class RetroreflectiveDetection {
         }
     }
 
-    public static double distance(Hashtable<String,Double> value){
-        return Math.sqrt(METER_AREA / value.get("a")) + CAMERA_WIDTH;
+    private static double distance(Hashtable<String,Double> value){
+        return SOROUNDING_BOX_WIDTH / (2 * value.get("h") * Math.tan(Math.toRadians(LimelightSubsystem.IMAGE_WIDTH)));
     }
-    public static double theta(ArrayList<Hashtable<String,Double>> values){
-        double d1 = distance(values.get(rightPair(values) ? 2 : 1));
-        double d2 = distance(values.get(leftPair(values)  ? 0 : 1));
-        System.out.println("d1: " + d1 * 39.37);
-        System.out.println("d2: " + d2 * 39.37);
-        return Math.asin((d1 - d2)/SEPERATION); 
+    private static double shift(Hashtable<String,Double> value, double distance){
+        return 2 * value.get("x") * distance * Math.tan(Math.toRadians(LimelightSubsystem.IMAGE_WIDTH)) + LimelightSubsystem.SHIFT;
     }
     public static boolean isContour(Hashtable<String,Double> data){
         return data.get("a") != 0;}
@@ -129,16 +126,13 @@ public class RetroreflectiveDetection {
         }
         System.out.println("detected");
         double distance = distance(values.get(1));
-        double tx0 = values.get(0).get("x");
-        double tx1 = values.get(1).get("x");
-        double tx2 = values.get(2).get("x");
-        double adjustBy = LimelightSubsystem.SHIFT;
-        double shiftL = distance * (leftPair(values) ? Math.tan(tx0) : Math.tan(tx1)) + adjustBy; //Negative to the Left, Positive to the Right
-        double shiftR = distance * (leftPair(values) ? Math.tan(tx1) : Math.tan(tx2)) + adjustBy;
+        double shift0 = shift(values.get(0),distance);
+        double shift1 = shift(values.get(1),distance);
+        double shift2 = shift(values.get(2),distance);
+        double shiftL = leftPair(values) ? shift0 : shift1; //Negative to the Left, Positive to the Right
+        double shiftR = leftPair(values) ? shift1 : shift2;
         double shift = (shiftL + shiftR) / 2;
-        double rotation = theta(values);
         data.put("detected",1.0);
-        data.put("rotation", rotation);
         data.put("angle",Math.atan(shift/distance));
         data.put("shiftL",shiftL);
         data.put("shiftR",shiftR);

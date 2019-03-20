@@ -7,7 +7,7 @@ import frc.robot.commands.LevelCounterUpdateCommand.LevelChange;
 
 public class OI {
     public Joystick leftStick, rightStick;
-    public JoystickButton lineupButton, startZLiftButton, liftLevelUpButton, liftLevelDownButton, suckButton, spitButton, depositPanelButton, hatchSecureModeButton, armModeButton;
+    public JoystickButton cargoFollowButton, lineupButton, startZLiftButton, liftLevelUpButton, liftLevelDownButton, suckButton, spitButton, depositPanelButton, hatchSecureModeButton, armModeButton;
 
     public OI() {
         leftStick = new Joystick(PortMap.JOYSTICK_LEFT);
@@ -24,6 +24,7 @@ public class OI {
         liftLevelUpButton.whenPressed(new LiftCommand());
 
         liftLevelDownButton = new JoystickButton(leftStick, PortMap.JOYSTICK_TRIGGER);
+        cargoFollowButton = liftLevelDownButton; // Only works if we are at the lowest level
         liftLevelDownButton.whenPressed(new LevelCounterUpdateCommand(LevelChange.Down));
         liftLevelDownButton.whenPressed(new LiftCommand());
 
@@ -32,7 +33,7 @@ public class OI {
         //startZLiftButton.whenPressed(new ZLiftCommand(leftStick, rightStick));
 
         suckButton = new JoystickButton(leftStick, PortMap.JOYSTICK_LEFT_BUTTON);
-        suckButton.whenPressed(new CargoFollowCommand());
+        suckButton.whenPressed(new ConditionalSuckCommand());
         suckButton.whenReleased(new CloseArmCommand());
         suckButton.whenReleased(new SecureCargoCommand());
         
