@@ -25,8 +25,7 @@ public class Lineup {
     
     public void resetInfo(double forwardChange, double shiftChange, double angleChange) {
     	lineAngle = Robot.positioningSubsystem.getAngle() + angleChange;
-    	forwardGoal = forwardChange;
-    	desiredForward = forwardScale * forwardGoal + parallelCoordinate();
+    	desiredForward = forwardScale * forwardChange + parallelCoordinate();
         desiredShift = shiftChange + shiftCoordinate();
         shiftPID = new PID(.7,0,.13);
     	shiftPID.setSmoother(6);
