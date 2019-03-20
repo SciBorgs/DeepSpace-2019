@@ -17,8 +17,9 @@ public class PositioningSubsystem extends Subsystem {
 
     public static final double INCHES_PER_METER = 39.37;
     public static final double WHEEL_RADIUS = 3. / INCHES_PER_METER; // In meters
-    public static final double ENC_WHEEL_RATIO = 1 / 9.08; // 1 rotations of the wheel is 9.08 rotations of
+    public static final double ENC_WHEEL_RATIO_LOW_GEAR = 1 / 9.08; // 1 rotations of the wheel is 9.08 rotations of
                                                                           // the encoder
+    public static final double ENC_WHEEL_RATIO_HIGH_GEAR = 1 / 9.08; // Find correct value
     public static final double NEO_TICKS_PER_REV = 1; // For sparks
     public static final double ENC_TICKS_PER_REV = 4096; // For talons
     public static final double ROBOT_RADIUS = 15.945 / INCHES_PER_METER; // Half the distance from wheel to wheel
@@ -107,7 +108,8 @@ public class PositioningSubsystem extends Subsystem {
 
     public double encPos(CANSparkMax motor) {
         // Returns the encoder position of a spark
-        double value = ENC_WHEEL_RATIO * getSparkAngle(motor) * WHEEL_RADIUS;
+        double wheel_ratio = Robot.gearShiftSubsystem.currentlyInHighGear() ? ENC_WHEEL_RATIO_HIGH_GEAR : ENC_WHEEL_RATIO_LOW_GEAR;
+        double value = wheel_ratio * getSparkAngle(motor) * WHEEL_RADIUS;
         return negated.get(motor) ? (0 - value) : value;
     }
 

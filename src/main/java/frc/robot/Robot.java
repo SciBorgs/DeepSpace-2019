@@ -22,24 +22,33 @@ public class Robot extends TimedRobot {
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
 	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static LiftSubsystem liftSubsystem = new LiftSubsystem();
-    public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
+    public static ZLiftSubsystem zLiftSubsystem;// = new ZLiftSubsystem();
     public static OI oi = new OI();
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
-    public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-    public static CargoFollowing cargoFollowing = new CargoFollowing();
+    public static LimelightSubsystem limelightSubsystem;// = new LimelightSubsystem();
+    public static CargoFollowing cargoFollowing;// = new CargoFollowing();
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
-    public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
-    public static Lineup lineup = new Lineup();
+    public static PneumaticsSubsystem pneumaticsSubsystem;// = new PneumaticsSubsystem();
+    public static Lineup lineup;// = new Lineup();
 
     public static JoystickButton forw, back;
+    public static Compressor testCompressor = new Compressor();
 
     public void robotInit() {
+        /*
         positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         gearShiftSubsystem.shiftDown();
         System.out.println("roboinited");
-        positioningSubsystem.updatePositionTank();
+        positioningSubsystem.updatePositionTank();*/
+
         forw = new JoystickButton(oi.leftStick, 12);
         back = new JoystickButton(oi.leftStick, 11);
+        testCompressor.start();
+
+        
+        
+
+
         //zLiftSubsystem.unlockPistons();
         //(new LiftCommand()).start();
 
@@ -57,7 +66,7 @@ public class Robot extends TimedRobot {
     }
  
     public void robotPeriodic() {
-        positioningSubsystem.updatePositionTank();
+        //positioningSubsystem.updatePositionTank();
         //positioningSubsystem.printPosition();
         //System.out.println("pigeon raw: " + positioningSubsystem.getPigeon().getAngle());
         //retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
@@ -80,7 +89,8 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopInit() {
-        new TankDriveCommand().start();
+        //new TankDriveCommand().start();
+
     }
 
     public void teleopPeriodic() {
@@ -92,6 +102,8 @@ public class Robot extends TimedRobot {
         }else if(back.get()){
             gearShiftSubsystem.shiftDown();
         }
+
+
 
         /*
         if(Robot.oi.leftStick.getPOV() == 0){
@@ -117,6 +129,6 @@ public class Robot extends TimedRobot {
     }
 
     public void disabledInit() {
-        zLiftSubsystem.reset();
+        //zLiftSubsystem.reset();
     }
 }

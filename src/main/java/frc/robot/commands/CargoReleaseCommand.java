@@ -10,6 +10,7 @@ public class CargoReleaseCommand extends InstantCommand {
     }
 
     @Override protected void execute() {
+        System.out.println("releasing cargo");
         Robot.intakeSubsystem.openArm();
         Robot.intakeSubsystem.spit();
     }

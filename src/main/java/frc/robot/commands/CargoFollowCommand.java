@@ -15,7 +15,7 @@ public class CargoFollowCommand extends CommandGroup {
     }
 
 	@Override protected void execute(){
-        Robot.cargoFollowing.followBall();
+        //Robot.cargoFollowing.followBall();
 	}
 
 	@Override protected boolean isFinished(){

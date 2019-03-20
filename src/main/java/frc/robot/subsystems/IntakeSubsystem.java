@@ -38,8 +38,8 @@ public class IntakeSubsystem extends Subsystem {
 		intakeTalon.enableCurrentLimit(true);
 		holdingHatch = false;
 		holdingCargo = false;
-		//secureHatchSolenoid = new DoubleSolenoid(PortMap.SECURE_HATCH_SOLENOID[0], PortMap.SECURE_HATCH_SOLENOID[1]);
-		//scoopSolenoid = new DoubleSolenoid(PortMap.SCOOP_SOLENOID[0], PortMap.SCOOP_SOLENOID[1]);
+		secureHatchSolenoid = new DoubleSolenoid(PortMap.SECURE_HATCH_SOLENOID[0], PortMap.SECURE_HATCH_SOLENOID[1]);
+		// scoopSolenoid = new DoubleSolenoid(PortMap.SCOOP_SOLENOID[0], PortMap.SCOOP_SOLENOID[1]);
 		armSolenoid = new DoubleSolenoid(PortMap.ARM_SOLENOID[0], PortMap.ARM_SOLENOID[1]);
 	}
 
@@ -51,16 +51,20 @@ public class IntakeSubsystem extends Subsystem {
 	}
 
 	public void releaseHatch(){
+		System.out.println("releasing Hatch");
 		secureHatchSolenoid.set(Value.kForward);
 	}
 	public void secureHatch(){
+		System.out.println("Securing Hatch");
 		secureHatchSolenoid.set(Value.kReverse);
 	}
 
 	public void openArm(){
+		System.out.println("Opening Arm");
 		armSolenoid.set(Value.kForward);
 	}
 	public void closeArm(){
+		System.out.println("Closing Arm");
 		armSolenoid.set(Value.kReverse);
 	}
 	public boolean isArmOpen(){

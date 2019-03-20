@@ -56,8 +56,9 @@ public class GearShiftSubsystem extends Subsystem {
 
     public GearShiftSubsystem() {
         gearShiftSolenoid = new DoubleSolenoid(PortMap.GEAR_SHIFTER_SOLENOID[0], PortMap.GEAR_SHIFTER_SOLENOID[1]);
-        countOfContinousCyclesAboveJoystickThreshold = 0;
-        countOfContinousCyclesBelowJoystickThreshold = 0;
+        // countOfContinousCyclesAboveJoystickThreshold = 0;
+        // countOfContinousCyclesBelowJoystickThreshold = 0;
+        System.out.println("shifting>>>");
         gearShiftSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 

@@ -10,6 +10,7 @@ public class CloseArmCommand extends InstantCommand {
     }
 
     @Override protected void execute() {
+        System.out.println("closing arm");
         Robot.intakeSubsystem.closeArm();
     }
 }
