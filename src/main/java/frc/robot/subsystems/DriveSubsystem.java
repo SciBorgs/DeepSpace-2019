@@ -31,6 +31,7 @@ public class DriveSubsystem extends Subsystem {
     private static final double GEAR_SHIFT_FUNC_POWER = 1.4;
     private static final double HIGH_REDUCTION_END = 0.6;
     private static final double LOW_REDUCTION_START = 0.5;
+    private static final double STRAIGHT_DEADZONE = 0.15;
     private boolean highReduction = true;
     private PID tankAnglePID;
 
@@ -133,14 +134,26 @@ public class DriveSubsystem extends Subsystem {
     }
 
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
-        double left  = processStick(leftStick);
-        double right = processStick(rightStick);
+        //double left  = processStick(leftStick);
+        //double right = processStick(rightStick);
+
+        double left = -leftStick.getY();
+        double right = rightStick.getY();
+
+        if(Math.abs(left) < .1){
+            left = 0;
+        }
+        if (Math.abs(right) < .1){
+            right = 0;
+        }
 
         //double left = processStickGearShift(leftStick);
         //double right = processStickGearShift(rightStick);
 
         //System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
-        setSpeedTankAngularControl(left, right);
+        //setSpeedTankAngularControl(left, right);
+        setMotorSpeed(lf, left);
+        setMotorSpeed(rf, right);
     }
 	
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
@@ -162,7 +175,7 @@ public class DriveSubsystem extends Subsystem {
     }
     public void setMotorSpeed(CANSparkMax motor, double speed, double maxJerk){
         speed = limitJerk(motor.get(), speed, maxJerk);
-        //System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
+        System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
         motor.set(speed);
     }
 
@@ -183,7 +196,15 @@ public class DriveSubsystem extends Subsystem {
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
 		double averageOutput = (leftSpeed + rightSpeed) / 2;
-        double goalOmega = Utils.limitOutput(goalOmegaConstant * (rightSpeed - leftSpeed), maxOmegaGoal);
+        double goalOmega = goalOmegaConstant * (rightSpeed - leftSpeed);
+        if (Math.abs(goalOmega) < STRAIGHT_DEADZONE){
+            goalOmega = 0;
+        } else if (goalOmega < 0) {
+            goalOmega += STRAIGHT_DEADZONE;
+        } else {
+            goalOmega -= STRAIGHT_DEADZONE;
+        }
+        goalOmega = Utils.limitOutput(goalOmega, maxOmegaGoal);
         //System.out.println("angular speed: " + Robot.positioningSubsystem.getAngularSpeed());
         //System.out.println("desired angular speed: " + goalOmega);
         double error = goalOmega - Robot.positioningSubsystem.getAngularSpeed();
