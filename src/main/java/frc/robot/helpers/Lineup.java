@@ -11,7 +11,6 @@ public class Lineup {
     private double desiredForward; // This is where we will aim for b/c of overshooting
     private double desiredShift;
     private PID shiftPID; // PID for deciding the difference in our wheels' speeds
-    private PID forwardPID; // PID for deciding our speed
     private double forwardGoal; // This is where we actually want to end up
     private double forwardScale = 0.8; // We're assuming that it goes an extra 20 percent.
     private boolean retroFound;
@@ -30,7 +29,6 @@ public class Lineup {
     	desiredForward = forwardScale * forwardGoal + parallelCoordinate();
         desiredShift = shiftChange + shiftCoordinate();
         shiftPID = new PID(.7,0,.13);
-    	forwardPID = new PID(0.45,.02,0.05);
     	shiftPID.setSmoother(6);
         }
         
@@ -63,9 +61,6 @@ public class Lineup {
     public PID getShiftPID(){
         return shiftPID;
     } 
-    public PID getForwardPID(){
-        return forwardPID;
-    }
     
     public double    shift(double x, double y, double angle) {
         return x * Math.sin(angle) - y * Math.cos(angle);
@@ -130,10 +125,8 @@ public class Lineup {
     public void move(){
     	if (retroFound && parallelCoordinate() < desiredForward) {
         	shiftPID.add_measurement_dd(shiftError(),Math.sin(deltaTheta())); // We use the sine of our change in angle as the derivative (that's the secret!)
-	        forwardPID.add_measurement(parallelError());
 	        double output =  shiftPID.getOutput();
-	        double defaultSpeed = forwardPID.getOutput();
-	        Robot.driveSubsystem.setSpeedTank(defaultSpeed * (1 + output), defaultSpeed * (1 - output)); // The output changes the percentage that goes to each side which makes it turn
+	        Robot.driveSubsystem.setTurningPercentage(output); // The output changes the percentage that goes to each side which makes it turn
         }
     	else if (retroFound) {
     		Robot.driveSubsystem.setSpeedTank(0, 0);
