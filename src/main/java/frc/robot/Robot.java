@@ -20,6 +20,7 @@ public class Robot extends TimedRobot {
     private String m_autoSelected;
     public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
+    public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
 	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static LiftSubsystem liftSubsystem = new LiftSubsystem();
     public static ZLiftSubsystem zLiftSubsystem;// = new ZLiftSubsystem();
@@ -27,11 +28,10 @@ public class Robot extends TimedRobot {
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem;// = new LimelightSubsystem();
     public static CargoFollowing cargoFollowing;// = new CargoFollowing();
-    public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     public static PneumaticsSubsystem pneumaticsSubsystem;// = new PneumaticsSubsystem();
     public static Lineup lineup;// = new Lineup();
 
-    public static JoystickButton forw, back;
+    public static JoystickButton forw, back, mark;
     public static Compressor testCompressor = new Compressor();
 
     public void robotInit() {
@@ -43,8 +43,7 @@ public class Robot extends TimedRobot {
 
         forw = new JoystickButton(oi.leftStick, 12);
         back = new JoystickButton(oi.leftStick, 11);
-        testCompressor.start();
-
+        mark = new JoystickButton(oi.leftStick, 10);
         
         
 
@@ -103,7 +102,9 @@ public class Robot extends TimedRobot {
             gearShiftSubsystem.shiftDown();
         }
 
-
+        if(mark.get()){
+            System.out.println("[   [   [   SWEET SPOT  ]   ]   ]");
+        }
 
         /*
         if(Robot.oi.leftStick.getPOV() == 0){

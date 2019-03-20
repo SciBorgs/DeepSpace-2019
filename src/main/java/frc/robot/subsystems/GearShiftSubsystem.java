@@ -4,6 +4,7 @@ import frc.robot.Robot;
 import frc.robot.PortMap;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class GearShiftSubsystem extends Subsystem {
@@ -29,6 +30,10 @@ public class GearShiftSubsystem extends Subsystem {
         System.out.println(countOfContinousCyclesBelowJoystickThreshold);
         if (countOfContinousCyclesAboveJoystickThreshold >= cycleThreshold) {shiftUp();}
         if (countOfContinousCyclesBelowJoystickThreshold >= cycleThreshold) {shiftDown();}
+    }
+
+    public boolean currentlyInHighGear(){
+        return gearShiftSolenoid.get() == DoubleSolenoid.Value.kForward;
     }
 
     public void shiftGear() {
