@@ -32,7 +32,7 @@ public class Lineup {
         shiftPID = new PID(.7,0,.13);
     	forwardPID = new PID(0.45,.02,0.05);
     	shiftPID.setSmoother(6);
-        }
+    }
         
     public void autoResetInfo(){
         if (retroFound && lidarFound){
