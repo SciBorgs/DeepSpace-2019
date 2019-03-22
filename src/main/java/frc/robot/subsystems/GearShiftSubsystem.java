@@ -26,8 +26,8 @@ public class GearShiftSubsystem extends Subsystem {
     }
     
     public void updateGearShift() {
-        System.out.println(countOfContinousCyclesAboveJoystickThreshold);
-        System.out.println(countOfContinousCyclesBelowJoystickThreshold);
+        //System.out.println(countOfContinousCyclesAboveJoystickThreshold);
+        //System.out.println(countOfContinousCyclesBelowJoystickThreshold);
         if (countOfContinousCyclesAboveJoystickThreshold >= cycleThreshold) {shiftUp();}
         if (countOfContinousCyclesBelowJoystickThreshold >= cycleThreshold) {shiftDown();}
     }
@@ -46,17 +46,17 @@ public class GearShiftSubsystem extends Subsystem {
         System.out.println(gearShiftSolenoid.get() != DoubleSolenoid.Value.kForward);
         if (gearShiftSolenoid.get() != DoubleSolenoid.Value.kForward) {
             gearShiftSolenoid.set(DoubleSolenoid.Value.kForward);
-            System.out.println("Shifted up");
+            //System.out.println("Shifted up");
         }
-        System.out.println("Shifted up done");
+        //System.out.println("Shifted up done");
     }
     public void shiftDown() {
         System.out.println(gearShiftSolenoid.get() != DoubleSolenoid.Value.kReverse);
         if (gearShiftSolenoid.get() != DoubleSolenoid.Value.kReverse) {
             gearShiftSolenoid.set(DoubleSolenoid.Value.kReverse);
-            System.out.println("Shifted down");
+            //System.out.println("Shifted down");
         }
-        System.out.println("Shifted down done");
+        //System.out.println("Shifted down done");
     }
 
     public GearShiftSubsystem() {

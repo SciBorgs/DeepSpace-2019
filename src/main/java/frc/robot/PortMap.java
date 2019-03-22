@@ -4,8 +4,8 @@ public class PortMap {
 
   	//*****************JOYSTICKS*****************//
 
-    public static final int JOYSTICK_LEFT = 2;
-    public static final int JOYSTICK_RIGHT = 1;
+    public static final int JOYSTICK_LEFT = 1;
+    public static final int JOYSTICK_RIGHT = 0;
 
     public static final int JOYSTICK_TRIGGER = 1;
     public static final int JOYSTICK_CENTER_BUTTON = 2;
@@ -39,7 +39,7 @@ public class PortMap {
 
     //***************LIMIT*SWITCHES**************//
 
-    public static final int CASCADE_AT_BOTTOM_LIMIT_SWITCH = 0;
+    public static final int CASCADE_AT_BOTTOM_LIMIT_SWITCH = 1;
     public static final int ARM_AT_TOP_LIMIT_SWITCH = 3;
 
     //***************DOUBLE*SOLENOIDS*************//
@@ -47,9 +47,9 @@ public class PortMap {
     public static final int[] GEAR_SHIFTER_SOLENOID = {0, 1};
     public static final int[] SECURE_HATCH_SOLENOID = {4, 5};
     // public static final int[] SCOOP_SOLENOID = {6, 7}; // Flips up the hatch
-    public static final int[] ARM_SOLENOID = {2, 3};
+    public static final int[] ARM_SOLENOID = {6, 7};
 
-    public static final int[] ZLIFT_SOLENOID = {6,7};
+    public static final int[] ZLIFT_SOLENOID = {2,3};
 
     //*******************MISC********************//
 

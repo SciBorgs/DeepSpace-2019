@@ -10,6 +10,7 @@ public class SuckCommand extends InstantCommand {
     }
 
     @Override protected void execute() {
+        System.out.println("suck");
         Robot.intakeSubsystem.openArm();
         Robot.intakeSubsystem.suck();
     }

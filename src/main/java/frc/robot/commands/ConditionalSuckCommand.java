@@ -11,6 +11,7 @@ public class ConditionalSuckCommand extends ConditionalCommand {
     }
 
     @Override protected boolean condition() {
+        System.out.println("cond suck");
         return Robot.oi.cargoFollowButton.get();
     }
 }

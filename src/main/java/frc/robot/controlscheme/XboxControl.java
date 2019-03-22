@@ -13,7 +13,7 @@ import frc.robot.subsystems.*;
  * A control scheme for {@link XboxController}
  */
 public class XboxControl implements ControlScheme {
-    private static final int XBOX = 0;
+    private static final int XBOX = 2;
 
     private final XboxController xboxController;
 

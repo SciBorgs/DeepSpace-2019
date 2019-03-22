@@ -5,6 +5,9 @@ import frc.robot.subsystems.LiftSubsystem.Target;
 
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.InstantCommand;
+
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.command.Command;
 
 public class LiftCommand extends Command {
@@ -17,7 +20,8 @@ public class LiftCommand extends Command {
 	}
 
 	@Override protected void execute(){
-		Robot.liftSubsystem.moveToTarget(Robot.liftSubsystem.getTarget());
+		System.out.println("lifting command");
+		//Robot.liftSubsystem.moveToTarget(Robot.liftSubsystem.getTarget());
 	}
 
 	@Override protected boolean isFinished(){

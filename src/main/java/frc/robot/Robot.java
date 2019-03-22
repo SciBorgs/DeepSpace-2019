@@ -6,10 +6,13 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import frc.robot.controlscheme.ControlScheme;
 import frc.robot.controlscheme.XboxControl;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.LiftSubsystem.Target;
 import frc.robot.commands.*;
 import frc.robot.helpers.*;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,6 +39,8 @@ public class Robot extends TimedRobot {
     public static Lineup lineup = new Lineup();
     private final ControlScheme xboxControl = new XboxControl();
     private final PowerDistributionPanel pdp = new PowerDistributionPanel();
+    
+    private JoystickButton forw, back, off;
 
     private CANSparkMax[] getSparks() {
         List<CANSparkMax> list = new ArrayList<>(); // this is inefficient but the code should be temporary
@@ -59,8 +64,15 @@ public class Robot extends TimedRobot {
         positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
+
+        forw = new JoystickButton(oi.leftStick, 8);
+        back = new JoystickButton(oi.leftStick, 9);
+        off = new JoystickButton(oi.leftStick, 10);
+
+        cargoFollowing.modeToCargo();
+
+
         //zLiftSubsystem.unlockPistons();
-        //(new LiftCommand()).start();
 
            /* STARTS THE LIDAR     
         try {
@@ -78,6 +90,8 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         Scheduler.getInstance().run();
         positioningSubsystem.updatePositionTank();
+        System.out.println("arm angle: " + Math.toDegrees(liftSubsystem.getArmAngle()));
+        //System.out.println("unadjusted arm angle: " + Math.toDegrees(liftSubsystem.getUnadjustedArmAngle()));
         //positioningSubsystem.printPosition();
         //System.out.println("pigeon raw: " + positioningSubsystem.getPigeon().getAngle());
         //retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
@@ -91,6 +105,9 @@ public class Robot extends TimedRobot {
     }
         
     public void autonomousInit() {
+        //(new LiftCommand()).start();
+        // new TankDriveCommand().start();
+        pneumaticsSubsystem.startCompressor();
     }
 
     public void autonomousPeriodic() {
@@ -100,13 +117,14 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopInit() {
+        Robot.intakeSubsystem.secureHatchSolenoid.set(Value.kOff);
         new TankDriveCommand().start();
     }
 
     public void teleopPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
 
-        /*
+        
         if(Robot.oi.leftStick.getPOV() == 0){
             Robot.liftSubsystem.setLiftSpeed(.4);
         }else if(Robot.oi.leftStick.getPOV() == 180){
@@ -121,11 +139,12 @@ public class Robot extends TimedRobot {
         }else{
             Robot.liftSubsystem.setArmTiltSpeed(0);
         }
-        */
+        
 
     }
 
     public void testPeriodic() {
+        liftSubsystem.moveToTarget(Target.Initial);
     }
 
     public void disabledInit() {

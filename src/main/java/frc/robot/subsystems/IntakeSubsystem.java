@@ -56,23 +56,25 @@ public class IntakeSubsystem extends Subsystem {
 
 	public void releaseHatch(){
 		System.out.println("releasing Hatch");
-		secureHatchSolenoid.set(Value.kForward);
+		secureHatchSolenoid.set(Value.kReverse);
+		System.out.println("solenoid: " + secureHatchSolenoid.get());
 	}
 	public void secureHatch(){
 		System.out.println("Securing Hatch");
-		secureHatchSolenoid.set(Value.kReverse);
+		secureHatchSolenoid.set(Value.kForward);
+		System.out.println("solenoid: " + secureHatchSolenoid.get());
 	}
 
 	public void openArm(){
 		System.out.println("Opening Arm");
-		armSolenoid.set(Value.kForward);
+		armSolenoid.set(Value.kReverse);
 	}
 	public void closeArm(){
 		System.out.println("Closing Arm");
-		armSolenoid.set(Value.kReverse);
+		armSolenoid.set(Value.kForward);
 	}
 	public boolean isArmOpen(){
-		return armSolenoid.get() == Value.kForward;
+		return armSolenoid.get() == Value.kReverse;
 	}
 	public void toggleArm(){
 		if (isArmOpen()){

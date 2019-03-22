@@ -29,8 +29,8 @@ public class DriveSubsystem extends Subsystem {
     private static final double GEAR_SHIFT_OFFSET = 0.3;
     private static final double GEAR_SHIFT_DEADZONE = 0.1;
     private static final double GEAR_SHIFT_FUNC_POWER = 1.4;
-    private static final double HIGH_REDUCTION_END = 0.6;
-    private static final double LOW_REDUCTION_START = 0.5;
+    private static final double HIGH_REDUCTION_END = 0.8;
+    private static final double LOW_REDUCTION_START = 0.4;
     private static final double STRAIGHT_DEADZONE = 0.15;
     private boolean highReduction = true;
     private PID tankAnglePID;
@@ -142,15 +142,14 @@ public class DriveSubsystem extends Subsystem {
     }
 
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
-        //double left  = processStick(leftStick);
-        //double right = processStick(rightStick);
-        double left = processStickGearShift(leftStick);
-        double right = processStickGearShift(rightStick);
+        double left  = processStick(leftStick);
+        double right = processStick(rightStick);
+        //double left = processStickGearShift(leftStick);
+        //double right = processStickGearShift(rightStick);
 
         //System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
         //setSpeedTankAngularControl(left, right);
-        setMotorSpeed(lf, left);
-        setMotorSpeed(rf, right);
+        setSpeedTank(left,right);
     }
 	
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
@@ -172,7 +171,7 @@ public class DriveSubsystem extends Subsystem {
     }
     public void setMotorSpeed(CANSparkMax motor, double speed, double maxJerk){
         speed = limitJerk(motor.get(), speed, maxJerk);
-        System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
+        //System.System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
         motor.set(speed);
     }
 
@@ -181,14 +180,14 @@ public class DriveSubsystem extends Subsystem {
     }
     public void setMotorSpeed(TalonSRX motor, double speed, double maxJerk){
         speed = limitJerk(motor.getMotorOutputPercent(), speed, maxJerk);
-        System.out.println("setting talon to " + speed);
+        //System.out.println("setting talon to " + speed);
         motor.set(ControlMode.PercentOutput, speed);
-        System.out.println("checking: " + motor.getMotorOutputPercent());
+        //System.out.println("checking: " + motor.getMotorOutputPercent());
     }
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
         setMotorSpeed(lf, leftSpeed);
-        setMotorSpeed(rf, -rightSpeed);
+        setMotorSpeed(rf, -rightSpeed); // Possible needs to be negated
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
