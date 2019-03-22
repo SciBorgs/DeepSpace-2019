@@ -10,9 +10,11 @@ public class OI {
     public JoystickButton cargoFollowButton, lineupButton, startZLiftButton, liftLevelUpButton, liftLevelDownButton, suckButton, spitButton, depositPanelButton, hatchSecureModeButton, armModeButton;
 
     public OI() {
+        System.out.println("OI constructor");
         leftStick = new Joystick(PortMap.JOYSTICK_LEFT);
         rightStick = new Joystick(PortMap.JOYSTICK_RIGHT);
 
+        
         // Left Stick
         lineupButton = new JoystickButton(rightStick, PortMap.JOYSTICK_LEFT_BUTTON);
         //lineupButton.whenPressed(new ResetLineupInfoCommand());
@@ -47,6 +49,7 @@ public class OI {
 
         armModeButton = new JoystickButton(rightStick, PortMap.JOYSTICK_CENTER_BUTTON);
         armModeButton.whenPressed(new ToggleArmCommand());
+
 
     }
 }

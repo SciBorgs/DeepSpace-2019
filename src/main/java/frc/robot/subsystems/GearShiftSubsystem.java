@@ -4,6 +4,7 @@ import frc.robot.Robot;
 import frc.robot.PortMap;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class GearShiftSubsystem extends Subsystem {
@@ -12,7 +13,7 @@ public class GearShiftSubsystem extends Subsystem {
     public int countOfContinousCyclesBelowJoystickThreshold;
     public double joystickShiftUpThreshold = .5;
     public double joystickShiftDownThreshold = .2;
-    public int cycleThreshold = 50; //50 Cycles is 1000 milliseconds diveided by 20ms per cycle
+    public int cycleThreshold = 10; //50 Cycles is 1000 milliseconds diveided by 20ms per cycle
 
     public void updateCycleCount() {
         if (Math.abs((Robot.oi.leftStick.getY() - Robot.oi.rightStick.getY())/2.) >= joystickShiftUpThreshold) {
@@ -31,6 +32,10 @@ public class GearShiftSubsystem extends Subsystem {
         if (countOfContinousCyclesBelowJoystickThreshold >= cycleThreshold) {shiftDown();}
     }
 
+    public boolean currentlyInHighGear(){
+        return gearShiftSolenoid.get() == DoubleSolenoid.Value.kForward;
+    }
+
     public void shiftGear() {
         updateCycleCount();
         updateGearShift();
@@ -38,18 +43,27 @@ public class GearShiftSubsystem extends Subsystem {
 
     public DoubleSolenoid gearShiftSolenoid;
     public void shiftUp() {
-        //if (gearShiftSolenoid.get() == DoubleSolenoid.Value.kForward) {return;}
-        gearShiftSolenoid.set(DoubleSolenoid.Value.kForward);
+        System.out.println(gearShiftSolenoid.get() != DoubleSolenoid.Value.kForward);
+        if (gearShiftSolenoid.get() != DoubleSolenoid.Value.kForward) {
+            gearShiftSolenoid.set(DoubleSolenoid.Value.kForward);
+            System.out.println("Shifted up");
+        }
+        System.out.println("Shifted up done");
     }
     public void shiftDown() {
-        //if (gearShiftSolenoid.get() == DoubleSolenoid.Value.kReverse) {return;}
-        gearShiftSolenoid.set(DoubleSolenoid.Value.kReverse);
+        System.out.println(gearShiftSolenoid.get() != DoubleSolenoid.Value.kReverse);
+        if (gearShiftSolenoid.get() != DoubleSolenoid.Value.kReverse) {
+            gearShiftSolenoid.set(DoubleSolenoid.Value.kReverse);
+            System.out.println("Shifted down");
+        }
+        System.out.println("Shifted down done");
     }
 
     public GearShiftSubsystem() {
         gearShiftSolenoid = new DoubleSolenoid(PortMap.GEAR_SHIFTER_SOLENOID[0], PortMap.GEAR_SHIFTER_SOLENOID[1]);
-        countOfContinousCyclesAboveJoystickThreshold = 0;
-        countOfContinousCyclesBelowJoystickThreshold = 0;
+        // countOfContinousCyclesAboveJoystickThreshold = 0;
+        // countOfContinousCyclesBelowJoystickThreshold = 0;
+        System.out.println("shifting>>>");
         gearShiftSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 

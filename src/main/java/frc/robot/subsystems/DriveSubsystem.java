@@ -26,6 +26,13 @@ public class DriveSubsystem extends Subsystem {
     private static final double EXPONENT = 10; // x^exponent to in the graph. x=0 is linear. x>0 gives more control in low inputs
     private static final double MAX_JOYSTICK = 1; // max joystick output value
     private static final double DEFAULT_MAX_JERK = 0.1; // Doesn't allow a motor's output to change by more than this in one tick
+    private static final double GEAR_SHIFT_OFFSET = 0.3;
+    private static final double GEAR_SHIFT_DEADZONE = 0.1;
+    private static final double GEAR_SHIFT_FUNC_POWER = 1.4;
+    private static final double HIGH_REDUCTION_END = 0.6;
+    private static final double LOW_REDUCTION_START = 0.5;
+    private static final double STRAIGHT_DEADZONE = 0.15;
+    private boolean highReduction = true;
     private PID tankAnglePID;
 
     // d value so that when x=INPUT_DEADZONE the wheels move
@@ -88,11 +95,62 @@ public class DriveSubsystem extends Subsystem {
         return processAxis(-stick.getY());
     }
 
+    public double processFunc(double x){
+        return (1 + GEAR_SHIFT_OFFSET) * Math.pow(Math.abs(x - GEAR_SHIFT_DEADZONE), GEAR_SHIFT_FUNC_POWER)
+                / Math.pow((1 - GEAR_SHIFT_DEADZONE),GEAR_SHIFT_FUNC_POWER);
+    }
+
+    public double processStickHighReduction(double input){
+        highReduction = true;
+        if(input >= GEAR_SHIFT_DEADZONE){
+            return processFunc(input);
+        }else if(input <= -GEAR_SHIFT_DEADZONE){
+            return -Math.abs(processFunc(input + 2 * GEAR_SHIFT_DEADZONE));
+        }
+        return 0;
+    }
+
+    public double processStickLowReduction(double input){
+        highReduction = false;
+        if(input >= LOW_REDUCTION_START){
+            return processFunc(input) - GEAR_SHIFT_OFFSET;
+        }else if(input <= -LOW_REDUCTION_START){
+            return -Math.abs(processFunc(input + 2 * GEAR_SHIFT_DEADZONE)) + GEAR_SHIFT_OFFSET;
+        }else{
+            System.out.println("[ [ [ LOW REDUCTION JOYSTICK ERROR ] ] ]");
+        }
+        return 0;
+    }
+
+    public double processStickGearShift(Joystick stick){
+        double input = -stick.getY();
+        if(highReduction){
+            if(Math.abs(input) >= HIGH_REDUCTION_END){
+                Robot.gearShiftSubsystem.shiftDown();
+                return processStickLowReduction(input);
+            }
+            Robot.gearShiftSubsystem.shiftUp();
+            return processStickHighReduction(input);
+        }else{
+            if(Math.abs(input) <= LOW_REDUCTION_START){
+                Robot.gearShiftSubsystem.shiftUp();
+                return processStickHighReduction(input);
+            }
+            Robot.gearShiftSubsystem.shiftDown();
+            return processStickLowReduction(input);
+        }
+    }
+
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
-        double left  = processStick(leftStick);
-        double right = processStick(rightStick);
+        //double left  = processStick(leftStick);
+        //double right = processStick(rightStick);
+        double left = processStickGearShift(leftStick);
+        double right = processStickGearShift(rightStick);
+
         //System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
-        setSpeedTankAngularControl(left, right);
+        //setSpeedTankAngularControl(left, right);
+        setMotorSpeed(lf, left);
+        setMotorSpeed(rf, right);
     }
 	
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
@@ -114,7 +172,7 @@ public class DriveSubsystem extends Subsystem {
     }
     public void setMotorSpeed(CANSparkMax motor, double speed, double maxJerk){
         speed = limitJerk(motor.get(), speed, maxJerk);
-        //System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
+        System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
         motor.set(speed);
     }
 
@@ -135,7 +193,15 @@ public class DriveSubsystem extends Subsystem {
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
 		double averageOutput = (leftSpeed + rightSpeed) / 2;
-        double goalOmega = Utils.limitOutput(goalOmegaConstant * (rightSpeed - leftSpeed), maxOmegaGoal);
+        double goalOmega = goalOmegaConstant * (rightSpeed - leftSpeed);
+        if (Math.abs(goalOmega) < STRAIGHT_DEADZONE){
+            goalOmega = 0;
+        } else if (goalOmega < 0) {
+            goalOmega += STRAIGHT_DEADZONE;
+        } else {
+            goalOmega -= STRAIGHT_DEADZONE;
+        }
+        goalOmega = Utils.limitOutput(goalOmega, maxOmegaGoal);
         //System.out.println("angular speed: " + Robot.positioningSubsystem.getAngularSpeed());
         //System.out.println("desired angular speed: " + goalOmega);
         double error = goalOmega - Robot.positioningSubsystem.getAngularSpeed();

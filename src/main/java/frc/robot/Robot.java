@@ -114,7 +114,6 @@ public class Robot extends TimedRobot {
         }else{
             Robot.liftSubsystem.setLiftSpeed(0);
         }
-
         if(Robot.oi.rightStick.getPOV() == 0){
             Robot.liftSubsystem.setArmTiltSpeed(.4);
         }else if(Robot.oi.rightStick.getPOV() == 180){
