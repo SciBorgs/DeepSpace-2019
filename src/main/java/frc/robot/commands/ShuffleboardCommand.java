@@ -6,10 +6,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import frc.robot.controlscheme.ControlButton;
 import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
@@ -63,24 +60,24 @@ public class ShuffleboardCommand extends Command {
 
         driverStationTab = Shuffleboard.getTab("Driver Station");
 
-        timer = driverStationTab.add("Match Timer", "-1 remaining").withWidget("Text View").withPosition(5, 0).withSize(1, 1);
+        timer = driverStationTab.add("Match Timer", "-1 remaining").withWidget("Text View").withPosition(2, 0).withSize(1, 1);
 
-        voltageList = driverStationTab.getLayout("Voltage", "List Layout").withPosition(5, 1).withSize(1, 2);
+        voltageList = driverStationTab.getLayout("Voltage", "List Layout").withPosition(8, 0).withSize(1, 2);
         isVoltageOk = voltageList.add("Above 8 volts?", false).withWidget("Boolean Box").withSize(1, 1);
         totalVoltage = voltageList.add("Current voltage", "-1 Volts").withWidget("Text View").withSize(1, 1);
 
-        totalMotorCurrent = driverStationTab.add("Motor Current", "-1 Amps").withWidget("Text View").withPosition(4, 2).withSize(1, 1);
+        totalMotorCurrent = driverStationTab.add("Motor Current", "-1 Amps").withWidget("Text View").withPosition(9, 0).withSize(1, 1);
 
-        liftPosition = driverStationTab.add("Lift Position", "Ground").withWidget("Text View").withPosition(2, 2).withSize(1, 1);
-        liftTemperature = driverStationTab.add("Lift Temp", "-1 C\u00B0").withWidget("Text View").withPosition(1, 2).withSize(1, 1);
+        liftPosition = driverStationTab.add("Lift Position", "Ground").withWidget("Text View").withPosition(9, 2).withSize(1, 1);
+        liftTemperature = driverStationTab.add("Lift Temp", "-1 C\u00B0").withWidget("Text View").withPosition(8, 2).withSize(1, 1);
 
-        airPressure = driverStationTab.add("Air Pressure", "-1 PSI").withWidget("Text View").withPosition(4, 1).withSize(1, 1);
+        airPressure = driverStationTab.add("Air Pressure", "-1 PSI").withWidget("Text View").withPosition(2, 2).withSize(1, 1);
 
         NetworkTableInstance.getDefault().getEntry("/CameraPublisher/Limelight/streams").setStringArray(new String[]{"mjpeg:http://10.11.55.11:5800/?action=stream"});
 
         cargoList = new ArrayList<>();
         cargoSelection = 0;
-        cargoSelectionText = driverStationTab.add("Selection", "-1").withWidget("Text View").withPosition(1, 0).withSize(1, 1);
+        cargoSelectionText = driverStationTab.add("Selection", "-1").withWidget("Text View").withPosition(0, 4).withSize(1, 1);
         setUpCargoList();
 
         setRunWhenDisabled(true);
@@ -156,13 +153,13 @@ public class ShuffleboardCommand extends Command {
 
     private void setUpCargoList() {
         cargoList.add(getBaseCargoBox(cargoList.size(), 0, 0));
-        cargoList.add(getBaseCargoBox(cargoList.size(), 3, 0));
+        cargoList.add(getBaseCargoBox(cargoList.size(), 1, 0));
         cargoList.add(getBaseCargoBox(cargoList.size(), 0, 1));
-        cargoList.add(getBaseCargoBox(cargoList.size(), 3, 1));
+        cargoList.add(getBaseCargoBox(cargoList.size(), 1, 1));
         cargoList.add(getBaseCargoBox(cargoList.size(), 0, 2));
-        cargoList.add(getBaseCargoBox(cargoList.size(), 3, 2));
+        cargoList.add(getBaseCargoBox(cargoList.size(), 1, 2));
+        cargoList.add(getBaseCargoBox(cargoList.size(), 0, 3));
         cargoList.add(getBaseCargoBox(cargoList.size(), 1, 3));
-        cargoList.add(getBaseCargoBox(cargoList.size(), 2, 3));
 
         buttonToggle.whenPressed(() -> cargoList.get(cargoSelection).getEntry().setBoolean(!cargoList.get(cargoSelection).getEntry().getBoolean(false)));
 
