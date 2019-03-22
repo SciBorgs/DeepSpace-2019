@@ -4,8 +4,8 @@ public class PortMap {
 
   	//*****************JOYSTICKS*****************//
 
-    public static final int JOYSTICK_LEFT = 1;
-    public static final int JOYSTICK_RIGHT = 0;
+    public static final int JOYSTICK_LEFT = 2;
+    public static final int JOYSTICK_RIGHT = 1;
 
     public static final int JOYSTICK_TRIGGER = 1;
     public static final int JOYSTICK_CENTER_BUTTON = 2;

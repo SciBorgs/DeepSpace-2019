@@ -26,7 +26,7 @@ public class DriveSubsystem extends Subsystem {
     private static final double EXPONENT = 10; // x^exponent to in the graph. x=0 is linear. x>0 gives more control in low inputs
     private static final double MAX_JOYSTICK = 1; // max joystick output value
     private static final double DEFAULT_MAX_JERK = 0.1; // Doesn't allow a motor's output to change by more than this in one tick
-    private static final double GEAR_SHIFT_OFFSET = 0.2;
+    private static final double GEAR_SHIFT_OFFSET = 0.3;
     private static final double GEAR_SHIFT_DEADZONE = 0.1;
     private static final double GEAR_SHIFT_FUNC_POWER = 1.4;
     private static final double HIGH_REDUCTION_END = 0.6;
@@ -122,13 +122,17 @@ public class DriveSubsystem extends Subsystem {
         double input = -stick.getY();
         if(highReduction){
             if(Math.abs(input) >= HIGH_REDUCTION_END){
+                Robot.gearShiftSubsystem.shiftDown();
                 return processStickLowReduction(input);
             }
+            Robot.gearShiftSubsystem.shiftUp();
             return processStickHighReduction(input);
         }else{
             if(Math.abs(input) <= LOW_REDUCTION_START){
+                Robot.gearShiftSubsystem.shiftUp();
                 return processStickHighReduction(input);
             }
+            Robot.gearShiftSubsystem.shiftDown();
             return processStickLowReduction(input);
         }
     }
@@ -136,19 +140,8 @@ public class DriveSubsystem extends Subsystem {
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
         //double left  = processStick(leftStick);
         //double right = processStick(rightStick);
-
-        double left = -leftStick.getY();
-        double right = rightStick.getY();
-
-        if(Math.abs(left) < .1){
-            left = 0;
-        }
-        if (Math.abs(right) < .1){
-            right = 0;
-        }
-
-        //double left = processStickGearShift(leftStick);
-        //double right = processStickGearShift(rightStick);
+        double left = processStickGearShift(leftStick);
+        double right = processStickGearShift(rightStick);
 
         //System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
         //setSpeedTankAngularControl(left, right);

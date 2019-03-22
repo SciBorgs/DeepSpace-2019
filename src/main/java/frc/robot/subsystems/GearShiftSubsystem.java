@@ -32,6 +32,10 @@ public class GearShiftSubsystem extends Subsystem {
         if (countOfContinousCyclesBelowJoystickThreshold >= cycleThreshold) {shiftDown();}
     }
 
+    public boolean currentlyInHighGear(){
+        return gearShiftSolenoid.get() == DoubleSolenoid.Value.kForward;
+    }
+
     public void shiftGear() {
         updateCycleCount();
         updateGearShift();
