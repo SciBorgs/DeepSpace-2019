@@ -43,6 +43,10 @@ public class IntakeSubsystem extends Subsystem {
 		armSolenoid = new DoubleSolenoid(PortMap.ARM_SOLENOID[0], PortMap.ARM_SOLENOID[1]);
 	}
 
+	public TalonSRX[] getTalons() {
+    	return new TalonSRX[]{intakeTalon};
+	}
+
 	public void scoopUp() {
 		scoopSolenoid.set(Value.kForward);
 	}

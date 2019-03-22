@@ -1,5 +1,10 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import frc.robot.controlscheme.ControlScheme;
+import frc.robot.controlscheme.XboxControl;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
 import frc.robot.helpers.*;
@@ -29,8 +34,28 @@ public class Robot extends TimedRobot {
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
     public static Lineup lineup = new Lineup();
+    private final ControlScheme xboxControl = new XboxControl();
+    private final PowerDistributionPanel pdp = new PowerDistributionPanel();
+
+    private CANSparkMax[] getSparks() {
+        List<CANSparkMax> list = new ArrayList<>(); // this is inefficient but the code should be temporary
+        Collections.addAll(list, driveSubsystem.getSparks());
+        Collections.addAll(list, liftSubsystem.getSparks());
+        return list.toArray(new CANSparkMax[0]);
+    }
+
+    private TalonSRX[] getTalons() {
+        List<TalonSRX> list = new ArrayList<>();
+        Collections.addAll(list, positioningSubsystem.getTalons());
+        Collections.addAll(list, liftSubsystem.getTalons());
+        Collections.addAll(list, intakeSubsystem.getTalons());
+        Collections.addAll(list, zLiftSubsystem.getTalons());
+        return list.toArray(new TalonSRX[0]);
+    }
 
     public void robotInit() {
+        xboxControl.getShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, getSparks(), getTalons(), liftSubsystem.getLiftSpark()).start();
+
         positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
@@ -51,6 +76,7 @@ public class Robot extends TimedRobot {
     }
  
     public void robotPeriodic() {
+        Scheduler.getInstance().run();
         positioningSubsystem.updatePositionTank();
         //positioningSubsystem.printPosition();
         //System.out.println("pigeon raw: " + positioningSubsystem.getPigeon().getAngle());
@@ -79,7 +105,6 @@ public class Robot extends TimedRobot {
 
     public void teleopPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
-        Scheduler.getInstance().run();
 
         /*
         if(Robot.oi.leftStick.getPOV() == 0){

@@ -1,16 +1,13 @@
 package frc.robot.subsystems;
 
-import frc.robot.PortMap;
-import frc.robot.Robot;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
+import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import com.ctre.phoenix.sensors.PigeonIMU;
+import frc.robot.PortMap;
+import frc.robot.Robot;
 import frc.robot.helpers.PID;
-import frc.robot.Utils;
 
 public class ZLiftSubsystem extends Subsystem {
     private TalonSRX leftZLift, rightZLift;
@@ -31,6 +28,10 @@ public class ZLiftSubsystem extends Subsystem {
         doubleSolenoid = new DoubleSolenoid(PortMap.FORWARD_CHANNEL, PortMap.REVERSE_CHANNEL);
 
         reset();
+    }
+
+    public TalonSRX[] getTalons() {
+        return new TalonSRX[]{leftZLift, rightZLift};
     }
 
     public void lift(double defaultSpeed) {

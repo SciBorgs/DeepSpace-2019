@@ -59,6 +59,10 @@ public class DriveSubsystem extends Subsystem {
         tankAnglePID = new PID(tankAngleP, tankAngleI, tankAngleD);
 	}
 
+	public CANSparkMax[] getSparks() {
+        return new CANSparkMax[]{lf, lm, lb, rf, rm, rb};
+    }
+
     /**
      * Processes a given joystick axis value to match the given deadzone and shape as determined by the given exponent.
      *

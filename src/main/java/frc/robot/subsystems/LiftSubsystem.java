@@ -1,20 +1,20 @@
 package frc.robot.subsystems;
 
-import frc.robot.helpers.*;
-import frc.robot.PortMap;
-import frc.robot.Robot;
-import frc.robot.Utils;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.command.Subsystem;
-import com.ctre.phoenix.Util;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import edu.wpi.first.wpilibj.shuffleboard.*;
-import java.util.Hashtable;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import frc.robot.PortMap;
+import frc.robot.Robot;
+import frc.robot.Utils;
+import frc.robot.helpers.PID;
+
+import java.util.Hashtable;
 
 public class LiftSubsystem extends Subsystem {	
 
@@ -82,6 +82,18 @@ public class LiftSubsystem extends Subsystem {
 		armPID.setSmoother(ARM_PID_SMOOTHNESS);
 		realLiftHeightIs(INITIAL_HEIGHT);
 		realArmAngleIs(INITIAL_ANGLE);
+	}
+
+	public CANSparkMax[] getSparks() {
+		return new CANSparkMax[]{liftSpark};
+	}
+
+	public TalonSRX[] getTalons() {
+		return new TalonSRX[]{armTiltTalon};
+	}
+
+	public CANSparkMax getLiftSpark() {
+		return liftSpark;
 	}
 	
 	private double getTargetHeight(Target target){

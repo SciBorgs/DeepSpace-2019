@@ -82,6 +82,10 @@ public class PositioningSubsystem extends Subsystem {
         
     }
 
+    public TalonSRX[] getTalons() {
+        return new TalonSRX[]{pigeonTalon};
+    }
+
     public Pigeon getPigeon(){
         return pigeon;
     }
