@@ -45,9 +45,9 @@ public class LiftSubsystem extends Subsystem {
 	public static final double MAX_HINGE_HEIGHT = Utils.inchesToMeters(72.5);
 	static final double ARM_MAX_ANGLE = Math.toRadians(66);
 	static final double ARM_TARGET_ANGLE = Math.toRadians(30);
-	static final double ARM_LENGTH = Utils.inchesToMeters(17.5);
+	static final double ARM_LENGTH = Utils.inchesToMeters(16);
 	static final double BOTTOM_HEIGHT = Utils.inchesToMeters(12.5); // In meters, the height at the lift's lowest point
-	static final double INITIAL_GAP_TO_GROUND = Utils.inchesToMeters(3.5); // How far up the intake should be when it's sucking in cargo
+	static final double INITIAL_GAP_TO_GROUND = Utils.inchesToMeters(0); // How far up the intake should be when it's sucking in cargo
 	static final double RESTING_ANGLE = Math.asin((INITIAL_GAP_TO_GROUND - BOTTOM_HEIGHT) / ARM_LENGTH); // In radians
 	static final double HEIGHT_PRECISION = 0.05; // In meters
 	static final double ANGLE_PRECISION = Math.toRadians(3);
@@ -99,13 +99,14 @@ public class LiftSubsystem extends Subsystem {
 	private double getTargetHeight(Target target){
 		double hatchTargetHeight = LOW_HATCH_HEIGHT + HATCH_POSITIONS.get(target) * ROCKET_HATCH_GAP;
 		double cargoTargetHeight = hatchTargetHeight + HATCH_TO_CARGO_DEPOSIT;
+		double defaultTargetHeight = hatchTargetHeight;
 		// Target height will go to the defualt HATCH_HEIGHT if it is holding the hatch, otherwise it will add the gap b/w the hatch and the cargo deposit
 		if (Robot.intakeSubsystem.holdingHatch()) {
 			return hatchTargetHeight;
 		} else if (Robot.intakeSubsystem.holdingCargo()) {
 			return cargoTargetHeight;
 		} else {
-			return hatchTargetHeight;
+			return defaultTargetHeight;
 		}
 	}
 
@@ -218,7 +219,12 @@ public class LiftSubsystem extends Subsystem {
 			realLiftHeightIs(BOTTOM_HEIGHT);
 			return BOTTOM_HEIGHT;
 		} else {
-			return SPARK_ENCODER_WHEEL_RATIO * Robot.positioningSubsystem.getSparkAngle(liftSpark) * LIFT_WHEEL_RADIUS + BOTTOM_HEIGHT + offsetCascadeHeight;
+			double height = SPARK_ENCODER_WHEEL_RATIO * Robot.positioningSubsystem.getSparkAngle(liftSpark) * LIFT_WHEEL_RADIUS + BOTTOM_HEIGHT + offsetCascadeHeight;
+			if (height > MAX_HINGE_HEIGHT){
+				realLiftHeightIs(MAX_HINGE_HEIGHT);
+				return MAX_HINGE_HEIGHT;
+			}
+			return height;
 		}
 	}
 	

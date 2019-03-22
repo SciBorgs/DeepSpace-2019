@@ -25,7 +25,7 @@ public class ZLiftSubsystem extends Subsystem {
         // pigeon = new PigeonIMU(rightZLift);
         anglePID = new PID(angleP, angleI, angleD);
 
-        doubleSolenoid = new DoubleSolenoid(PortMap.FORWARD_CHANNEL, PortMap.REVERSE_CHANNEL);
+        doubleSolenoid = new DoubleSolenoid(PortMap.ZLIFT_SOLENOID[0], PortMap.ZLIFT_SOLENOID[1]);
 
         reset();
     }
