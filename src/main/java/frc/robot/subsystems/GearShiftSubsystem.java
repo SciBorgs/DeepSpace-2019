@@ -14,6 +14,9 @@ public class GearShiftSubsystem extends Subsystem {
     public double joystickShiftUpThreshold = .5;
     public double joystickShiftDownThreshold = .2;
     public int cycleThreshold = 10; //50 Cycles is 1000 milliseconds diveided by 20ms per cycle
+    
+    private final double UPPER_HIGH_GEAR_THRESHOLD = 1000;
+    private final double LOWER_LOW_GEAR_THRESHOLD = 500;
 
     public void updateCycleCount() {
         if (Math.abs((Robot.oi.leftStick.getY() - Robot.oi.rightStick.getY())/2.) >= joystickShiftUpThreshold) {
@@ -36,9 +39,27 @@ public class GearShiftSubsystem extends Subsystem {
         return gearShiftSolenoid.get() == DoubleSolenoid.Value.kForward;
     }
 
+    public boolean currentlyInLowGear(){
+        return gearShiftSolenoid.get() == DoubleSolenoid.Value.kReverse;
+    }
+
     public void shiftGear() {
         updateCycleCount();
         updateGearShift();
+    }
+
+    public void autoShift(){
+        double speed = Math.min(Robot.driveSubsystem.lf.getEncoder().getVelocity(), Robot.driveSubsystem.rf.getEncoder().getVelocity());
+        if(currentlyInHighGear()){
+            if(speed > UPPER_HIGH_GEAR_THRESHOLD){
+                shiftDown();
+            }
+        }
+        if(currentlyInLowGear()){
+            if(speed < LOWER_LOW_GEAR_THRESHOLD){
+                shiftUp();
+            }
+        }
     }
 
     public DoubleSolenoid gearShiftSolenoid;

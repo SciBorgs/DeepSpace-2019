@@ -126,17 +126,13 @@ public class DriveSubsystem extends Subsystem {
         double input = -stick.getY();
         if(highReduction){
             if(Math.abs(input) >= HIGH_REDUCTION_END){
-                Robot.gearShiftSubsystem.shiftDown();
                 return processStickLowReduction(input);
             }
-            Robot.gearShiftSubsystem.shiftUp();
             return processStickHighReduction(input);
         }else{
             if(Math.abs(input) <= LOW_REDUCTION_START){
-                Robot.gearShiftSubsystem.shiftUp();
                 return processStickHighReduction(input);
             }
-            Robot.gearShiftSubsystem.shiftDown();
             return processStickLowReduction(input);
         }
     }
