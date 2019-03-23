@@ -15,6 +15,9 @@ public class PortMap {
     public static final int[][] JOYSTICK_BUTTON_MATRIX_LEFT = { { 5, 6, 7 }, { 10, 9, 8 } };
     public static final int[][] JOYSTICK_BUTTON_MATRIX_RIGHT = { { 13, 12, 11 }, { 14, 15, 16 } };
 
+    //****************ECKS BOCKS*****************//
+    public static final int XBOX_CONTROLLER = 2;
+    
     //*******************SPARKS******************//
 
     public static final int LEFT_FRONT_SPARK = 6; 

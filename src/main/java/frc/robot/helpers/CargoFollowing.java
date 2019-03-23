@@ -5,9 +5,9 @@ import frc.robot.Robot;
 public class CargoFollowing {
 
     PID ballFollowerPID;
-    double ballFollowerP = 0.11;
+    double ballFollowerP = 0.06;
     double ballFollowerI = 0;
-    double ballFollowerD = 0.006;
+    double ballFollowerD = 0.003;
     double horizontalTheta = 27.;
     double verticalTheta = 20.5;
 

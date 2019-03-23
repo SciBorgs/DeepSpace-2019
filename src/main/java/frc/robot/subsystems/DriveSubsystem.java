@@ -4,6 +4,7 @@ import frc.robot.PortMap;
 import frc.robot.Robot;
 import frc.robot.Utils;
 import frc.robot.helpers.PID;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -14,8 +15,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class DriveSubsystem extends Subsystem {
     // Define tested error values here
-    double tankAngleP = .07, tankAngleD = 0.0, tankAngleI = 0;
-    double goalOmegaConstant = 10;
+    double tankAngleP = .05, tankAngleD = 0.0, tankAngleI = 0;
+    double goalOmegaConstant = 6;
     double maxOmegaGoal = 1 * goalOmegaConstant;
     public CANSparkMax lf, lm, lb, rf, rm, rb;
 
@@ -39,6 +40,7 @@ public class DriveSubsystem extends Subsystem {
     // d value so that when x=INPUT_DEADZONE the wheels move
     private static final double ALEJANDROS_CONSTANT = (MAX_JOYSTICK * Math.pow(MOTOR_MOVEPOINT / MAX_JOYSTICK, 1/(EXPONENT+1)) - INPUT_DEADZONE) /
                                                     (Math.pow(MOTOR_MOVEPOINT / MAX_JOYSTICK, 1/(EXPONENT+1)) - 1);
+
 
     private CANSparkMax newMotorObject(int port){
         return new CANSparkMax(port, MotorType.kBrushless);
@@ -188,14 +190,16 @@ public class DriveSubsystem extends Subsystem {
     }
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
-        if(Math.abs(leftSpeed) == 1){
+        /*if(Math.abs(leftSpeed) == 1){
             System.out.println("[   [   [   SPARK SPEED LEFT     ]   ]   ]");
-            System.out.println(lf.getEncoder().getVelocity());
+            System.out.println(lf.getEncoder().getVelocity() / 4096);
+            //System.out.println(Robot.positioningSubsystem.getWheelSpeed(lf));
         }
         if(Math.abs(rightSpeed) == 1){
             System.out.println("[   [   [   SPARK SPEED RIGHT     ]   ]   ]");
-            System.out.println(rf.getEncoder().getVelocity());
-        }
+            System.out.println(rf.getEncoder().getVelocity() / 4096);
+            //System.out.println(Robot.positioningSubsystem.getWheelSpeed(rf));
+        }*/
         setMotorSpeed(lf, leftSpeed);
         setMotorSpeed(rf, -rightSpeed); // Possible needs to be negated
 	}

@@ -1,18 +1,21 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.commands.LevelCounterUpdateCommand.LevelChange;
 
 public class OI {
     public Joystick leftStick, rightStick;
-    public JoystickButton cargoFollowButton, lineupButton, startZLiftButton, liftLevelUpButton, liftLevelDownButton, suckButton, spitButton, depositPanelButton, hatchSecureModeButton, armModeButton;
+    public JoystickButton gearShiftButton, cargoFollowButton, lineupButton, startZLiftButton, liftLevelUpButton, liftLevelDownButton, suckButton, spitButton, depositPanelButton, hatchSecureModeButton, armModeButton;
+    public XboxController xboxController;
 
     public OI() {
         System.out.println("OI constructor");
         leftStick = new Joystick(PortMap.JOYSTICK_LEFT);
         rightStick = new Joystick(PortMap.JOYSTICK_RIGHT);
+        xboxController = new XboxController(PortMap.XBOX_CONTROLLER);
 
         
         // Left Stick
@@ -48,6 +51,9 @@ public class OI {
 
         armModeButton = new JoystickButton(rightStick, PortMap.JOYSTICK_CENTER_BUTTON);
         armModeButton.whenPressed(new ToggleArmCommand());
+
+        gearShiftButton = new JoystickButton(rightStick, PortMap.JOYSTICK_RIGHT_BUTTON);
+        gearShiftButton.whenPressed(new GearShiftCommand());
 
 
     }

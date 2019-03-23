@@ -205,6 +205,7 @@ public class PositioningSubsystem extends Subsystem {
     }
 
     public void updatePositionTank(){
+        //System.out.println("updating position");
         changePoint(nextPosTankPigeon(getX(), getY(), getAngle(), encUpdate(Robot.driveSubsystem.lm), encUpdate(Robot.driveSubsystem.rm))); 
     }
 

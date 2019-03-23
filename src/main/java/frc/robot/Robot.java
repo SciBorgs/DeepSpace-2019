@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 
 import java.util.*;
 
@@ -30,17 +31,18 @@ public class Robot extends TimedRobot {
 	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static LiftSubsystem liftSubsystem = new LiftSubsystem();
     public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
+    public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     public static OI oi = new OI();
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     public static CargoFollowing cargoFollowing = new CargoFollowing();
-    public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
     public static Lineup lineup = new Lineup();
     private final ControlScheme xboxControl = new XboxControl();
     private final PowerDistributionPanel pdp = new PowerDistributionPanel();
-    
-    private JoystickButton forw, back, off;
+    private final DigitalOutput targetingLight = new DigitalOutput(5);
+    private boolean lightOn = false;
+    private boolean prevLightButton = false;
 
     private CANSparkMax[] getSparks() {
         List<CANSparkMax> list = new ArrayList<>(); // this is inefficient but the code should be temporary
@@ -65,9 +67,6 @@ public class Robot extends TimedRobot {
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
 
-        forw = new JoystickButton(oi.leftStick, 8);
-        back = new JoystickButton(oi.leftStick, 9);
-        off = new JoystickButton(oi.leftStick, 10);
 
         cargoFollowing.modeToCargo();
 
@@ -105,6 +104,8 @@ public class Robot extends TimedRobot {
     }
         
     public void autonomousInit() {
+        cargoFollowing.modeToCargo();
+        new TankDriveCommand().start();
         //(new LiftCommand()).start();
         // new TankDriveCommand().start();
         pneumaticsSubsystem.startCompressor();
@@ -112,12 +113,11 @@ public class Robot extends TimedRobot {
 
     public void autonomousPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
-        Robot.liftSubsystem.moveArmToAngle(0);
+        //Robot.liftSubsystem.moveArmToAngle(0);
     }
     
     @Override
     public void teleopInit() {
-        Robot.intakeSubsystem.secureHatchSolenoid.set(Value.kOff);
         new TankDriveCommand().start();
     }
 
@@ -126,9 +126,9 @@ public class Robot extends TimedRobot {
 
         
         if(Robot.oi.leftStick.getPOV() == 0){
-            Robot.liftSubsystem.setLiftSpeed(.4);
+            Robot.liftSubsystem.setLiftSpeed(.8);
         }else if(Robot.oi.leftStick.getPOV() == 180){
-            Robot.liftSubsystem.setLiftSpeed(-.4);
+            Robot.liftSubsystem.setLiftSpeed(-.8);
         }else{
             Robot.liftSubsystem.setLiftSpeed(0);
         }
@@ -140,6 +140,23 @@ public class Robot extends TimedRobot {
             Robot.liftSubsystem.setArmTiltSpeed(0);
         }
         
+        boolean targetLightButton = oi.xboxController.getBButton();
+
+        if(!lightOn){
+            if(targetLightButton && !prevLightButton){
+                targetingLight.set(true);
+                lightOn = true;
+            }
+        }else{
+            if(targetLightButton && !prevLightButton){
+                targetingLight.set(false);
+                lightOn = false;
+            }
+        }
+
+        prevLightButton = targetLightButton;
+
+
 
     }
 

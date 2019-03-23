@@ -44,8 +44,13 @@ public class GearShiftSubsystem extends Subsystem {
     }
 
     public void shiftGear() {
-        updateCycleCount();
-        updateGearShift();
+        //updateCycleCount();
+        //updateGearShift();
+        if(gearShiftSolenoid.get() == DoubleSolenoid.Value.kReverse){
+            gearShiftSolenoid.set(DoubleSolenoid.Value.kForward);
+        }else{
+            gearShiftSolenoid.set(DoubleSolenoid.Value.kReverse);
+        }
     }
 
     public void autoShift(){
