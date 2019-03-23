@@ -46,7 +46,19 @@ public class DriveSubsystem extends Subsystem {
         return new CANSparkMax(port, MotorType.kBrushless);
     }
 
-	/**
+    public PID getTankAnglePID() {
+        return tankAnglePID;
+    }
+
+    public double getMaxOmegaGoal() {
+        return maxOmegaGoal;
+    }
+
+    public void setMaxOmegaGoal(double maxOmegaGoal) {
+        this.maxOmegaGoal = maxOmegaGoal;
+    }
+
+    /**
      * Initialize robot's motors
      */
     public DriveSubsystem(){

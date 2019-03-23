@@ -39,6 +39,10 @@ public class ShuffleboardCommand extends Command {
     private final SimpleWidget cargoP;
     private final SimpleWidget cargoI;
     private final SimpleWidget cargoD;
+    private final SimpleWidget driveP;
+    private final SimpleWidget driveI;
+    private final SimpleWidget driveD;
+    private final SimpleWidget driveMaxOmegaGoal;
 
     // dependencies
     private final PowerDistributionPanel pdp;
@@ -48,6 +52,8 @@ public class ShuffleboardCommand extends Command {
     private final ControlButton buttonRight;
     private final ControlButton buttonToggle;
     private final PID cargoPID;
+    private final PID drivePID;
+    private final double[] maxOmegaGoal;
     private final CANSparkMax[] canSparkMaxs;
     private final TalonSRX[] talonSRXs;
     private final CANSparkMax cascadeSpark;
@@ -55,7 +61,7 @@ public class ShuffleboardCommand extends Command {
     // needed for cargo selection
     private int cargoSelection;
 
-    public ShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, ControlButton buttonLeft, ControlButton buttonRight, ControlButton buttonToggle, PID cargoPID) {
+    public ShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, ControlButton buttonLeft, ControlButton buttonRight, ControlButton buttonToggle, PID cargoPID, PID drivePID, double[] maxOmegaGoal) {
         this.pdp = pdp;
         this.liftSubsystem = liftSubsystem;
         this.pneumaticsSubsystem = pneumaticsSubsystem;
@@ -66,6 +72,8 @@ public class ShuffleboardCommand extends Command {
         this.buttonRight = buttonRight;
         this.buttonToggle = buttonToggle;
         this.cargoPID = cargoPID;
+        this.drivePID = drivePID;
+        this.maxOmegaGoal = maxOmegaGoal;
 
         driverStationTab = Shuffleboard.getTab("Driver Station");
 
@@ -93,6 +101,11 @@ public class ShuffleboardCommand extends Command {
         cargoP = testTab.add("Cargo P", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(0, 0).withSize(1, 1);
         cargoI = testTab.add("Cargo I", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(0, 1).withSize(1, 1);
         cargoD = testTab.add("Cargo D", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(0, 2).withSize(1, 1);
+        driveP = testTab.add("Drive P", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 0).withSize(1, 1);
+        driveI = testTab.add("Drive I", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 1).withSize(1, 1);
+        driveD = testTab.add("Drive D", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 2).withSize(1, 1);
+        driveMaxOmegaGoal = testTab.add("Max Omega Goal", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 3).withSize(1, 1);
+        setUpTestTab();
 
         setRunWhenDisabled(true);
     }
@@ -204,13 +217,31 @@ public class ShuffleboardCommand extends Command {
         changePointer(1);
     }
 
+    private void setUpTestTab() {
+        try {
+            cargoP.getEntry().setString(String.valueOf(cargoPID.getP()));
+            cargoI.getEntry().setString(String.valueOf(cargoPID.getI()));
+            cargoD.getEntry().setString(String.valueOf(cargoPID.getD()));
+            driveP.getEntry().setString(String.valueOf(drivePID.getP()));
+            driveI.getEntry().setString(String.valueOf(drivePID.getI()));
+            driveD.getEntry().setString(String.valueOf(drivePID.getD()));
+            driveMaxOmegaGoal.getEntry().setString(String.valueOf(maxOmegaGoal[0]));
+        } catch(Exception e) {
+            System.err.println("Error in Shuffleboard te");
+        }
+    }
+
     private void updateTestTab() {
         try {
             cargoPID.setP(Double.valueOf(cargoP.getEntry().getString("0.0")));
             cargoPID.setI(Double.valueOf(cargoI.getEntry().getString("0.0")));
             cargoPID.setD(Double.valueOf(cargoD.getEntry().getString("0.0")));
+            drivePID.setP(Double.valueOf(driveP.getEntry().getString("0.0")));
+            drivePID.setI(Double.valueOf(driveI.getEntry().getString("0.0")));
+            drivePID.setD(Double.valueOf(driveD.getEntry().getString("0.0")));
+            maxOmegaGoal[0] = Double.valueOf(driveMaxOmegaGoal.getEntry().getString("0.0"));
         } catch(Exception e) {
-            System.out.println("Error in Shuffleboard test tab. The values must be doubles.");
+            System.err.println("Error in Shuffleboard test tab. The values must be doubles.");
         }
     }
 }

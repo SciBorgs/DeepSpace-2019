@@ -38,7 +38,7 @@ public interface ControlScheme {
      * @param cascadeSpark        needed for cascade temperature
      * @return a ShuffleboardCommand that works with the control scheme
      */
-    ShuffleboardCommand getShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, PID cargoPID);
+    ShuffleboardCommand getShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, PID cargoPID, PID drivePID, double[] maxOmegaGoal);
 
     /**
      * @return the input values of the Control Scheme, represented as a left joystick

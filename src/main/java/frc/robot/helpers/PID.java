@@ -10,7 +10,19 @@ public class PID {
 	private ArrayList<Double> times, errors;
 	private int maxSize = 4;
 	public double p, i, d, u, integral, deadband;
-	    
+
+	public double getP() {
+		return p;
+	}
+
+	public double getI() {
+		return i;
+	}
+
+	public double getD() {
+		return d;
+	}
+
 	public PID(double p, double i, double d) {
 		timer = new Timer();
 		timer.start();
