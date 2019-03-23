@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import frc.robot.controlscheme.ControlButton;
+import frc.robot.helpers.PID;
 import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
 
@@ -20,7 +21,7 @@ import java.util.ArrayList;
  * Originally made by Team Alpha: Tobias, Zawad, Matthew, Jack, Swanand, Zach, and Alejandro
  */
 public class ShuffleboardCommand extends Command {
-    // shuffleboard
+    // driverstation tab
     private final ShuffleboardTab driverStationTab;
     private final SimpleWidget timer;
     private final ShuffleboardLayout voltageList;
@@ -33,6 +34,12 @@ public class ShuffleboardCommand extends Command {
     private final ArrayList<SimpleWidget> cargoList;
     private final SimpleWidget cargoSelectionText;
 
+    // testtab
+    private final ShuffleboardTab testTab;
+    private final SimpleWidget cargoP;
+    private final SimpleWidget cargoI;
+    private final SimpleWidget cargoD;
+
     // dependencies
     private final PowerDistributionPanel pdp;
     private final LiftSubsystem liftSubsystem;
@@ -40,6 +47,7 @@ public class ShuffleboardCommand extends Command {
     private final ControlButton buttonLeft;
     private final ControlButton buttonRight;
     private final ControlButton buttonToggle;
+    private final PID cargoPID;
     private final CANSparkMax[] canSparkMaxs;
     private final TalonSRX[] talonSRXs;
     private final CANSparkMax cascadeSpark;
@@ -47,7 +55,7 @@ public class ShuffleboardCommand extends Command {
     // needed for cargo selection
     private int cargoSelection;
 
-    public ShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, ControlButton buttonLeft, ControlButton buttonRight, ControlButton buttonToggle) {
+    public ShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, ControlButton buttonLeft, ControlButton buttonRight, ControlButton buttonToggle, PID cargoPID) {
         this.pdp = pdp;
         this.liftSubsystem = liftSubsystem;
         this.pneumaticsSubsystem = pneumaticsSubsystem;
@@ -57,6 +65,7 @@ public class ShuffleboardCommand extends Command {
         this.buttonLeft = buttonLeft;
         this.buttonRight = buttonRight;
         this.buttonToggle = buttonToggle;
+        this.cargoPID = cargoPID;
 
         driverStationTab = Shuffleboard.getTab("Driver Station");
 
@@ -80,6 +89,11 @@ public class ShuffleboardCommand extends Command {
         cargoSelectionText = driverStationTab.add("Selection", "-1").withWidget("Text View").withPosition(0, 4).withSize(1, 1);
         setUpCargoList();
 
+        testTab = Shuffleboard.getTab("Test Tab");
+        cargoP = testTab.add("Cargo P", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(0, 0).withSize(1, 1);
+        cargoI = testTab.add("Cargo I", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(0, 1).withSize(1, 1);
+        cargoD = testTab.add("Cargo D", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(0, 2).withSize(1, 1);
+
         setRunWhenDisabled(true);
     }
 
@@ -95,6 +109,7 @@ public class ShuffleboardCommand extends Command {
         updateCascadeMotorTemp();
         updateLiftPosition();
         updateAirPressure();
+        updateTestTab();
     }
 
     @Override
@@ -187,5 +202,15 @@ public class ShuffleboardCommand extends Command {
 
     private void movePointerRight() {
         changePointer(1);
+    }
+
+    private void updateTestTab() {
+        try {
+            cargoPID.setP(Double.valueOf(cargoP.getEntry().getString("0.0")));
+            cargoPID.setI(Double.valueOf(cargoI.getEntry().getString("0.0")));
+            cargoPID.setD(Double.valueOf(cargoD.getEntry().getString("0.0")));
+        } catch(Exception e) {
+            System.out.println("Error in Shuffleboard test tab. The values must be doubles.");
+        }
     }
 }

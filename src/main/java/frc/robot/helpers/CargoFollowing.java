@@ -15,6 +15,10 @@ public class CargoFollowing {
 		ballFollowerPID = new PID(ballFollowerP, ballFollowerI, ballFollowerD);
     }
 
+    public PID getPid() {
+        return ballFollowerPID;
+    }
+
     public void followBallShifted() {
         double tx = Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "tx");
         double ta = Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "ta");

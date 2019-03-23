@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import frc.robot.commands.*;
 import frc.robot.helpers.Lineup;
+import frc.robot.helpers.PID;
 import frc.robot.subsystems.*;
 
 /**
@@ -94,8 +95,8 @@ public class JoystickControl implements ControlScheme {
     */
 
     @Override
-    public ShuffleboardCommand getShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark) {
-        return new ShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, canSparkMaxs, talonSRXs, cascadeSpark, null, null, null);
+    public ShuffleboardCommand getShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, PID cargoPID) {
+        return new ShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, canSparkMaxs, talonSRXs, cascadeSpark, null, null, null, cargoPID);
     }
 
     @Override

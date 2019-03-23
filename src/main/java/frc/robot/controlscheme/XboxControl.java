@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ShuffleboardCommand;
 import frc.robot.helpers.Lineup;
+import frc.robot.helpers.PID;
 import frc.robot.subsystems.*;
 
 /**
@@ -54,8 +55,8 @@ public class XboxControl implements ControlScheme {
     */
 
     @Override
-    public ShuffleboardCommand getShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark) {
-        return new ShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, canSparkMaxs, talonSRXs, cascadeSpark, getButton(XboxControlButton.Button.BUMPER_LEFT), getButton(XboxControlButton.Button.BUMPER_RIGHT), getButton(XboxControlButton.Button.A));
+    public ShuffleboardCommand getShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, PID cargoPID) {
+        return new ShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, canSparkMaxs, talonSRXs, cascadeSpark, getButton(XboxControlButton.Button.BUMPER_LEFT), getButton(XboxControlButton.Button.BUMPER_RIGHT), getButton(XboxControlButton.Button.A), cargoPID);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import frc.robot.commands.ShuffleboardCommand;
 import frc.robot.helpers.Lineup;
+import frc.robot.helpers.PID;
 import frc.robot.subsystems.*;
 
 /**
@@ -37,7 +38,7 @@ public interface ControlScheme {
      * @param cascadeSpark        needed for cascade temperature
      * @return a ShuffleboardCommand that works with the control scheme
      */
-    ShuffleboardCommand getShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark);
+    ShuffleboardCommand getShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, PID cargoPID);
 
     /**
      * @return the input values of the Control Scheme, represented as a left joystick
