@@ -90,7 +90,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         Scheduler.getInstance().run();
         positioningSubsystem.updatePositionTank();
-        System.out.println("arm angle: " + Math.toDegrees(liftSubsystem.getArmAngle()));
+        //System.out.println("arm angle: " + Math.toDegrees(liftSubsystem.getArmAngle()));
         //System.out.println("unadjusted arm angle: " + Math.toDegrees(liftSubsystem.getUnadjustedArmAngle()));
         //positioningSubsystem.printPosition();
         //System.out.println("pigeon raw: " + positioningSubsystem.getPigeon().getAngle());
@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
 
     public void autonomousPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
-   
+        Robot.liftSubsystem.moveArmToAngle(0);
     }
     
     @Override

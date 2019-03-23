@@ -24,7 +24,7 @@ public class LiftSubsystem extends Subsystem {
 
 	private PID armPID;
 	private PID liftPID;
-	private double armP = 4, armI = 0.0, armD = 0, liftP = 10, liftI = 0.0, liftD = 0.05;
+	private double armP = 1, armI = 0.0, armD = 0, liftP = 10, liftI = 0.0, liftD = 0.05;
 	static final double SPARK_ENCODER_WHEEL_RATIO = 1 / 20.0; // For the cascade
 	static final double TALON_ENCODER_WHEEL_RATIO = 24.0 / 56; // For the carriage
 	static final double LIFT_WHEEL_RADIUS = Utils.inchesToMeters(1.5); // In meters, the radius of the wheel that is pulling up the lift
@@ -133,16 +133,14 @@ public class LiftSubsystem extends Subsystem {
 	}
 	public void moveArmToAngle(double targetAngle){
 		// System.out.println("active traj velocity: " + armTiltTalon.getActiveTrajectoryVelocity());
-		System.out.println("arm angle: " + getArmAngle());
-		System.out.println("goal angle:" + targetAngle);
 		double error = targetAngle - getArmAngle();
 		boolean hitCorrectAngle  = Math.abs(error) < ANGLE_PRECISION;
 		tiltingArm = !hitCorrectAngle;
 		armPID.add_measurement(error);
 		conditionalSetArmTiltSpeed(armPID.getLimitOutput(ARM_OUTPUT_LIMIT), !hitCorrectAngle);
-		//System.out.println("arm angle: " + Math.toDegrees(getArmAngle()));
-		//System.out.println("desired angle: " + Math.toDegrees(targetAngle));
-		//System.out.println("angle output: " + armPID.getLimitOutput(ARM_OUTPUT_LIMIT));
+		System.out.println("arm angle: " + Math.toDegrees(getArmAngle()));
+		System.out.println("desired angle: " + Math.toDegrees(targetAngle));
+		System.out.println("angle output: " + armPID.getLimitOutput(ARM_OUTPUT_LIMIT));
 	}
 	
 	public void moveToPosition(double targetAngle, double targetLiftHeight){
@@ -304,7 +302,7 @@ public class LiftSubsystem extends Subsystem {
 
     public void setLiftSpeedRaw(double speed) {
 		Robot.driveSubsystem.setMotorSpeed(liftSpark, speed);
-		System.out.println("lift current: " + liftSpark.getOutputCurrent());
+		//System.out.println("lift current: " + liftSpark.getOutputCurrent());
 	}
 	public void setLiftSpeed(double speed){
 		setLiftSpeedRaw(speed + LIFT_STATIC_INPUT);

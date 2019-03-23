@@ -34,6 +34,7 @@ public class DriveSubsystem extends Subsystem {
     private static final double STRAIGHT_DEADZONE = 0.15;
     private boolean highReduction = true;
     private PID tankAnglePID;
+    public boolean assisted = false;
 
     // d value so that when x=INPUT_DEADZONE the wheels move
     private static final double ALEJANDROS_CONSTANT = (MAX_JOYSTICK * Math.pow(MOTOR_MOVEPOINT / MAX_JOYSTICK, 1/(EXPONENT+1)) - INPUT_DEADZONE) /
@@ -137,15 +138,20 @@ public class DriveSubsystem extends Subsystem {
         }
     }
 
-    public void setSpeed(Joystick leftStick, Joystick rightStick) {
-        double left  = processStick(leftStick);
-        double right = processStick(rightStick);
-        //double left = processStickGearShift(leftStick);
-        //double right = processStickGearShift(rightStick);
+    public void assistedDriveMode(){assisted = true;}
+    public void unassistedDriveMode(){assisted = false;}
 
-        //System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
-        //setSpeedTankAngularControl(left, right);
-        setSpeedTank(left,right);
+    public void setSpeed(Joystick leftStick, Joystick rightStick) {
+        if (!assisted) {
+            double left  = processStick(leftStick);
+            double right = processStick(rightStick);
+            //double left = processStickGearShift(leftStick);
+            //double right = processStickGearShift(rightStick);
+
+            //System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
+            //setSpeedTankAngularControl(left, right);
+            setSpeedTank(left,right);
+        }
     }
 	
 	public void setSpeedRaw(Joystick leftStick, Joystick rightStick){
@@ -182,6 +188,14 @@ public class DriveSubsystem extends Subsystem {
     }
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
+        if(Math.abs(leftSpeed) == 1){
+            System.out.println("[   [   [   SPARK SPEED LEFT     ]   ]   ]");
+            System.out.println(lf.getEncoder().getVelocity());
+        }
+        if(Math.abs(rightSpeed) == 1){
+            System.out.println("[   [   [   SPARK SPEED RIGHT     ]   ]   ]");
+            System.out.println(rf.getEncoder().getVelocity());
+        }
         setMotorSpeed(lf, leftSpeed);
         setMotorSpeed(rf, -rightSpeed); // Possible needs to be negated
 	}

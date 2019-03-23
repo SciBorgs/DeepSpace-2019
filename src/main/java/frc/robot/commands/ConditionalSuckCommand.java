@@ -6,12 +6,12 @@ import frc.robot.Robot;
 public class ConditionalSuckCommand extends ConditionalCommand {
 
     public ConditionalSuckCommand() {
-        super( new CargoFollowCommand(), new SuckCommand());
+        super(new CargoFollowCommand(), new SuckCommand());
         requires(Robot.liftSubsystem);
     }
 
     @Override protected boolean condition() {
-        System.out.println("cond suck");
+        System.out.println("button val:" + Robot.oi.cargoFollowButton.get());
         return Robot.oi.cargoFollowButton.get();
     }
 }
