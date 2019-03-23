@@ -17,7 +17,7 @@ public class DriveSubsystem extends Subsystem {
     // Define tested error values here
     double tankAngleP = .05, tankAngleD = 0.0, tankAngleI = 0;
     double goalOmegaConstant = 6;
-    double maxOmegaGoal = 1 * goalOmegaConstant;
+    private double[] maxOmegaGoal = {1 * goalOmegaConstant}; // must be an array so it's mutable
     public CANSparkMax lf, lm, lb, rf, rm, rb;
 
     // deadzones by Alejandro at Chris' request. Graph them with the joystick function to understand the math.
@@ -50,13 +50,10 @@ public class DriveSubsystem extends Subsystem {
         return tankAnglePID;
     }
 
-    public double getMaxOmegaGoal() {
+    public double[] getMaxOmegaGoal() {
         return maxOmegaGoal;
     }
 
-    public void setMaxOmegaGoal(double maxOmegaGoal) {
-        this.maxOmegaGoal = maxOmegaGoal;
-    }
 
     /**
      * Initialize robot's motors
@@ -226,7 +223,7 @@ public class DriveSubsystem extends Subsystem {
         } else {
             goalOmega -= STRAIGHT_DEADZONE;
         }
-        goalOmega = Utils.limitOutput(goalOmega, maxOmegaGoal);
+        goalOmega = Utils.limitOutput(goalOmega, maxOmegaGoal[0]);
         //System.out.println("angular speed: " + Robot.positioningSubsystem.getAngularSpeed());
         //System.out.println("desired angular speed: " + goalOmega);
         double error = goalOmega - Robot.positioningSubsystem.getAngularSpeed();
