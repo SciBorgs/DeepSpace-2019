@@ -88,6 +88,10 @@ public class LiftSubsystem extends Subsystem {
 		realArmAngleIs(INITIAL_ANGLE);
 	}
 
+	public PID getArmPID() {
+		return armPID;
+	}
+
 	public CANSparkMax[] getSparks() {
 		return new CANSparkMax[]{liftSpark};
 	}

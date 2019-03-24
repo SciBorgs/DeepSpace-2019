@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.controlscheme.ControlButton;
 import frc.robot.helpers.PID;
 import frc.robot.subsystems.LiftSubsystem;
@@ -34,16 +35,6 @@ public class ShuffleboardCommand extends Command {
     private final ArrayList<SimpleWidget> cargoList;
     private final SimpleWidget cargoSelectionText;
 
-    // testtab
-    private final ShuffleboardTab testTab;
-    private final SimpleWidget cargoP;
-    private final SimpleWidget cargoI;
-    private final SimpleWidget cargoD;
-    private final SimpleWidget driveP;
-    private final SimpleWidget driveI;
-    private final SimpleWidget driveD;
-    private final SimpleWidget driveMaxOmegaGoal;
-
     // dependencies
     private final PowerDistributionPanel pdp;
     private final LiftSubsystem liftSubsystem;
@@ -54,6 +45,7 @@ public class ShuffleboardCommand extends Command {
     private final PID cargoPID;
     private final PID drivePID;
     private final double[] maxOmegaGoal;
+    private final PID liftArmPID;
     private final CANSparkMax[] canSparkMaxs;
     private final TalonSRX[] talonSRXs;
     private final CANSparkMax cascadeSpark;
@@ -61,7 +53,7 @@ public class ShuffleboardCommand extends Command {
     // needed for cargo selection
     private int cargoSelection;
 
-    public ShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, ControlButton buttonLeft, ControlButton buttonRight, ControlButton buttonToggle, PID cargoPID, PID drivePID, double[] maxOmegaGoal) {
+    public ShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, ControlButton buttonLeft, ControlButton buttonRight, ControlButton buttonToggle, PID cargoPID, PID drivePID, double[] maxOmegaGoal, PID liftArmPID) {
         this.pdp = pdp;
         this.liftSubsystem = liftSubsystem;
         this.pneumaticsSubsystem = pneumaticsSubsystem;
@@ -74,6 +66,7 @@ public class ShuffleboardCommand extends Command {
         this.cargoPID = cargoPID;
         this.drivePID = drivePID;
         this.maxOmegaGoal = maxOmegaGoal;
+        this.liftArmPID = liftArmPID;
 
         driverStationTab = Shuffleboard.getTab("Driver Station");
 
@@ -97,15 +90,15 @@ public class ShuffleboardCommand extends Command {
         cargoSelectionText = driverStationTab.add("Selection", "-1").withWidget("Text View").withPosition(0, 4).withSize(1, 1);
         setUpCargoList();
 
-        testTab = Shuffleboard.getTab("Test Tab");
-        cargoP = testTab.add("Cargo P", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(0, 0).withSize(1, 1);
-        cargoI = testTab.add("Cargo I", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(0, 1).withSize(1, 1);
-        cargoD = testTab.add("Cargo D", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(0, 2).withSize(1, 1);
-        driveP = testTab.add("Drive P", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 0).withSize(1, 1);
-        driveI = testTab.add("Drive I", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 1).withSize(1, 1);
-        driveD = testTab.add("Drive D", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 2).withSize(1, 1);
-        driveMaxOmegaGoal = testTab.add("Max Omega Goal", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 3).withSize(1, 1);
-        //setUpTestTab();
+//        testTab = Shuffleboard.getTab("Test Tab");
+//        cargoP = testTab.add("Cargo P", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(0, 0).withSize(1, 1);
+//        cargoI = testTab.add("Cargo I", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(0, 1).withSize(1, 1);
+//        cargoD = testTab.add("Cargo D", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(0, 2).withSize(1, 1);
+//        driveP = testTab.add("Drive P", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 0).withSize(1, 1);
+//        driveI = testTab.add("Drive I", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 1).withSize(1, 1);
+//        driveD = testTab.add("Drive D", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 2).withSize(1, 1);
+//        driveMaxOmegaGoal = testTab.add("Max Omega Goal", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 3).withSize(1, 1);
+        setUpTestTab();
 
         setRunWhenDisabled(true);
     }
@@ -122,7 +115,7 @@ public class ShuffleboardCommand extends Command {
         updateCascadeMotorTemp();
         updateLiftPosition();
         updateAirPressure();
-        //updateTestTab();
+        updateTestTab();
     }
 
     @Override
@@ -218,7 +211,18 @@ public class ShuffleboardCommand extends Command {
     }
 
     private void setUpTestTab() {
-        try {
+        SmartDashboard.putNumber("cargoP", cargoPID.getP());
+        SmartDashboard.putNumber("cargoI", cargoPID.getI());
+        SmartDashboard.putNumber("cargoD", cargoPID.getD());
+        SmartDashboard.putNumber("driveP", drivePID.getP());
+        SmartDashboard.putNumber("driveI", drivePID.getI());
+        SmartDashboard.putNumber("driveD", drivePID.getD());
+        SmartDashboard.putNumber("driveMaxOmegaGoal", maxOmegaGoal[0]);
+        SmartDashboard.putNumber("liftArmP", liftArmPID.getP());
+        SmartDashboard.putNumber("liftArmI", liftArmPID.getI());
+        SmartDashboard.putNumber("liftArmD", liftArmPID.getD());
+
+        /*try {
             cargoP.getEntry().setString(String.valueOf(cargoPID.getP()));
             cargoI.getEntry().setString(String.valueOf(cargoPID.getI()));
             cargoD.getEntry().setString(String.valueOf(cargoPID.getD()));
@@ -228,11 +232,22 @@ public class ShuffleboardCommand extends Command {
             driveMaxOmegaGoal.getEntry().setString(String.valueOf(maxOmegaGoal[0]));
         } catch(Exception e) {
             System.err.println("Error in Shuffleboard te");
-        }
+        }*/
     }
 
     private void updateTestTab() {
-        try {
+        cargoPID.setP(SmartDashboard.getNumber("cargoP", 0.0));
+        cargoPID.setI(SmartDashboard.getNumber("cargoI", 0.0));
+        cargoPID.setD(SmartDashboard.getNumber("cargoD", 0.0));
+        drivePID.setP(SmartDashboard.getNumber("driveP", 0.0));
+        drivePID.setI(SmartDashboard.getNumber("driveI", 0.0));
+        drivePID.setD(SmartDashboard.getNumber("driveD", 0.0));
+        maxOmegaGoal[0] = SmartDashboard.getNumber("driveMaxOmegaGoal", 0.0);
+        liftArmPID.setP(SmartDashboard.getNumber("liftArmP", 0.0));
+        liftArmPID.setI(SmartDashboard.getNumber("liftArmI", 0.0));
+        liftArmPID.setD(SmartDashboard.getNumber("liftArmD", 0.0));
+
+        /*try {
             cargoPID.setP(Double.valueOf(cargoP.getEntry().getString("0.0")));
             cargoPID.setI(Double.valueOf(cargoI.getEntry().getString("0.0")));
             cargoPID.setD(Double.valueOf(cargoD.getEntry().getString("0.0")));
@@ -242,6 +257,6 @@ public class ShuffleboardCommand extends Command {
             maxOmegaGoal[0] = Double.valueOf(driveMaxOmegaGoal.getEntry().getString("0.0"));
         } catch(Exception e) {
             System.err.println("Error in Shuffleboard test tab. The values must be doubles.");
-        }
+        }*/
     }
 }
