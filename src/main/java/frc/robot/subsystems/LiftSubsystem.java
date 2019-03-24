@@ -24,7 +24,7 @@ public class LiftSubsystem extends Subsystem {
 
 	private PID armPID;
 	private PID liftPID;
-	private double armP = 0.5, armI = 0.0, armD = 0, liftP = 10, liftI = 0.0, liftD = 0.05;
+	private double armP = 0.45, armI = 0.0, armD = 0, liftP = 10, liftI = 0.0, liftD = 0.05;
 	static final double SPARK_ENCODER_WHEEL_RATIO = 1 / 20.0; // For the cascade
 	static final double TALON_ENCODER_WHEEL_RATIO = 24.0 / 56; // For the carriage
 	static final double LIFT_WHEEL_RADIUS = Utils.inchesToMeters(1.5); // In meters, the radius of the wheel that is pulling up the lift
@@ -267,6 +267,11 @@ public class LiftSubsystem extends Subsystem {
 		boolean currentOutput = !cascadeAtBottomLimitSwitch.get();
 		boolean end = currentOutput && previousLiftLimitSwitch;
 		previousLiftLimitSwitch = currentOutput;
+		if (end){
+			Robot.gearShiftSubsystem.shiftUp();
+		} else {
+			Robot.gearShiftSubsystem.shiftDown();
+		}
 		return end;
 	} 
 

@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class GearShiftSubsystem extends Subsystem {
 
+
+    // High reduction times: releasing hatch, sucking, cascade not at bottom
+
     public int countOfContinousCyclesAboveJoystickThreshold;
     public int countOfContinousCyclesBelowJoystickThreshold;
     public double joystickShiftUpThreshold = .5;

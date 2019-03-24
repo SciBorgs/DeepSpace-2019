@@ -20,8 +20,8 @@ public class OI {
         
         // Left Stick
         lineupButton = new JoystickButton(rightStick, PortMap.JOYSTICK_LEFT_BUTTON);
-        //lineupButton.whenPressed(new ResetLineupInfoCommand());
-        //lineupButton.whileHeld(new LineupCommand());
+        lineupButton.whenPressed(new ResetLineupInfoCommand());
+        lineupButton.whileHeld(new LineupCommand());
 
         liftLevelUpButton = new JoystickButton(leftStick, PortMap.JOYSTICK_CENTER_BUTTON);
         liftLevelUpButton.whenPressed(new LevelCounterUpdateCommand(LevelChange.Up));

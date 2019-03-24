@@ -114,21 +114,11 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         //Robot.liftSubsystem.moveArmToAngle(0);
-    }
-    
-    @Override
-    public void teleopInit() {
-        new TankDriveCommand().start();
-    }
-
-    public void teleopPeriodic() {
-        //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
-
         
         if(Robot.oi.leftStick.getPOV() == 0){
-            Robot.liftSubsystem.setLiftSpeed(.8);
+            Robot.liftSubsystem.setLiftSpeed(.4);
         }else if(Robot.oi.leftStick.getPOV() == 180){
-            Robot.liftSubsystem.setLiftSpeed(-.8);
+            Robot.liftSubsystem.setLiftSpeed(-.4);
         }else{
             Robot.liftSubsystem.setLiftSpeed(0);
         }
@@ -139,7 +129,31 @@ public class Robot extends TimedRobot {
         }else{
             Robot.liftSubsystem.setArmTiltSpeed(0);
         }
+    }
+    
+    @Override
+    public void teleopInit() {
+        new TankDriveCommand().start();
+    }
+
+    public void teleopPeriodic() {
+        //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         
+        if(Robot.oi.leftStick.getPOV() == 0){
+            Robot.liftSubsystem.setLiftSpeed(.4);
+        }else if(Robot.oi.leftStick.getPOV() == 180){
+            Robot.liftSubsystem.setLiftSpeed(-.4);
+        }else{
+            Robot.liftSubsystem.setLiftSpeed(0);
+        }
+        if(Robot.oi.rightStick.getPOV() == 0){
+            Robot.liftSubsystem.setArmTiltSpeed(.4);
+        }else if(Robot.oi.rightStick.getPOV() == 180){
+            Robot.liftSubsystem.setArmTiltSpeed(-.4);
+        }else{
+            Robot.liftSubsystem.setArmTiltSpeed(0);
+        }
+
         boolean targetLightButton = oi.xboxController.getBButton();
 
         if(!lightOn){
@@ -153,10 +167,7 @@ public class Robot extends TimedRobot {
                 lightOn = false;
             }
         }
-
         prevLightButton = targetLightButton;
-
-
 
     }
 

@@ -15,8 +15,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class DriveSubsystem extends Subsystem {
     // Define tested error values here
-    double tankAngleP = .05, tankAngleD = 0.0, tankAngleI = 0;
-    double goalOmegaConstant = 6;
+    double tankAngleP = .06, tankAngleD = 0.0, tankAngleI = 0;
+    double goalOmegaConstant = 68; // Change this to change angle
     private double[] maxOmegaGoal = {1 * goalOmegaConstant}; // must be an array so it's mutable
     public CANSparkMax lf, lm, lb, rf, rm, rb;
 
@@ -36,6 +36,7 @@ public class DriveSubsystem extends Subsystem {
     private boolean highReduction = true;
     private PID tankAnglePID;
     public boolean assisted = false;
+    public double driveMultiplier = 1;
 
     // d value so that when x=INPUT_DEADZONE the wheels move
     private static final double ALEJANDROS_CONSTANT = (MAX_JOYSTICK * Math.pow(MOTOR_MOVEPOINT / MAX_JOYSTICK, 1/(EXPONENT+1)) - INPUT_DEADZONE) /
@@ -150,7 +151,7 @@ public class DriveSubsystem extends Subsystem {
     }
 
     public void assistedDriveMode(){assisted = true;}
-    public void unassistedDriveMode(){assisted = false;}
+    public void manualDriveMode(){assisted = false;}
 
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
         if (!assisted) {
@@ -197,6 +198,11 @@ public class DriveSubsystem extends Subsystem {
         motor.set(ControlMode.PercentOutput, speed);
         //System.out.println("checking: " + motor.getMotorOutputPercent());
     }
+
+    public void defaultTankMultilpier(){driveMultiplier = 1;}
+    public void setTankMultiplier(double driveMultiplier){
+        this.driveMultiplier = driveMultiplier;
+    }
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
         /*if(Math.abs(leftSpeed) == 1){
@@ -209,8 +215,8 @@ public class DriveSubsystem extends Subsystem {
             System.out.println(rf.getEncoder().getVelocity() / 4096);
             //System.out.println(Robot.positioningSubsystem.getWheelSpeed(rf));
         }*/
-        setMotorSpeed(lf, leftSpeed);
-        setMotorSpeed(rf, -rightSpeed); // Possible needs to be negated
+        setMotorSpeed(lf, leftSpeed * driveMultiplier);
+        setMotorSpeed(rf, -rightSpeed * driveMultiplier); // Possible needs to be negated
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {

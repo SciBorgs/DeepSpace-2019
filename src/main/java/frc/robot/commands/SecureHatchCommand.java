@@ -8,6 +8,8 @@ public class SecureHatchCommand extends InstantCommand {
     public SecureHatchCommand(){}
 
     @Override protected void execute(){
+        Robot.driveSubsystem.defaultTankMultilpier();
         Robot.intakeSubsystem.secureHatch();
+        Robot.gearShiftSubsystem.shiftDown();
     }
 }

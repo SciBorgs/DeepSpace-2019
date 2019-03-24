@@ -12,7 +12,8 @@ public class CargoFollowCommand extends CommandGroup {
 
     @Override protected void initialize() {
 		System.out.println("following cargo");
-        Robot.cargoFollowing.modeToCargo();
+		Robot.cargoFollowing.modeToCargo();
+        Robot.gearShiftSubsystem.shiftUp();
     }
 
 	@Override protected void execute(){
@@ -21,7 +22,7 @@ public class CargoFollowCommand extends CommandGroup {
 			Robot.driveSubsystem.assistedDriveMode();
 			Robot.cargoFollowing.followBall();
 		} else {
-			Robot.driveSubsystem.unassistedDriveMode();
+			Robot.driveSubsystem.manualDriveMode();
 		}
 	}
 
@@ -31,7 +32,10 @@ public class CargoFollowCommand extends CommandGroup {
 	}
 
 	@Override protected void end(){
-		return;
+		System.out.println("ending...");
+		Robot.gearShiftSubsystem.shiftDown();
+		Robot.driveSubsystem.manualDriveMode();
+		//return;
 	}
 
 	@Override protected void interrupted(){
