@@ -262,10 +262,10 @@ public class LiftSubsystem extends Subsystem {
 			return BOTTOM_HEIGHT;
 		} else {
 			double height = getUnadjustedLiftHeight();
-			/*if (height > MAX_HINGE_HEIGHT){
+			if (height < MAX_HINGE_HEIGHT){
 				realLiftHeightIs(MAX_HINGE_HEIGHT);
 				return MAX_HINGE_HEIGHT;
-			}*/
+			}
 			return height;
 		}
 	}
@@ -281,10 +281,10 @@ public class LiftSubsystem extends Subsystem {
 		} else {
 			double angle = getUnadjustedArmAngle();
 			double armHeight = getLiftHeight() + Math.sin(angle) * ARM_LENGTH;
-			if (armHeight < 0) {
+			/*if (armHeight < 0) {
 				angle = Math.asin(- getLiftHeight() / ARM_LENGTH);
 				realArmAngleIs(angle);
-			}
+			}*/
 			return angle;
 		}
 	}
