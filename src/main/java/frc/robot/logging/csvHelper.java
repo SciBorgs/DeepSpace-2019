@@ -17,7 +17,7 @@ public class csvHelper {
         return;
     }
 
-    public static void addColumn(Hashtable<String,Object> columnName){
+    public static void addColumn(String columnName){
         // Adds a rightmost column with every cell empty except the top one w/ the column name
         return;
     }
