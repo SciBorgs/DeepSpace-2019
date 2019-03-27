@@ -24,9 +24,10 @@ public class Logger{
         csvHelper.addColumn(columnName);
     }
 
-    public void addData(String column, Object data, DefaultValue defaultValue){
-        defaultValues.put(column, defaultValue);
-        currentData.put(column, data);
+    public void addData(String fileName, String valueName, Object data, DefaultValue defaultValue){
+        String columnName = fileName + ": " + valueName;
+        defaultValues.put(columnName, defaultValue);
+        currentData.put(columnName, data);
     }
 
     public DefaultValue getDefaultValue(String column){
