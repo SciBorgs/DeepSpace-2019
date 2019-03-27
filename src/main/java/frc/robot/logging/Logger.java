@@ -6,13 +6,20 @@ import java.util.Calendar;
 public class Logger{
 
     public enum DefaultValue {Previous, Empty}
+    public final static String loggingFilePath = "";
     private Hashtable<String,Object> previousData;
     private Hashtable<String,Object> currentData;
     private Hashtable<String,DefaultValue> defaultValues;
+    private CSVHelper csvHelper;
     private Calendar calendar;
 
     public Logger(){
         calendar = Calendar.getInstance();
+        try{
+            csvHelper = new CSVHelper(loggingFilePath);
+        }catch (Exception E){
+            System.out.println("FILE NOT FOUND");
+        }
         previousData = new Hashtable<String,Object>();
         currentData  = new Hashtable<String,Object>();
         defaultValues = new Hashtable<String,DefaultValue>();
