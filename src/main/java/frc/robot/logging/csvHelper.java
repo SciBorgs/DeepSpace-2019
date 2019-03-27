@@ -22,9 +22,9 @@ public class csvHelper {
         return;
     }
 
-    public static ArrayList<Object> getColumns(){
+    public static ArrayList<String> getColumns(){
         // Gives a list of the column names in order
-        return new ArrayList<Object>();
+        return new ArrayList<String>();
     }
 
 }
