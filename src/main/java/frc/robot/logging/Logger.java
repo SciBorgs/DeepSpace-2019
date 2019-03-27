@@ -1,6 +1,7 @@
 package frc.robot.logging;
 
 import java.util.Hashtable;
+import java.util.Calendar;
 
 public class Logger{
 
@@ -8,8 +9,10 @@ public class Logger{
     private Hashtable<String,Object> previousData;
     private Hashtable<String,Object> currentData;
     private Hashtable<String,DefaultValue> defaultValues;
+    private Calendar calendar;
 
     public Logger(){
+        calendar = Calendar.getInstance();
         previousData = new Hashtable<String,Object>();
         currentData  = new Hashtable<String,Object>();
         defaultValues = new Hashtable<String,DefaultValue>();
@@ -36,6 +39,25 @@ public class Logger{
         } else {
             return DefaultValue.Empty;
         }
+    }
+
+    private Hashtable<String,Object> defaultData(){
+        Hashtable<String,Object> defaultData = new Hashtable<String,Object>();
+
+        double year   = calendar.get(Calendar.YEAR);
+        double month  = calendar.get(Calendar.MONTH);
+        double day    = calendar.get(Calendar.DAY_OF_MONTH);
+        double hour   = calendar.get(Calendar.HOUR_OF_DAY);
+        double minute = calendar.get(Calendar.MINUTE);
+        double second = calendar.get(Calendar.SECOND);
+        defaultData.put("year",year);
+        defaultData.put("month",month);
+        defaultData.put("day",day);
+        defaultData.put("hour",hour);
+        defaultData.put("minute",minute);
+        defaultData.put("second",second);
+
+        return defaultData;
     }
 
     private Hashtable<String,Object> createFullCurrentData(){

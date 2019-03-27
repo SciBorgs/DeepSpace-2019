@@ -9,6 +9,7 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.LiftSubsystem.Target;
 import frc.robot.commands.*;
 import frc.robot.helpers.*;
+import frc.robot.logging.*;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -33,6 +34,7 @@ public class Robot extends TimedRobot {
     public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     public static OI oi = new OI();
+    public static Logger logger = new Logger();
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     public static CargoFollowing cargoFollowing = new CargoFollowing();
@@ -112,6 +114,7 @@ public class Robot extends TimedRobot {
     }
 
     public void autonomousPeriodic() {
+        logger.logData();
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         
         if(Robot.oi.leftStick.getPOV() == 0){
@@ -136,6 +139,7 @@ public class Robot extends TimedRobot {
     }
 
     public void teleopPeriodic() {
+        logger.logData();
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         
         if(Robot.oi.leftStick.getPOV() == 0){
