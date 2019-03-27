@@ -20,8 +20,8 @@ public class Logger{
         }catch (Exception E){
             System.out.println("FILE NOT FOUND");
         }
-        previousData = new Hashtable<String,Object>();
-        currentData  = new Hashtable<String,Object>();
+        previousData  = new Hashtable<String,Object>();
+        currentData   = new Hashtable<String,Object>();
         defaultValues = new Hashtable<String,DefaultValue>();
     }
 
@@ -30,12 +30,18 @@ public class Logger{
         currentData = new Hashtable<String,Object>();
     }
 
-    public void newColumn(String columnName){
-        csvHelper.addColumn(columnName);
+    public String getColumnName(String filename, String valueName){
+        return filename + ": " + valueName;
     }
 
-    public void addData(String fileName, String valueName, Object data, DefaultValue defaultValue){
-        String columnName = fileName + ": " + valueName;
+    public void newDataPoint(String filename, String valueName, Object firstValue){
+        String columnName = getColumnName(filename, valueName);
+        csvHelper.addColumn(columnName);
+        currentData.put(columnName, firstValue);
+    }
+
+    public void addData(String filename, String valueName, Object data, DefaultValue defaultValue){
+        String columnName = getColumnName(filename, valueName);
         defaultValues.put(columnName, defaultValue);
         currentData.put(columnName, data);
     }
@@ -46,6 +52,28 @@ public class Logger{
         } else {
             return DefaultValue.Empty;
         }
+    }
+    
+    public Hashtable<String,String> getLastLog(){
+        return csvHelper.getLastRow();
+    }
+    public String getLastLogValue(String filename, String valueName){
+        String columnName = getColumnName(filename,  valueName);
+        return getLastLog.get(columnName);
+    }
+    public double getLastLogValueDouble(String filename, String valueName){
+        return Double.valueOf(getLastLogValue(filename, valueName));
+    }
+    public boolean getLastLogValueBool(String filename, String valueName){
+        return Boolean.valueOf(getLastLogValue(filename, valueName));
+    }
+
+    public void addToPrevious(String filename, String valueName, DefaultValue defaultValue, double incrementAmount){
+        double lastValue = getLastLogValueDouble(filename, valueName);
+        addData(filename, valueName, lastValue + incrementAmount, defaultValue);
+    }
+    public void incrementPrevious(String filename, String valueName, DefaultValue defaultValue){
+        addToPrevious(filename, valueName, defaultValue, 1);
     }
 
     private Hashtable<String,Object> defaultData(){
