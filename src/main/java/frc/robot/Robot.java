@@ -10,7 +10,7 @@ import frc.robot.subsystems.LiftSubsystem.Target;
 import frc.robot.commands.*;
 import frc.robot.helpers.*;
 import frc.robot.logging.*;
-
+import frc.robot.logging.Logger.DefaultValue;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -63,6 +63,7 @@ public class Robot extends TimedRobot {
     }
 
     public void robotInit() {
+        logger.newDataPoint("robot.java", "deploy", 0);
         xboxControl.getShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, getSparks(), getTalons(), liftSubsystem.getLiftSpark(), cargoFollowing.getPid(), driveSubsystem.getTankAnglePID(), driveSubsystem.getMaxOmegaGoal(), liftSubsystem.getArmPID()).start();
 
         positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
@@ -71,6 +72,8 @@ public class Robot extends TimedRobot {
 
 
         cargoFollowing.modeToCargo();
+
+        logger.incrementPrevious("robot.java", "deploy", DefaultValue.Previous);
 
 
         //zLiftSubsystem.unlockPistons();
