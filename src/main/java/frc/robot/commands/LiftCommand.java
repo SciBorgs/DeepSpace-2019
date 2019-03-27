@@ -11,25 +11,35 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class LiftCommand extends Command {
+
+	private boolean lastStatic;
+
 	public LiftCommand() {
 		requires(Robot.liftSubsystem);
+		lastStatic = false;
 	}
 
 	@Override protected void initialize(){
-		return;
+		Robot.liftSubsystem.autoArmMode();
 	}
 
 	@Override protected void execute(){
 		System.out.println("lifting command");
 		//Robot.liftSubsystem.moveToTarget(Robot.liftSubsystem.getTarget());
+		Robot.liftSubsystem.moveArmToTarget(Robot.liftSubsystem.getTarget());
 	}
 
 	@Override protected boolean isFinished(){
-		return Robot.liftSubsystem.isStatic();
+		if (lastStatic){
+			return Robot.liftSubsystem.isStatic();
+		} else {
+			lastStatic = Robot.liftSubsystem.isStatic();
+			return false;
+		}
 	}
 
 	@Override protected void end(){
-		return;
+		Robot.liftSubsystem.manualArmMode();
 	}
 
 	@Override protected void interrupted(){

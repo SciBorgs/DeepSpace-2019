@@ -40,19 +40,20 @@ public class LiftSubsystem extends Subsystem {
 			put(Target.Mid,1);
 			put(Target.Low,0);
 		}
-	};
+	}; 
 	static final double HATCH_TO_CARGO_DEPOSIT = Utils.inchesToMeters(8.5);
 	public static final double MAX_HINGE_HEIGHT = Utils.inchesToMeters(72.5);
-	static final double ARM_MAX_ANGLE = Math.toRadians(65);
+	static final double ARM_MAX_ANGLE = Math.toRadians(59);
 	static final double ARM_TARGET_ANGLE = Math.toRadians(30);
 	static final double ARM_LENGTH = Utils.inchesToMeters(20);
+	static final double GEAR_SHIFT_PRECISION = Utils.inchesToMeters(5);
 	static final double BOTTOM_HEIGHT = Utils.inchesToMeters(9.75); // In meters, the height at the lift's lowest point
 	static final double INITIAL_GAP_TO_GROUND = Utils.inchesToMeters(0); // How far up the intake should be when it's sucking in cargo
 	static final double RESTING_ANGLE = Math.asin((INITIAL_GAP_TO_GROUND - BOTTOM_HEIGHT) / ARM_LENGTH); // In radians
 	static final double HEIGHT_PRECISION = 0.05; // In meters
-	static final double ANGLE_PRECISION = Math.toRadians(6);
+	static final double ANGLE_PRECISION = Math.toRadians(3);
 	static final double IS_BOTTOM_PRECISION = 0.1; // In meters, precision as to whether it's at the bottom
-	static final double INITIAL_ANGLE  = Math.toRadians(65); // In reality should be 60ish
+	static final double INITIAL_ANGLE  = ARM_MAX_ANGLE; // In reality should be 60ish
 	static final double INITIAL_HEIGHT = BOTTOM_HEIGHT;
 	static final double SLOW_LIFT_INPUT = .3; // An input that should move the lift slowly, not for in game purposes
 	static final double SLOW_ARM_INPUT = .3; // An input that should move the arm slowly, not for in game purposes
@@ -61,13 +62,14 @@ public class LiftSubsystem extends Subsystem {
 	static final int LIFT_PID_SMOOTHNESS = 3; // Probably change to 4
 	static final int ARM_PID_SMOOTHNESS = 7;
 	static final int MIN_LEVEL = 0;
-	static final int MAX_LEVEL = 3;
+	static final int MAX_LEVEL = 2;
 	public Target lastTarget = Target.Ground;
 	public DigitalInput cascadeAtBottomLimitSwitch, armAtTopSwitch;
 	public boolean previousLiftLimitSwitch = false;
 	public boolean previousArmLimitSwitch = false;
 	boolean movingLift = false;
 	boolean tiltingArm = false;
+	public boolean manualArmMode = true;
 
 	public void initDefaultCommand() {
     }
@@ -103,6 +105,9 @@ public class LiftSubsystem extends Subsystem {
 	public CANSparkMax getLiftSpark() {
 		return liftSpark;
 	}
+
+	public void manualArmMode(){manualArmMode = true;}
+	public void autoArmMode(){manualArmMode = false;}
 	
 	private double getTargetHeight(Target target){
 		double hatchTargetHeight = LOW_HATCH_HEIGHT + HATCH_POSITIONS.get(target) * ROCKET_HATCH_GAP;
@@ -138,13 +143,15 @@ public class LiftSubsystem extends Subsystem {
 	public void moveArmToAngle(double targetAngle){
 		// System.out.println("active traj velocity: " + armTiltTalon.getActiveTrajectoryVelocity());
 		double error = targetAngle - getArmAngle();
+		//System.out.println("error: " + error);
 		boolean hitCorrectAngle  = Math.abs(error) < ANGLE_PRECISION;
+		//System.out.println("hit correct angle: " + hitCorrectAngle);
 		tiltingArm = !hitCorrectAngle;
 		armPID.add_measurement(error);
 		conditionalSetArmTiltSpeed(armPID.getLimitOutput(ARM_OUTPUT_LIMIT), !hitCorrectAngle);
 		System.out.println("arm angle: " + Math.toDegrees(getArmAngle()));
 		System.out.println("desired angle: " + Math.toDegrees(targetAngle));
-		System.out.println("angle output: " + armPID.getLimitOutput(ARM_OUTPUT_LIMIT));
+		System.out.println("angle input: " + armPID.getLimitOutput(ARM_OUTPUT_LIMIT));
 	}
 	
 	public void moveToPosition(double targetAngle, double targetLiftHeight){
@@ -171,6 +178,21 @@ public class LiftSubsystem extends Subsystem {
 		double targetAngle = Math.asin((targetHeight - targetLiftHeight) / ARM_LENGTH);
 		//System.out.println("target angle: " + targetAngle);
 		moveToPosition(targetAngle, targetLiftHeight);
+	}
+
+	public void moveArmToTarget(Target target){
+		double targetHeight;
+				// Ground - 0; Low(hatch) - 19 inches; High(cargo) - 27 inches;
+		if (target == Target.Ground){
+			targetHeight = 0;
+		} else if (target == Target.Low) {
+			targetHeight = Utils.inchesToMeters(19);
+		} else {
+			targetHeight = Utils.inchesToMeters(27);
+		}
+		double targetAngle = Math.asin((targetHeight - BOTTOM_HEIGHT)/ARM_LENGTH);
+		System.out.println("target angle : "+ targetAngle);
+		moveArmToAngle(targetAngle);
 	}
 
 	public void moveToTarget(Target target) {
@@ -240,10 +262,10 @@ public class LiftSubsystem extends Subsystem {
 			return BOTTOM_HEIGHT;
 		} else {
 			double height = getUnadjustedLiftHeight();
-			if (height > MAX_HINGE_HEIGHT){
+			/*if (height > MAX_HINGE_HEIGHT){
 				realLiftHeightIs(MAX_HINGE_HEIGHT);
 				return MAX_HINGE_HEIGHT;
-			}
+			}*/
 			return height;
 		}
 	}
@@ -258,11 +280,11 @@ public class LiftSubsystem extends Subsystem {
 			return INITIAL_ANGLE;
 		} else {
 			double angle = getUnadjustedArmAngle();
-			/*double armHeight = getLiftHeight() + Math.sin(angle) * ARM_LENGTH;
-			//if (armHeight < 0) {
-				angle = Math.asin(getLiftHeight() / ARM_LENGTH);
+			double armHeight = getLiftHeight() + Math.sin(angle) * ARM_LENGTH;
+			if (armHeight < 0) {
+				angle = Math.asin(- getLiftHeight() / ARM_LENGTH);
 				realArmAngleIs(angle);
-			}*/
+			}
 			return angle;
 		}
 	}
@@ -271,11 +293,6 @@ public class LiftSubsystem extends Subsystem {
 		boolean currentOutput = !cascadeAtBottomLimitSwitch.get();
 		boolean end = currentOutput && previousLiftLimitSwitch;
 		previousLiftLimitSwitch = currentOutput;
-		if (end){
-			Robot.gearShiftSubsystem.shiftUp();
-		} else {
-			Robot.gearShiftSubsystem.shiftDown();
-		}
 		return end;
 	} 
 
@@ -302,6 +319,7 @@ public class LiftSubsystem extends Subsystem {
 
 	private void conditionalSetArmTiltSpeed(double speed, boolean b){
 		// if the boolean is true it will simply do a set arm tilt speed. Otherwise, it will set it to zero
+		//System.out.println("")
 		if (b) {
 			setArmTiltSpeed(speed);
 		} else {
@@ -310,15 +328,23 @@ public class LiftSubsystem extends Subsystem {
 	}
 
     public void setLiftSpeedRaw(double speed) {
-		Robot.driveSubsystem.setMotorSpeed(liftSpark, speed);
+		//Robot.driveSubsystem.setMotorSpeed(liftSpark, speed);
 		//System.out.println("lift current: " + liftSpark.getOutputCurrent());
 	}
 	public void setLiftSpeed(double speed){
+		if (speed != 0){
+			if (Math.abs(getLiftHeight() - BOTTOM_HEIGHT) < GEAR_SHIFT_PRECISION){
+				Robot.gearShiftSubsystem.shiftUp();
+			} else {
+				Robot.gearShiftSubsystem.shiftDown();
+			}
+		}
 		setLiftSpeedRaw(speed + LIFT_STATIC_INPUT);
 	}
 	
 	public void setArmTiltSpeed(double speed) {
 		Robot.driveSubsystem.setMotorSpeed(armTiltTalon, speed, 1);
+		//System.out.println("current angle input:" + armTiltTalon.getMotorOutputPercent());
 	}
     
 }	 

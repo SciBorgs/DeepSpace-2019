@@ -98,7 +98,7 @@ public class ShuffleboardCommand extends Command {
 //        driveI = testTab.add("Drive I", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 1).withSize(1, 1);
 //        driveD = testTab.add("Drive D", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 2).withSize(1, 1);
 //        driveMaxOmegaGoal = testTab.add("Max Omega Goal", "0.0").withWidget(BuiltInWidgets.kTextView).withPosition(1, 3).withSize(1, 1);
-        setUpTestTab();
+        //setUpTestTab();
 
         setRunWhenDisabled(true);
     }
@@ -115,7 +115,7 @@ public class ShuffleboardCommand extends Command {
         updateCascadeMotorTemp();
         updateLiftPosition();
         updateAirPressure();
-        updateTestTab();
+        //updateTestTab();
     }
 
     @Override

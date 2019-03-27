@@ -53,7 +53,7 @@ public class OI {
         armModeButton.whenPressed(new ToggleArmCommand());
 
         gearShiftButton = new JoystickButton(rightStick, PortMap.JOYSTICK_RIGHT_BUTTON);
-        gearShiftButton.whenPressed(new GearShiftCommand());
+        gearShiftButton.whileHeld(new GearShiftCommand());
 
 
     }

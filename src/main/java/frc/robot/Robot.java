@@ -113,7 +113,6 @@ public class Robot extends TimedRobot {
 
     public void autonomousPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
-        //Robot.liftSubsystem.moveArmToAngle(0);
         
         if(Robot.oi.leftStick.getPOV() == 0){
             Robot.liftSubsystem.setLiftSpeed(.4);
@@ -123,10 +122,10 @@ public class Robot extends TimedRobot {
             Robot.liftSubsystem.setLiftSpeed(0);
         }
         if(Robot.oi.rightStick.getPOV() == 0){
-            Robot.liftSubsystem.setArmTiltSpeed(.4);
+            Robot.liftSubsystem.setArmTiltSpeed(.55);
         }else if(Robot.oi.rightStick.getPOV() == 180){
-            Robot.liftSubsystem.setArmTiltSpeed(-.4);
-        }else{
+            Robot.liftSubsystem.setArmTiltSpeed(-.55);
+        }else if(liftSubsystem.manualArmMode){
             Robot.liftSubsystem.setArmTiltSpeed(0);
         }
     }
@@ -140,17 +139,17 @@ public class Robot extends TimedRobot {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         
         if(Robot.oi.leftStick.getPOV() == 0){
-            Robot.liftSubsystem.setLiftSpeed(.4);
+            Robot.liftSubsystem.setLiftSpeed(.3);
         }else if(Robot.oi.leftStick.getPOV() == 180){
-            Robot.liftSubsystem.setLiftSpeed(-.4);
+            Robot.liftSubsystem.setLiftSpeed(-.3);
         }else{
             Robot.liftSubsystem.setLiftSpeed(0);
         }
         if(Robot.oi.rightStick.getPOV() == 0){
-            Robot.liftSubsystem.setArmTiltSpeed(.4);
+            Robot.liftSubsystem.setArmTiltSpeed(.55);
         }else if(Robot.oi.rightStick.getPOV() == 180){
-            Robot.liftSubsystem.setArmTiltSpeed(-.4);
-        }else{
+            Robot.liftSubsystem.setArmTiltSpeed(-.55);
+        }else if(liftSubsystem.manualArmMode){
             Robot.liftSubsystem.setArmTiltSpeed(0);
         }
 
