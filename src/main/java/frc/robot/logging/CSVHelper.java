@@ -1,19 +1,29 @@
 package frc.robot.logging;
 
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 import java.util.ArrayList;
+import java.io.*;
 
-public class csvHelper {
+public class CSVHelper {
 
-    public static final String logigngDirPath = "/c/Users/SciBorgs/Desktop/Test Folder/DeepSpace-2019/src/main/java/frc/robot/logging/";
-    // Above is the path to the logging director
-    public static final String mainLoggingFile = "data.csv";
+    private String fileName;
+    private BufferedReader reader;
+    private PrintWriter writer;
+    private StringTokenizer line;
 
     // name of the column = string at the top of the column
+
+    public CSVHelper(String filename) throws IOException{
+        fileName = filename;
+        reader = new BufferedReader(new FileReader(fileName));
+        writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+    }
 
     public static void addRow(Hashtable<String,Object> row){
         // Should add a row to the next empty row of the sheet
         // The key of the hashtable should be the name of the column
+        
         return;
     }
 
