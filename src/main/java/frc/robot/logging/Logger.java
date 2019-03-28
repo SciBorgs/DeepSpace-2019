@@ -58,6 +58,9 @@ public class Logger{
         defaultValues.put(columnName, defaultValue);
         currentData.put(columnName, data);
     }
+    public void logFinalField(String filename, String fieldName, Object fieldValue){
+        addData(filename, fieldName, fieldValue, DefaultValue.Previous);
+    }
 
     public DefaultValue getDefaultValue(String column){
         if (defaultValues.containsKey(column)){
