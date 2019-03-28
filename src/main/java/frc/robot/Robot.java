@@ -63,7 +63,6 @@ public class Robot extends TimedRobot {
     }
 
     public void robotInit() {
-        logger.newDataPoint("robot.java", "deploy", 0);
         xboxControl.getShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, getSparks(), getTalons(), liftSubsystem.getLiftSpark(), cargoFollowing.getPid(), driveSubsystem.getTankAnglePID(), driveSubsystem.getMaxOmegaGoal(), liftSubsystem.getArmPID()).start();
 
         positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);

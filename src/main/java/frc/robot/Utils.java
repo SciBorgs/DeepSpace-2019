@@ -52,4 +52,12 @@ public class Utils{
             return 0;
         }
     }
+
+    public static HashSet<String> arrayListToHashset(ArrayList<String> values){
+        HashSet<String> end = new HashSet<String>();
+        for (String val : values){
+            end.add(val);
+        }
+        return end;
+    }
 }
