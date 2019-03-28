@@ -19,6 +19,7 @@ public class IntakeSubsystem extends Subsystem {
 	public DoubleSolenoid scoopSolenoid, secureHatchSolenoid, armSolenoid;
 	private double lastHeld;
 	private Timer timer;
+	private final String filename = "IntakeSubsystem.java";
 	public final static double SUCK_SPEED = 1;
 	public final static double SPIT_SPEED = SUCK_SPEED * -1;
 	public final static double PICKUP_HATCH_SPEED = -0.3;

@@ -13,6 +13,7 @@ import frc.robot.PortMap;
 import frc.robot.Robot;
 import frc.robot.Utils;
 import frc.robot.helpers.PID;
+import frc.robot.logging.Logger.DefaultValue;
 
 import java.util.Hashtable;
 
@@ -24,6 +25,7 @@ public class LiftSubsystem extends Subsystem {
 
 	private PID armPID;
 	private PID liftPID;
+	private final String filename = "LiftSubsystem.java";
 	private double armP = 0.45, armI = 0.0, armD = 0, liftP = 10, liftI = 0.0, liftD = 0.05;
 	static final double SPARK_ENCODER_WHEEL_RATIO = 1 / 20.0; // For the cascade
 	static final double TALON_ENCODER_WHEEL_RATIO = 24.0 / 56; // For the carriage
@@ -328,7 +330,8 @@ public class LiftSubsystem extends Subsystem {
 	}
 
     public void setLiftSpeedRaw(double speed) {
-		//Robot.driveSubsystem.setMotorSpeed(liftSpark, speed);
+		Robot.logger.addData(this.filename, "cascade speed", speed, DefaultValue.Previous);
+		Robot.driveSubsystem.setMotorSpeed(liftSpark, speed);
 		//System.out.println("lift current: " + liftSpark.getOutputCurrent());
 	}
 	public void setLiftSpeed(double speed){

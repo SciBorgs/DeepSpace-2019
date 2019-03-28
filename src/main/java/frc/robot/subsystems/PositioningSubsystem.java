@@ -33,6 +33,7 @@ public class PositioningSubsystem extends Subsystem {
     public static final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
     public static final double STATIC_POSITION_ERROR = .05;
     public static final double STATIC_ANGLE_ERROR = Math.toRadians(2);
+	private final String filename = "liftSubsystem.java";
 
     private ArrayList<Double> robotXs, robotYs, robotAngles;
     private Hashtable<CANSparkMax,ArrayList<Double>> encPoss;

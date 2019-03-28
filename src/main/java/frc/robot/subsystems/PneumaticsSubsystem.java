@@ -9,6 +9,7 @@ public class PneumaticsSubsystem extends Subsystem {
   private AnalogInput pressureSensor;
   private final double NORMALIZED_SUPPLY_VOLTAGE = 5.0;
   private Compressor compressor;
+	private final String filename = "PneumaticsSubsystem.java";
   @Override
   public void initDefaultCommand() {
    

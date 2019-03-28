@@ -15,6 +15,7 @@ public class GearShiftSubsystem extends Subsystem {
     public int countOfContinousCyclesAboveJoystickThreshold;
     public int countOfContinousCyclesBelowJoystickThreshold;
     public double joystickShiftUpThreshold = .5;
+	private final String filename = "GearShiftSubsystem.java";
     public double joystickShiftDownThreshold = .2;
     public int cycleThreshold = 10; //50 Cycles is 1000 milliseconds diveided by 20ms per cycle
     

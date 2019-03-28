@@ -2,7 +2,10 @@ package frc.robot.logging;
 
 import java.util.Hashtable;
 import java.util.Calendar;
-import java.util.HashSet;
+import java.util.HashSet; 
+
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.RobotController;
 
 import frc.robot.Utils;
 
@@ -121,6 +124,8 @@ public class Logger{
         double hour   = calendar.get(Calendar.HOUR_OF_DAY);
         double minute = calendar.get(Calendar.MINUTE);
         double second = calendar.get(Calendar.SECOND);
+        double matchTime = Timer.getMatchTime();
+        double batteryVoltage = RobotController.getBatteryVoltage();
         String prefix = "default: ";
         defaultData.put(prefix + "year",year);
         defaultData.put(prefix + "month",month);
@@ -128,6 +133,8 @@ public class Logger{
         defaultData.put(prefix + "hour",hour);
         defaultData.put(prefix + "minute",minute);
         defaultData.put(prefix + "second",second);
+        defaultData.put(prefix + "match time",matchTime);
+        defaultData.put(prefix + "battery voltage",batteryVoltage);
 
         return defaultData;
     }

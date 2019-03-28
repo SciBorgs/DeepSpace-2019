@@ -24,6 +24,7 @@ public class LidarServer {
     private Thread mThread;
     private Process mProcess;
     private boolean mEnding = false;
+	private final String filename = "LidarServer.java";
     public Hashtable<Double,Double> lidarScan = new Hashtable<Double,Double>();
     private Hashtable<Double,Integer> lidarZeros = new Hashtable<Double,Integer>();
     private String lidarPath = "/home/root/ultra_simple";

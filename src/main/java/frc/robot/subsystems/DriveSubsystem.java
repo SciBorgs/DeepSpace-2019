@@ -19,6 +19,7 @@ public class DriveSubsystem extends Subsystem {
     double goalOmegaConstant = 68; // Change this to change angle
     private double[] maxOmegaGoal = {1 * goalOmegaConstant}; // must be an array so it's mutable
     public CANSparkMax lf, lm, lb, rf, rm, rb;
+	private final String filename = "DriveSubsystem.java";
 
     // deadzones by Alejandro at Chris' request. Graph them with the joystick function to understand the math.
     // https://www.desmos.com/calculator/ch19ahiwol
