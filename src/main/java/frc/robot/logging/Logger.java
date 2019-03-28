@@ -2,16 +2,19 @@ package frc.robot.logging;
 
 import java.util.Hashtable;
 import java.util.Calendar;
+import java.util.HashSet;
+
+import frc.robot.Utils;
 
 public class Logger{
 
     public enum DefaultValue {Previous, Empty}
     public final static String loggingFilePath = "";
-    private Hashtable<String,Object> previousData;
     private Hashtable<String,Object> currentData;
     private Hashtable<String,DefaultValue> defaultValues;
     private CSVHelper csvHelper;
     private Calendar calendar;
+    private HashSet<String> columns;
 
     public Logger(){
         calendar = Calendar.getInstance();
@@ -20,13 +23,12 @@ public class Logger{
         }catch (Exception E){
             System.out.println("FILE NOT FOUND");
         }
-        previousData  = new Hashtable<String,Object>();
-        currentData   = new Hashtable<String,Object>();
+        resetCurrentData();
         defaultValues = new Hashtable<String,DefaultValue>();
+        columns = Utils.arrayListToHashset(csvHelper.getColumns());
     }
 
     private void resetCurrentData(){
-        previousData = currentData;
         currentData = new Hashtable<String,Object>();
     }
 
@@ -34,14 +36,19 @@ public class Logger{
         return filename + ": " + valueName;
     }
 
-    public void newDataPoint(String filename, String valueName, Object firstValue){
-        String columnName = getColumnName(filename, valueName);
+    public void addNewColumn(String columnName){
         csvHelper.addColumn(columnName);
-        currentData.put(columnName, firstValue);
+        columns.add(columnName);
+    }
+    public void newDataPoint(String filename, String valueName){
+        addNewColumn(getColumnName(filename, valueName));
     }
 
     public void addData(String filename, String valueName, Object data, DefaultValue defaultValue){
         String columnName = getColumnName(filename, valueName);
+        if (!columnExists(columnName)) { 
+            addNewColumn(columnName);
+        }
         defaultValues.put(columnName, defaultValue);
         currentData.put(columnName, data);
     }
@@ -57,15 +64,26 @@ public class Logger{
     public Hashtable<String,String> getLastLog(){
         return csvHelper.getLastRow();
     }
-    public String getLastLogValue(String filename, String valueName){
-        String columnName = getColumnName(filename,  valueName);
+    public String getLastLoggedInColumn(String columnName){
         return getLastLog().get(columnName);
     }
+    public String getLastValueLogged(String filename, String valueName){
+        return getLastLoggedInColumn(getColumnName(filename,  valueName));
+    }
     public double getLastLogValueDouble(String filename, String valueName){
-        return Double.valueOf(getLastLogValue(filename, valueName));
+        String stringValue = getLastValueLogged(filename, valueName);
+        try {
+            return Double.valueOf(stringValue);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
     public boolean getLastLogValueBool(String filename, String valueName){
-        return Boolean.valueOf(getLastLogValue(filename, valueName));
+        return Boolean.valueOf(getLastValueLogged(filename, valueName));
+    }
+
+    public boolean columnExists(String columnName){
+        return columns.contains(columnName);
     }
 
     public void addToPrevious(String filename, String valueName, DefaultValue defaultValue, double incrementAmount){
@@ -97,11 +115,12 @@ public class Logger{
 
     private Hashtable<String,Object> createFullCurrentData(){
         Hashtable<String,Object> fullData = new Hashtable<String,Object>();
-        for(String column : csvHelper.getColumns()) {
+        for(String column : columns) {
             if (currentData.containsKey(column)) {
                 fullData.put(column, currentData.get(column));
             } else if (getDefaultValue(column) == DefaultValue.Previous) {
-                fullData.put(column, currentData);
+                String data = getLastLoggedInColumn(column);
+                fullData.put(column, data);
             }
         }
         return fullData;
