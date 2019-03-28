@@ -59,7 +59,7 @@ public class Logger{
     }
     public String getLastLogValue(String filename, String valueName){
         String columnName = getColumnName(filename,  valueName);
-        return getLastLog.get(columnName);
+        return getLastLog().get(columnName);
     }
     public double getLastLogValueDouble(String filename, String valueName){
         return Double.valueOf(getLastLogValue(filename, valueName));
