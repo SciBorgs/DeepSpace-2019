@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.logging.Logger.CommandStatus;
+import frc.robot.logging.Logger.CommandStatus;
 import frc.robot.logging.Logger.DefaultValue;
 
 public class ReleaseHatchCommand extends InstantCommand {
@@ -12,7 +14,7 @@ public class ReleaseHatchCommand extends InstantCommand {
     public ReleaseHatchCommand(){}
 
     @Override protected void execute(){
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "executing", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         System.out.println("Release Hatch command");
         Robot.intakeSubsystem.releaseHatch();
         Robot.intakeSubsystem.closeArm();

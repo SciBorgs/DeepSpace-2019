@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
+import frc.robot.logging.Logger.CommandStatus;
 import frc.robot.logging.Logger.DefaultValue;
 
 public class LevelCounterUpdateCommand extends InstantCommand {
@@ -14,7 +15,7 @@ public class LevelCounterUpdateCommand extends InstantCommand {
     }
 
     @Override protected void execute() {
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "executing", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         Robot.liftSubsystem.moveLevelCounter(change);
         Robot.liftSubsystem.updateLevelCounterWidget();
     }

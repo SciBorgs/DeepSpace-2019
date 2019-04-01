@@ -6,6 +6,7 @@ import frc.robot.subsystems.LiftSubsystem.Target;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.logging.Logger.CommandStatus;
 import frc.robot.logging.Logger.DefaultValue;
 
 public class ResetLiftCommand extends Command {
@@ -16,12 +17,11 @@ public class ResetLiftCommand extends Command {
 	}
 
 	@Override protected void initialize(){
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "initializing", DefaultValue.Empty);
-		return;
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
 	}
 
 	@Override protected void execute(){
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "executing", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
 		Robot.liftSubsystem.moveToTarget(Target.Initial);
 	}
 
@@ -30,12 +30,11 @@ public class ResetLiftCommand extends Command {
 	}
 
 	@Override protected void end(){
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "ending", DefaultValue.Empty);
-		return;
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
 	}
 
 	@Override protected void interrupted(){
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "interrupted", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Interrupted);
 		return;
 	}
 }

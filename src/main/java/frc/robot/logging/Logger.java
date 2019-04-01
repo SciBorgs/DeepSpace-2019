@@ -75,7 +75,7 @@ public class Logger{
     public void logFinalField(String fileName, String fieldName, Object fieldValue){
         addData(fileName, fieldName, fieldValue, DefaultValue.Previous);
     }
-    public void logCommandStatuc(String fileName, CommandStatus commandStatus){
+    public void logCommandStatus(String fileName, CommandStatus commandStatus){
         String stringStatus = "";
         switch (commandStatus) {
             case Initializing:
