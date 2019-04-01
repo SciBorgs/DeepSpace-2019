@@ -14,14 +14,14 @@ public class CargoFollowCommand extends CommandGroup {
     }
 
     @Override protected void initialize() {
-		Robot.logger.addData(fileName, Robot.logger.commandStatus, "initializing", DefaultValue.Empty);
+		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "initializing", DefaultValue.Empty);
 		System.out.println("following cargo");
 		Robot.cargoFollowing.modeToCargo();
         Robot.gearShiftSubsystem.shiftUp();
     }
 
 	@Override protected void execute(){
-		Robot.logger.addData(fileName, Robot.logger.commandStatus, "executing", DefaultValue.Empty);
+		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "executing", DefaultValue.Empty);
 		System.out.println("following cargo");
 		if (Robot.oi.cargoFollowButton.get()){
 			Robot.driveSubsystem.assistedDriveMode();
@@ -37,14 +37,14 @@ public class CargoFollowCommand extends CommandGroup {
 	}
 
 	@Override protected void end(){
-		Robot.logger.addData(fileName, Robot.logger.commandStatus, "ending", DefaultValue.Empty);
+		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "ending", DefaultValue.Empty);
 		Robot.gearShiftSubsystem.shiftDown();
 		Robot.driveSubsystem.manualDriveMode();
 		//return;
 	}
 
 	@Override protected void interrupted(){
-		Robot.logger.addData(fileName, Robot.logger.commandStatus, "interrupted", DefaultValue.Empty);
+		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "interrupted", DefaultValue.Empty);
 		end();
 	}
 }
