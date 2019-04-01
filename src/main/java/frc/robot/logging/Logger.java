@@ -14,7 +14,7 @@ public class Logger{
 
     public enum DefaultValue {Previous, Empty} // If in a given cycle a value isn't set, what should that value be in the next row? Empty : "", Previous : the same as the previous value
     public enum CommandStatus {Initializing, Executing, Ending, Interrupted}
-    public final static String loggingFilePath = "/home/lvuser/MainLog.csv"; // Path to file where data is logged
+    public final static String loggingFilePath = "/home/lvuser/Logs/MainLog.csv"; // Path to file where data is logged
     private Hashtable<String,Object> currentData; // Data of the current cycle
     private Hashtable<String,DefaultValue> defaultValues; // Data of the current default values for each column
     // TODO: make default values not reset every deplot
