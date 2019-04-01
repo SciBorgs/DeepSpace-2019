@@ -112,8 +112,7 @@ public class CSVHelper {
         updateLastLine();
         StringTokenizer lastLineString = new StringTokenizer(lastLine, ",");
         Hashtable<String, String> lastrow = new Hashtable<String, String>();
-        for(int i = 0;i < topics.size(); i++){
-            String topic = topics.get(i);
+        for(String topic : topics){
             String value = "";
             try{
                 value = lastLineString.nextToken();
@@ -129,10 +128,8 @@ public class CSVHelper {
         // The key of the hashtable should be the name of the topic
         PrintWriter writer = newPrintWriter(fileName, true);
         String content = "";
-        for(int i = 0; i < topics.size(); i++){
-            String topic = topics.get(i);
+        for(String topic : topics){
             content += row.get(topic) + ",";
-            
         }
         int contentSize = content.length();
         content = content.substring(0, contentSize - 1);
