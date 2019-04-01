@@ -13,6 +13,7 @@ import frc.robot.Utils;
 public class Logger{
 
     public enum DefaultValue {Previous, Empty} // If in a given cycle a value isn't set, what should that value be in the next row? Empty : "", Previous : the same as the previous value
+    public enum CommandStatus {Initializing, Executing, Ending, Interrupted}
     public final static String loggingFilePath = "/home/lvuser/MainLog.csv"; // Path to file where data is logged
     private Hashtable<String,Object> currentData; // Data of the current cycle
     private Hashtable<String,DefaultValue> defaultValues; // Data of the current default values for each column
@@ -21,7 +22,7 @@ public class Logger{
     private Calendar calendar;
 
     // Universal naming conventions
-    public String commandStatus = "status";
+    public String commandStatusName = "status";
 
     public Logger(){
         calendar = Calendar.getInstance();
@@ -73,6 +74,20 @@ public class Logger{
     }
     public void logFinalField(String fileName, String fieldName, Object fieldValue){
         addData(fileName, fieldName, fieldValue, DefaultValue.Previous);
+    }
+    public void logCommandStatuc(String fileName, CommandStatus commandStatus){
+        String stringStatus = "";
+        switch (commandStatus) {
+            case Initializing:
+                stringStatus = "initializing";
+            case Executing:
+                stringStatus = "executing";
+            case Ending:
+                stringStatus = "edning";
+            case Interrupted:
+                stringStatus = "interrupted";
+        }
+        addData(fileName, commandStatusName, stringStatus, DefaultValue.Empty);
     }
 
     public DefaultValue getDefaultValue(String column){
