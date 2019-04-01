@@ -126,7 +126,7 @@ public class CSVHelper {
 
     public void addRow(Hashtable<String,String> row){
         // Should add a row to the next empty row of the sheet
-        // The key of the hashtable should be the name of the column
+        // The key of the hashtable should be the name of the topic
         PrintWriter writer = newPrintWriter(fileName, true);
         String content = "";
         for(int i = 0; i < topics.size(); i++){
@@ -141,7 +141,7 @@ public class CSVHelper {
     }
 
     public void addTopic(String topic){
-        // Adds a rightmost column with every cell empty except the top one w/ the column name
+        // Adds a rightmost topic with every cell empty except the top one w/ the topic name
         // Should only work if the topic has not been used before
         if (topicExists(topic)){
             return;
