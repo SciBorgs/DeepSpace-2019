@@ -4,6 +4,7 @@ import frc.robot.PortMap;
 import frc.robot.Robot;
 import frc.robot.Utils;
 import frc.robot.helpers.PID;
+import frc.robot.logging.Logger.DefaultValue;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -19,7 +20,7 @@ public class DriveSubsystem extends Subsystem {
     double goalOmegaConstant = 68; // Change this to change angle
     private double[] maxOmegaGoal = {1 * goalOmegaConstant}; // must be an array so it's mutable
     public CANSparkMax lf, lm, lb, rf, rm, rb;
-	private final String filename = "DriveSubsystem.java";
+	private final String fileName = "DriveSubsystem.java";
 
     // deadzones by Alejandro at Chris' request. Graph them with the joystick function to understand the math.
     // https://www.desmos.com/calculator/ch19ahiwol
@@ -218,6 +219,7 @@ public class DriveSubsystem extends Subsystem {
         }*/
         setMotorSpeed(lf, leftSpeed * driveMultiplier);
         setMotorSpeed(rf, -rightSpeed * driveMultiplier); // Possible needs to be negated
+        Robot.logger.addData(this.fileName, "wheel output", lf.get(), DefaultValue.Previous);
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {

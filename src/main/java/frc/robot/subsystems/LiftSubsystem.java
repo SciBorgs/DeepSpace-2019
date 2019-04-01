@@ -25,7 +25,7 @@ public class LiftSubsystem extends Subsystem {
 
 	private PID armPID;
 	private PID liftPID;
-	private final String filename = "LiftSubsystem.java";
+	private final String fileName = "LiftSubsystem.java";
 	private double armP = 0.45, armI = 0.0, armD = 0, liftP = 10, liftI = 0.0, liftD = 0.05;
 	static final double SPARK_ENCODER_WHEEL_RATIO = 1 / 20.0; // For the cascade
 	static final double TALON_ENCODER_WHEEL_RATIO = 24.0 / 56; // For the carriage
@@ -108,6 +108,11 @@ public class LiftSubsystem extends Subsystem {
 		return liftSpark;
 	}
 
+	public void periodicLog(){
+		Robot.logger.addData(this.fileName, "carriage angle", getArmAngle(), DefaultValue.Previous);
+		Robot.logger.addData(this.fileName, "current height", getLiftHeight(), DefaultValue.Previous);
+	}
+
 	public void manualArmMode(){manualArmMode = true;}
 	public void autoArmMode(){manualArmMode = false;}
 	
@@ -126,6 +131,7 @@ public class LiftSubsystem extends Subsystem {
 	}
 
 	public void moveLiftToheight(double targetLiftHeight){
+		Robot.logger.addData(this.fileName, "target lift height (m)", targetLiftHeight, DefaultValue.Empty);
 		double error = targetLiftHeight - getLiftHeight();
 		boolean hitCorrectHeight = Math.abs(error) < HEIGHT_PRECISION;
 		movingLift = !hitCorrectHeight;
@@ -151,6 +157,7 @@ public class LiftSubsystem extends Subsystem {
 		tiltingArm = !hitCorrectAngle;
 		armPID.add_measurement(error);
 		conditionalSetArmTiltSpeed(armPID.getLimitOutput(ARM_OUTPUT_LIMIT), !hitCorrectAngle);
+		Robot.logger.addData(this.fileName, "target angle (deg)", Math.toDegrees(targetAngle), DefaultValue.Empty);
 		System.out.println("arm angle: " + Math.toDegrees(getArmAngle()));
 		System.out.println("desired angle: " + Math.toDegrees(targetAngle));
 		System.out.println("angle input: " + armPID.getLimitOutput(ARM_OUTPUT_LIMIT));
@@ -330,7 +337,7 @@ public class LiftSubsystem extends Subsystem {
 	}
 
     public void setLiftSpeedRaw(double speed) {
-		Robot.logger.addData(this.filename, "cascade speed", speed, DefaultValue.Previous);
+		Robot.logger.addData(this.fileName, "cascade input", speed, DefaultValue.Previous);
 		Robot.driveSubsystem.setMotorSpeed(liftSpark, speed);
 		//System.out.println("lift current: " + liftSpark.getOutputCurrent());
 	}
@@ -346,6 +353,7 @@ public class LiftSubsystem extends Subsystem {
 	}
 	
 	public void setArmTiltSpeed(double speed) {
+		Robot.logger.addData(this.fileName, "arm input", speed, DefaultValue.Previous);
 		Robot.driveSubsystem.setMotorSpeed(armTiltTalon, speed, 1);
 		//System.out.println("current angle input:" + armTiltTalon.getMotorOutputPercent());
 	}

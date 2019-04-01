@@ -46,6 +46,10 @@ public class Robot extends TimedRobot {
     private boolean lightOn = false;
     private boolean prevLightButton = false;
 
+    private void allPeriodicLogs(){
+        liftSubsystem.periodicLog();
+    }
+
     private CANSparkMax[] getSparks() {
         List<CANSparkMax> list = new ArrayList<>(); // this is inefficient but the code should be temporary
         Collections.addAll(list, driveSubsystem.getSparks());
@@ -74,9 +78,6 @@ public class Robot extends TimedRobot {
 
         logger.incrementPrevious("robot.java", "deploy", DefaultValue.Previous);
 
-
-        //zLiftSubsystem.unlockPistons();
-
            /* STARTS THE LIDAR     
         try {
             System.out.println("LIDAR status: starting");
@@ -87,6 +88,8 @@ public class Robot extends TimedRobot {
             t.printStackTrace();
             throw t;
         }*/
+
+        logger.logData();
 
     }
  
@@ -116,7 +119,6 @@ public class Robot extends TimedRobot {
     }
 
     public void autonomousPeriodic() {
-        logger.logData();
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         
         if(Robot.oi.leftStick.getPOV() == 0){
@@ -133,6 +135,8 @@ public class Robot extends TimedRobot {
         }else if(liftSubsystem.manualArmMode){
             Robot.liftSubsystem.setArmTiltSpeed(0);
         }
+        allPeriodicLogs();
+        logger.logData();
     }
     
     @Override
@@ -141,7 +145,6 @@ public class Robot extends TimedRobot {
     }
 
     public void teleopPeriodic() {
-        logger.logData();
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         
         if(Robot.oi.leftStick.getPOV() == 0){
@@ -174,10 +177,14 @@ public class Robot extends TimedRobot {
         }
         prevLightButton = targetLightButton;
 
+        allPeriodicLogs();
+        logger.logData();
     }
 
     public void testPeriodic() {
         liftSubsystem.moveToTarget(Target.Initial);
+        allPeriodicLogs();
+        logger.logData();
     }
 
     public void disabledInit() {
