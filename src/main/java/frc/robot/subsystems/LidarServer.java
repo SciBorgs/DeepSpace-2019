@@ -84,6 +84,9 @@ public class LidarServer {
 
         return true;
     }
+    
+	public void periodicLog(){
+	}
 
     public boolean stop() {
         synchronized (this) {

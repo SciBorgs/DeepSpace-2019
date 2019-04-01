@@ -23,6 +23,9 @@ public class LimelightSubsystem extends Subsystem{
         NetworkTableInstance.getDefault().getTable("limelight").getEntry(param).setNumber(setting);
     }
 
+    public void periodicLog(){
+    }
+
     @Override
     protected void initDefaultCommand() {
         // LITTERALLY DIE

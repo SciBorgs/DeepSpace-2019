@@ -20,6 +20,9 @@ public class PneumaticsSubsystem extends Subsystem {
     this.pressureSensor = new AnalogInput(PortMap.PRESSURE_SENSOR);
     this.compressor = new Compressor();
   }
+    
+	public void periodicLog(){
+	}
 
   public double getPressure() {
     return 250.0 * pressureSensor.getVoltage() / NORMALIZED_SUPPLY_VOLTAGE - 15.0;

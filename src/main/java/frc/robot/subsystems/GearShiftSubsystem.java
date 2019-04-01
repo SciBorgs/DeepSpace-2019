@@ -32,6 +32,9 @@ public class GearShiftSubsystem extends Subsystem {
         }
     }
     
+	public void periodicLog(){
+	}
+    
     public void updateGearShift() {
         //System.out.println(countOfContinousCyclesAboveJoystickThreshold);
         //System.out.println(countOfContinousCyclesBelowJoystickThreshold);

@@ -47,6 +47,12 @@ public class Robot extends TimedRobot {
     private boolean prevLightButton = false;
 
     private void allPeriodicLogs(){
+        driveSubsystem.periodicLog();
+        gearShiftSubsystem.periodicLog();
+        intakeSubsystem.periodicLog();
+        limelightSubsystem.periodicLog();
+        pneumaticsSubsystem.periodicLog();
+        positioningSubsystem.periodicLog();
         liftSubsystem.periodicLog();
     }
 

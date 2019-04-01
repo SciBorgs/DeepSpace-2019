@@ -220,6 +220,9 @@ public class DriveSubsystem extends Subsystem {
         setMotorSpeed(lf, leftSpeed * driveMultiplier);
         setMotorSpeed(rf, -rightSpeed * driveMultiplier); // Possible needs to be negated
         Robot.logger.addData(this.fileName, "wheel output", lf.get(), DefaultValue.Previous);
+    }
+    
+	public void periodicLog(){
 	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
