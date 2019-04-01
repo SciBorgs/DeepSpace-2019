@@ -5,6 +5,8 @@ import frc.robot.Robot;
 
 public class CargoFollowCommand extends CommandGroup {
 
+	private final String fileName = "CargoFollowCommand.java";
+
     public CargoFollowCommand() {
         requires(Robot.driveSubsystem);
         addParallel(new SuckCommand());

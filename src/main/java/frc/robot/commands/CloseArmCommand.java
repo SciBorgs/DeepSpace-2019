@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class CloseArmCommand extends InstantCommand {
 
+    private final String fileName = "CloseArmCommand.java";
+
     public CloseArmCommand() {
         requires(Robot.intakeSubsystem);
     }

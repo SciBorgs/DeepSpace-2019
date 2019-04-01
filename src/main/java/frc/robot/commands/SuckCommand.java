@@ -4,6 +4,7 @@ import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class SuckCommand extends InstantCommand {
+	private final String fileName = "SuckCommand.java";
 
     public SuckCommand() {
         requires(Robot.intakeSubsystem);

@@ -4,6 +4,7 @@ import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class ReleaseHatchCommand extends InstantCommand {
+    private final String fileName = "ReleaseHatchCommand.java";
     
     private double RELEASE_HATCH_DRIVE_MULTIPLIER = 0.5;
 

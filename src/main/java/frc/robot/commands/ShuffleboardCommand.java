@@ -22,6 +22,7 @@ import java.util.ArrayList;
  * Originally made by Team Alpha: Tobias, Zawad, Matthew, Jack, Swanand, Zach, and Alejandro
  */
 public class ShuffleboardCommand extends Command {
+    private final String fileName = "ShuffleboardCommand.java";
     // driverstation tab
     private final ShuffleboardTab driverStationTab;
     private final SimpleWidget timer;

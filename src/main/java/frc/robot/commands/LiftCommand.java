@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class LiftCommand extends Command {
 
+	private final String fileName = "LiftCommand.java";
+
 	private boolean lastStatic;
 
 	public LiftCommand() {

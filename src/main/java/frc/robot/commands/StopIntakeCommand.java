@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.Robot;
 
 public class StopIntakeCommand extends CommandGroup {
+	private final String fileName = "StopIntakeCommand.java";
     public static final double DELAY = .3; // In seconds
 
     public StopIntakeCommand() {

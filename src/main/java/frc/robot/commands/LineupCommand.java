@@ -4,6 +4,8 @@ import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class LineupCommand extends InstantCommand {
+
+    private final String fileName = "LineupCommand.java";
     
     public LineupCommand(){}
 

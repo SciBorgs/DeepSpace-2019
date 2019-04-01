@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class GearShiftCommand extends Command {
+
+    private final String fileName = "GearShiftCommand.java";
+
 	public GearShiftCommand() {
         requires(Robot.gearShiftSubsystem);
 	}

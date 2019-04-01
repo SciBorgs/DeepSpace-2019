@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ResetLiftCommand extends Command {
+	private final String fileName = "ResetLiftCommand.java";
+
 	public ResetLiftCommand() {
 		requires(Robot.liftSubsystem);
 	}

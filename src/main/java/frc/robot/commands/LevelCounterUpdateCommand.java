@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
 public class LevelCounterUpdateCommand extends InstantCommand {
+    private final String fileName = "LevelCounterUpdateCommand.java";
     public enum LevelChange {Up, Down}
     private int change;
 

@@ -5,6 +5,8 @@ import frc.robot.Robot;
 
 public class CargoReleaseCommand extends InstantCommand {
 
+    private final String fileName = "CargoReleaseCommand.java";
+
     public CargoReleaseCommand() {
         requires(Robot.intakeSubsystem);
     }
