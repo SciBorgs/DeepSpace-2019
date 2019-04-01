@@ -2,7 +2,8 @@ package frc.robot.logging;
 
 import java.util.Hashtable;
 import java.util.Calendar;
-import java.util.HashSet; 
+import java.util.HashSet;
+import java.util.ArrayList; 
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.RobotController;
@@ -18,7 +19,6 @@ public class Logger{
     // TODO: make default values not reset every deplot
     private CSVHelper csvHelper;
     private Calendar calendar;
-    private HashSet<String> columns; // Easy reference for what columns exist
 
     public Logger(){
         calendar = Calendar.getInstance();
@@ -29,7 +29,6 @@ public class Logger{
         }
         resetCurrentData();
         defaultValues = new Hashtable<String,DefaultValue>();
-        columns = Utils.arrayListToHashset(csvHelper.getColumns()); // We use csvHelper to get new columns at initialization and never again
     }
 
     private void fileNotFound(){
@@ -47,10 +46,13 @@ public class Logger{
         return filename + ": " + valueName;
     }
 
+    public ArrayList<String> getColumns(){
+        return csvHelper.getTopics();
+    }
+
     private void addNewColumn(String columnName){
         // adds a new column to the file and records it in the column hashset
-        csvHelper.addColumn(columnName);
-        columns.add(columnName);
+        csvHelper.addTopic(columnName);
     }
     public void newDataPoint(String filename, String valueName){
         // Same as add new column but is what should generally be called directly
@@ -106,7 +108,7 @@ public class Logger{
     }
 
     public boolean columnExists(String columnName){
-        return columns.contains(columnName);
+        return getColumns().contains(columnName);
     }
 
     public void addToPrevious(String filename, String valueName, DefaultValue defaultValue, double incrementAmount){
@@ -147,7 +149,7 @@ public class Logger{
     private Hashtable<String,String> createFullCurrentData(){
         // Takes the defaultData() and the currentData to create the hash that will be given for the csvHelper to record
         Hashtable<String,Object> fullData = defaultData();
-        for(String column : columns) {
+        for(String column : getColumns()) {
             if (currentData.containsKey(column)) {
                 fullData.put(column, currentData.get(column));
             } else if (getDefaultValue(column) == DefaultValue.Previous) {

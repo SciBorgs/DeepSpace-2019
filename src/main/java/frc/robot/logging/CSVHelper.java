@@ -1,7 +1,11 @@
 package frc.robot.logging;
 
 import java.util.Hashtable;
+import java.util.HashSet;
 import java.util.StringTokenizer;
+
+import frc.robot.Utils;
+
 import java.util.ArrayList;
 import java.io.*;
 
@@ -10,6 +14,7 @@ public class CSVHelper {
     private String fileName;
     private String fileContent;
     private ArrayList<String> topics;
+    private HashSet<String> topicLookup;
     private String lastLine;
 
     // Precondition: File already has 1 entry that doesn't end in a comma
@@ -18,7 +23,6 @@ public class CSVHelper {
         fileName = filename;
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         topics = new ArrayList<String>();
-        
         try{
             StringTokenizer firstRow = new StringTokenizer(reader.readLine(), ",");
         
@@ -26,7 +30,7 @@ public class CSVHelper {
                 topics.add(firstRow.nextToken());
             }
         }catch (Exception e){}
-        
+        topicLookup = Utils.arrayListToHashset(topics);
         reader.close();
         updateLastLine();
 
@@ -136,8 +140,12 @@ public class CSVHelper {
         writer.close();
     }
 
-    public void addColumn(String columnName){
+    public void addTopic(String topic){
         // Adds a rightmost column with every cell empty except the top one w/ the column name
+        // Should only work if the topic has not been used before
+        if (topicExists(topic)){
+            return;
+        }
         File oldFile = new File(fileName);
         File newFile = new File("0"+fileName);
         BufferedReader reader = newBufferedReader(oldFile);
@@ -147,7 +155,7 @@ public class CSVHelper {
         String line = "";
         while((line = readLine(reader)) != null){
             if(firstRow){
-                writer.println(line+","+columnName);
+                writer.println(line+","+topic);
                 firstRow = false;
             }else{
                 writer.println(line);
@@ -157,12 +165,17 @@ public class CSVHelper {
         oldFile.delete();
         writer.close();
         newFile.renameTo(oldFile);
-        topics.add(columnName);
+        topics.add(topic);
+        topicLookup.add(topic);
     }
 
-    public ArrayList<String> getColumns(){
-        // Gives a list of the column names in order
+    public ArrayList<String> getTopics(){
+        // Gives a list of the topics names in order
         return topics;
+    }
+
+    public boolean topicExists(String topic){
+        return topicLookup.contains(topic);
     }
 
 }
