@@ -13,7 +13,7 @@ import frc.robot.Utils;
 public class Logger{
 
     public enum DefaultValue {Previous, Empty} // If in a given cycle a value isn't set, what should that value be in the next row? Empty : "", Previous : the same as the previous value
-    public final static String loggingFilePath = ""; // Path to file where data is logged
+    public final static String loggingFilePath = "/home/lvuser/MainLog.csv"; // Path to file where data is logged
     private Hashtable<String,Object> currentData; // Data of the current cycle
     private Hashtable<String,DefaultValue> defaultValues; // Data of the current default values for each column
     // TODO: make default values not reset every deplot
@@ -41,9 +41,9 @@ public class Logger{
         currentData = new Hashtable<String,Object>();
     }
 
-    public String getColumnName(String filename, String valueName){
+    public String getColumnName(String fileName, String valueName){
         // This is simply how we name the columns. That way, everything is organized by file and differnet files can have data of the same name
-        return filename + ": " + valueName;
+        return fileName + ": " + valueName;
     }
 
     public ArrayList<String> getColumns(){
@@ -54,22 +54,22 @@ public class Logger{
         // adds a new column to the file and records it in the column hashset
         csvHelper.addTopic(columnName);
     }
-    public void newDataPoint(String filename, String valueName){
+    public void newDataPoint(String fileName, String valueName){
         // Same as add new column but is what should generally be called directly
-        addNewColumn(getColumnName(filename, valueName));
+        addNewColumn(getColumnName(fileName, valueName));
     }
 
-    public void addData(String filename, String valueName, Object data, DefaultValue defaultValue){
+    public void addData(String fileName, String valueName, Object data, DefaultValue defaultValue){
         // Adds a singular piece of data to the currentData hash. Also will add the column if it is unrecognized
-        String columnName = getColumnName(filename, valueName);
+        String columnName = getColumnName(fileName, valueName);
         if (!columnExists(columnName)) { 
             addNewColumn(columnName);
         }
         defaultValues.put(columnName, defaultValue);
         currentData.put(columnName, data);
     }
-    public void logFinalField(String filename, String fieldName, Object fieldValue){
-        addData(filename, fieldName, fieldValue, DefaultValue.Previous);
+    public void logFinalField(String fileName, String fieldName, Object fieldValue){
+        addData(fileName, fieldName, fieldValue, DefaultValue.Previous);
     }
 
     public DefaultValue getDefaultValue(String column){
@@ -88,36 +88,36 @@ public class Logger{
         // Given a column name, it gives the most recent value of that column as a string
         return getLastLog().get(columnName);
     }
-    public String getLastValueLogged(String filename, String valueName){
+    public String getLastValueLogged(String fileName, String valueName){
         // Same as get lastLoggedInColumn but should generally be called
-        return getLastLoggedInColumn(getColumnName(filename,  valueName));
+        return getLastLoggedInColumn(getColumnName(fileName,  valueName));
     }
-    public double getLastLogValueDouble(String filename, String valueName){
+    public double getLastLogValueDouble(String fileName, String valueName){
         // Converts last log value as a string to a double, returns 0 if it isn't a number
         // Maybe TODO - should it return an error if the previous value is not a number of ""? I think it shouldn't but to consider
-        String stringValue = getLastValueLogged(filename, valueName);
+        String stringValue = getLastValueLogged(fileName, valueName);
         try {
             return Double.valueOf(stringValue);
         } catch (NumberFormatException e) {
             return 0;
         }
     }
-    public boolean getLastLogValueBool(String filename, String valueName){
+    public boolean getLastLogValueBool(String fileName, String valueName){
         // Converts last log to a bool
-        return Boolean.valueOf(getLastValueLogged(filename, valueName));
+        return Boolean.valueOf(getLastValueLogged(fileName, valueName));
     }
 
     public boolean columnExists(String columnName){
         return getColumns().contains(columnName);
     }
 
-    public void addToPrevious(String filename, String valueName, DefaultValue defaultValue, double incrementAmount){
+    public void addToPrevious(String fileName, String valueName, DefaultValue defaultValue, double incrementAmount){
         // Logs the next values as the incrementAmount + the bool value of the most recent logged data point
-        double lastValue = getLastLogValueDouble(filename, valueName);
-        addData(filename, valueName, lastValue + incrementAmount, defaultValue);
+        double lastValue = getLastLogValueDouble(fileName, valueName);
+        addData(fileName, valueName, lastValue + incrementAmount, defaultValue);
     }
-    public void incrementPrevious(String filename, String valueName, DefaultValue defaultValue){
-        addToPrevious(filename, valueName, defaultValue, 1);
+    public void incrementPrevious(String fileName, String valueName, DefaultValue defaultValue){
+        addToPrevious(fileName, valueName, defaultValue, 1);
     }
 
     private Hashtable<String,Object> defaultData(){
