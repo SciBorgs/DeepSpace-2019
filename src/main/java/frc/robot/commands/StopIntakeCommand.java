@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.Robot;
+import frc.robot.logging.Logger.DefaultValue;
+
 
 public class StopIntakeCommand extends CommandGroup {
 	private final String fileName = "StopIntakeCommand.java";
@@ -14,9 +16,11 @@ public class StopIntakeCommand extends CommandGroup {
     }
 
     @Override protected void initialize() {
+		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "initializing", DefaultValue.Empty);
     }
 
 	@Override protected void execute(){
+		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "executing", DefaultValue.Empty);
         return;
 	}
 
@@ -25,10 +29,12 @@ public class StopIntakeCommand extends CommandGroup {
 	}
 
 	@Override protected void end(){
+		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "ending", DefaultValue.Empty);
 		return;
 	}
 
 	@Override protected void interrupted(){
+		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "interrupted", DefaultValue.Empty);
 		end();
 	}
 }
