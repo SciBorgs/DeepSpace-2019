@@ -144,7 +144,7 @@ public class Logger{
         return defaultData;
     }
 
-    private Hashtable<String,Object> createFullCurrentData(){
+    private Hashtable<String,String> createFullCurrentData(){
         // Takes the defaultData() and the currentData to create the hash that will be given for the csvHelper to record
         Hashtable<String,Object> fullData = defaultData();
         for(String column : columns) {
@@ -155,7 +155,7 @@ public class Logger{
                 fullData.put(column, data);
             }
         }
-        return fullData;
+        return Utils.hatshtableDataToString(fullData);
     }
 
     public void logData(){

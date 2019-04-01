@@ -60,4 +60,12 @@ public class Utils{
         }
         return end;
     }
+
+    public static Hashtable<String,String> hatshtableDataToString(Hashtable<String,Object> hashTable){
+        Hashtable<String,String> end = new Hashtable<String,String>();
+        for (String key : hashTable.keySet()){
+            end.put(key,hashTable.get(key).toString());
+        }
+        return end;
+    }
 }
