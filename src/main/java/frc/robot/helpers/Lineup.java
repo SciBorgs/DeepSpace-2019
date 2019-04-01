@@ -61,6 +61,9 @@ public class Lineup {
         return shiftPID;
     } 
     
+    public void periodicLog(){
+    }
+    
     public double    shift(double x, double y, double angle) {
         return x * Math.sin(angle) - y * Math.cos(angle);
     }

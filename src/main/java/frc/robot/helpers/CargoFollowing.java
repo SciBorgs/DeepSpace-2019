@@ -51,6 +51,9 @@ public class CargoFollowing {
         }
     }
 
+    public void periodicLog(){
+    }
+
     public void modeToCargo() {
         Robot.limelightSubsystem.setCameraParams("ledMode", 1); // Force LED Off
         Robot.limelightSubsystem.setCameraParams("pipeline", 9); // Switch to Cargo Pipeline

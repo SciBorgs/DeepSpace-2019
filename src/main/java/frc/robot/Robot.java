@@ -31,7 +31,6 @@ public class Robot extends TimedRobot {
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
 	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
     public static LiftSubsystem liftSubsystem = new LiftSubsystem();
-    public static ZLiftSubsystem zLiftSubsystem = new ZLiftSubsystem();
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     public static OI oi = new OI();
     public static Logger logger = new Logger();
@@ -54,6 +53,8 @@ public class Robot extends TimedRobot {
         pneumaticsSubsystem.periodicLog();
         positioningSubsystem.periodicLog();
         liftSubsystem.periodicLog();
+        lineup.periodicLog();
+        cargoFollowing.periodicLog();
     }
 
     private CANSparkMax[] getSparks() {
@@ -68,7 +69,6 @@ public class Robot extends TimedRobot {
         Collections.addAll(list, positioningSubsystem.getTalons());
         Collections.addAll(list, liftSubsystem.getTalons());
         Collections.addAll(list, intakeSubsystem.getTalons());
-        Collections.addAll(list, zLiftSubsystem.getTalons());
         return list.toArray(new TalonSRX[0]);
     }
 
@@ -194,6 +194,5 @@ public class Robot extends TimedRobot {
     }
 
     public void disabledInit() {
-        zLiftSubsystem.reset();
     }
 }
