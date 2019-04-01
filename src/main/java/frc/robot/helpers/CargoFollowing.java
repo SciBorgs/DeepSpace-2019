@@ -3,16 +3,17 @@ package frc.robot.helpers;
 import frc.robot.Robot;
 
 public class CargoFollowing {
+	private final String fileName = "DriveSubsystem.java";
 
     PID ballFollowerPID;
-    double ballFollowerP = 0.05;
-    double ballFollowerI = 0;
-    double ballFollowerD = 0.00215;
-    double horizontalTheta = 27.;
-    double verticalTheta = 20.5;
+    public final static double ballFollowerP = 0.05;
+    public final static double ballFollowerI = 0;
+    public final static double ballFollowerD = 0.00215;
 
     public CargoFollowing() {
-		ballFollowerPID = new PID(ballFollowerP, ballFollowerI, ballFollowerD);
+        ballFollowerPID = new PID(ballFollowerP, ballFollowerI, ballFollowerD);
+        Robot.logger.logFinalField(this.fileName, "ballFollowerP", ballFollowerP);
+        Robot.logger.logFinalField(this.fileName, "ballFollowerD", ballFollowerD);
     }
 
     public PID getPid() {
@@ -22,7 +23,7 @@ public class CargoFollowing {
     public void followBallShifted() {
         double tx = Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "tx");
         double ta = Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "ta");
-        double shift = 2./5. * Math.tan(tx) * Math.sqrt(ta*Math.tan(horizontalTheta)*Math.tan(verticalTheta)) + Robot.limelightSubsystem.SHIFT;
+        double shift = 2./5. * Math.tan(tx) * Math.sqrt(ta*Math.tan(Robot.limelightSubsystem.IMAGE_WIDTH)*Math.tan(Robot.limelightSubsystem.IMAGE_HEIGHT)) + Robot.limelightSubsystem.SHIFT;
         if (Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "tv") == 1) {
             ballFollowerPID.add_measurement(shift);
         }
