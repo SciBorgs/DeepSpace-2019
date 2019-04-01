@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.logging.Logger.DefaultValue;
+
 
 public class GearShiftCommand extends Command {
 
@@ -18,10 +20,12 @@ public class GearShiftCommand extends Command {
 	}
 
     @Override protected void initialize(){
+        Robot.logger.addData(fileName, Robot.logger.commandStatus, "initializing", DefaultValue.Empty);
         Robot.gearShiftSubsystem.gearShiftSolenoid.set(DoubleSolenoid.Value.kForward);
     }
 
 	@Override protected void execute(){
+        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "executing", DefaultValue.Empty);
         //Robot.gearShiftSubsystem.shiftGear();
         
     }
@@ -30,6 +34,7 @@ public class GearShiftCommand extends Command {
         return false;
     }
     @Override protected void end(){
+        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "ending", DefaultValue.Empty);
         Robot.gearShiftSubsystem.gearShiftSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 }
