@@ -25,11 +25,16 @@ public class Logger{
         try{
             csvHelper = new CSVHelper(loggingFilePath);
         }catch (Exception E){
-            System.out.println("FILE NOT FOUND");
+            fileNotFound();
         }
         resetCurrentData();
         defaultValues = new Hashtable<String,DefaultValue>();
         columns = Utils.arrayListToHashset(csvHelper.getColumns()); // We use csvHelper to get new columns at initialization and never again
+    }
+
+    private void fileNotFound(){
+        System.out.println("FILE NOT FOUND");
+        // Probably throw an error
     }
 
     private void resetCurrentData(){
