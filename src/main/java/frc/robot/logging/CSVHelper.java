@@ -38,7 +38,6 @@ public class CSVHelper {
 
     private void fileNotFound(){
         System.out.println("FILE NOT FOUND");
-        // Probably also throw an error
     }
 
     private BufferedReader newBufferedReader(String fileName){

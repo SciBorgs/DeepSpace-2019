@@ -20,6 +20,9 @@ public class Logger{
     private CSVHelper csvHelper;
     private Calendar calendar;
 
+    // Universal naming conventions
+    public String commandStatus = "status";
+
     public Logger(){
         calendar = Calendar.getInstance();
         try{
