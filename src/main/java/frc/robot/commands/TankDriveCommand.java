@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.logging.Logger.CommandStatus;
 import frc.robot.logging.Logger.DefaultValue;
 
 
@@ -25,11 +26,11 @@ public class TankDriveCommand extends Command {
     }
 
     @Override protected void initialize() {
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "initializing", DefaultValue.Empty);        
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
         Robot.driveSubsystem.setSpeedTank(0, 0);
     }
     @Override protected void execute() {
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "executing", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         Robot.driveSubsystem.setSpeed(leftStick, rightStick);
         //System.out.println("talon current: " + Robot.intakeSubsystem.intakeTalon.getOutputCurrent());
         //System.out.println("omega: " + Robot.positioningSubsystem.getAngularSpeed());
@@ -43,11 +44,11 @@ public class TankDriveCommand extends Command {
         return false;
     }
     @Override protected void end() {
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "ending", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
         Robot.driveSubsystem.setSpeedTank(0, 0);
     }
     @Override protected void interrupted() {
-		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "interrupted", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Interrupted);
         end();
     }
 }

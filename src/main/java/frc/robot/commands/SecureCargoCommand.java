@@ -11,7 +11,7 @@ public class SecureCargoCommand extends InstantCommand {
     public SecureCargoCommand(){}
 
     @Override protected void execute(){
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "executing", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         Robot.intakeSubsystem.secureCargo();
     }
 }

@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.Robot;
 import frc.robot.logging.Logger.DefaultValue;
+import frc.robot.logging.Logger.CommandStatus;
 
 
 public class StopIntakeCommand extends CommandGroup {
@@ -16,11 +17,11 @@ public class StopIntakeCommand extends CommandGroup {
     }
 
     @Override protected void initialize() {
-		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "initializing", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
     }
 
 	@Override protected void execute(){
-		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "executing", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         return;
 	}
 
@@ -29,12 +30,12 @@ public class StopIntakeCommand extends CommandGroup {
 	}
 
 	@Override protected void end(){
-		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "ending", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
 		return;
 	}
 
 	@Override protected void interrupted(){
-		Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "interrupted", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Interrupted);
 		end();
 	}
 }

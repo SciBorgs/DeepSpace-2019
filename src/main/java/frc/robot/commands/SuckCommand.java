@@ -3,6 +3,7 @@ package frc.robot.commands;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.logging.Logger.DefaultValue;
+import frc.robot.logging.Logger.CommandStatus;
 
 
 public class SuckCommand extends InstantCommand {
@@ -13,7 +14,7 @@ public class SuckCommand extends InstantCommand {
     }
 
     @Override protected void execute() {
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "executing", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         System.out.println("suck");
         Robot.intakeSubsystem.openArm();
         Robot.intakeSubsystem.suck();

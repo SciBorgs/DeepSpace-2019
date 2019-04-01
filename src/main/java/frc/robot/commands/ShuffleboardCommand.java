@@ -14,6 +14,7 @@ import frc.robot.helpers.PID;
 import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.logging.Logger.DefaultValue;
+import frc.robot.logging.Logger.CommandStatus;
 
 import java.util.ArrayList;
 
@@ -108,12 +109,12 @@ public class ShuffleboardCommand extends Command {
 
     @Override
     protected void initialize() {
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "initializing", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
     }
 
     @Override
     protected void execute() {
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "executing", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         updateTimer();
         updatePowerOutput();
         updateMotorCurrent();
@@ -130,12 +131,12 @@ public class ShuffleboardCommand extends Command {
 
     @Override
     protected void end() {
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "ending", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
     }
 
     @Override
     protected void interrupted() {
-        Robot.logger.addData(this.fileName, Robot.logger.commandStatus, "interrupted", DefaultValue.Empty);
+		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Interrupted);
         end();
     }
 
