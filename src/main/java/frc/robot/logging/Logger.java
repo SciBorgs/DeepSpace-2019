@@ -84,12 +84,16 @@ public class Logger{
         switch (commandStatus) {
             case Initializing:
                 stringStatus = "initializing";
+                break;
             case Executing:
                 stringStatus = "executing";
+                break;
             case Ending:
                 stringStatus = "edning";
+                break;
             case Interrupted:
                 stringStatus = "interrupted";
+                break;
         }
         addData(fileName, commandStatusName, stringStatus, DefaultValue.Empty);
     }
