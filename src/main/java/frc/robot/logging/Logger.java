@@ -3,12 +3,13 @@ package frc.robot.logging;
 import java.util.Hashtable;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.ArrayList; 
+import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.RobotController;
 
 import frc.robot.Utils;
+import frc.robot.helpers.PID;
 
 public class Logger{
 
@@ -74,6 +75,9 @@ public class Logger{
     }
     public void logFinalField(String fileName, String fieldName, Object fieldValue){
         addData(fileName, fieldName, fieldValue, DefaultValue.Previous);
+    }
+    public void logFinalPIDConstants(String fileName, String pidName, PID pid){
+        addData(fileName, pidName, "(" + pid.p + ", " + pid.i + ", " + pid.d + ")", DefaultValue.Previous);
     }
     public void logCommandStatus(String fileName, CommandStatus commandStatus){
         String stringStatus = "";

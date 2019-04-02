@@ -79,9 +79,7 @@ public class DriveSubsystem extends Subsystem {
         rb.follow(rf);
 
         tankAnglePID = new PID(TANK_ANGLE_P, TANK_ANGLE_I, TANK_ANGLE_D);
-
-        Robot.logger.logFinalField(this.fileName, "tank angle P", TANK_ANGLE_P);
-        Robot.logger.logFinalField(this.fileName, "tank angle D", TANK_ANGLE_D);
+        Robot.logger.logFinalPIDConstants(this.fileName, "tank angle PID", tankAnglePID);
         Robot.logger.logFinalField(this.fileName, "input deadzone", INPUT_DEADZONE);
 	}
     

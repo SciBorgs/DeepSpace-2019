@@ -26,7 +26,7 @@ public class LiftSubsystem extends Subsystem {
 	private PID armPID;
 	private PID liftPID;
 	private final String fileName = "LiftSubsystem.java";
-	private double armP = 0.45, armI = 0.0, armD = 0, liftP = 10, liftI = 0.0, liftD = 0.05;
+	private double ARM_P = 0.45, ARM_I = 0.0, ARM_D = 0, LIFT_P = 1, LIFT_I = 0.0, LIFT_D = 0.05;
 	static final double SPARK_ENCODER_WHEEL_RATIO = 1 / 20.0; // For the cascade
 	static final double TALON_ENCODER_WHEEL_RATIO = 24.0 / 56; // For the carriage
 	static final double LIFT_WHEEL_RADIUS = Utils.inchesToMeters(1.5); // In meters, the radius of the wheel that is pulling up the lift
@@ -84,12 +84,15 @@ public class LiftSubsystem extends Subsystem {
 		armTiltTalon.setNeutralMode(NeutralMode.Brake);
 		ShuffleboardTab levelCounterTab = Shuffleboard.getTab("Level Counter");
 		levelCounterWidget = levelCounterTab.add("Level Counter", -1).withWidget("Text View").withPosition(1, 0).withSize(2, 2);
-		liftPID = new PID(liftP, liftI, liftD);
+		liftPID = new PID(LIFT_P, LIFT_I, LIFT_D);
 		liftPID.setSmoother(LIFT_PID_SMOOTHNESS);
-		armPID  = new PID(armP, armI, armD);
+		armPID  = new PID(ARM_P, ARM_I, ARM_D);
 		armPID.setSmoother(ARM_PID_SMOOTHNESS);
 		realLiftHeightIs(INITIAL_HEIGHT);
 		realArmAngleIs(INITIAL_ANGLE);
+
+		Robot.logger.logFinalPIDConstants(this.fileName, "arm PID", armPID);
+		Robot.logger.logFinalPIDConstants(this.fileName, "lift PID", liftPID);
 	}
 
 	public PID getArmPID() {
