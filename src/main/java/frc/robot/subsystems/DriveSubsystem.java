@@ -16,7 +16,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class DriveSubsystem extends Subsystem {
     // Define tested error values here
-    double tankAngleP = .06, tankAngleD = 0.0, tankAngleI = 0;
+    double TANK_ANGLE_P = .06, TANK_ANGLE_D = 0.0, TANK_ANGLE_I = 0;
     double goalOmegaConstant = 68; // Change this to change angle
     private double[] maxOmegaGoal = {1 * goalOmegaConstant}; // must be an array so it's mutable
     public CANSparkMax lf, lm, lb, rf, rm, rb;
@@ -78,8 +78,15 @@ public class DriveSubsystem extends Subsystem {
         rm.follow(rf);
         rb.follow(rf);
 
-        tankAnglePID = new PID(tankAngleP, tankAngleI, tankAngleD);
+        tankAnglePID = new PID(TANK_ANGLE_P, TANK_ANGLE_I, TANK_ANGLE_D);
+
+        Robot.logger.logFinalField(this.fileName, "tank angle P", TANK_ANGLE_P);
+        Robot.logger.logFinalField(this.fileName, "tank angle D", TANK_ANGLE_D);
+        Robot.logger.logFinalField(this.fileName, "input deadzone", INPUT_DEADZONE);
 	}
+    
+	public void periodicLog(){
+    }
 
 	public CANSparkMax[] getSparks() {
         return new CANSparkMax[]{lf, lm, lb, rf, rm, rb};
@@ -221,9 +228,6 @@ public class DriveSubsystem extends Subsystem {
         setMotorSpeed(rf, -rightSpeed * driveMultiplier); // Possible needs to be negated
         Robot.logger.addData(this.fileName, "wheel output", lf.get(), DefaultValue.Previous);
     }
-    
-	public void periodicLog(){
-	}
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
 		double averageOutput = (leftSpeed + rightSpeed) / 2;
