@@ -4,12 +4,14 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import frc.robot.PortMap;
+import frc.robot.Robot;
+import frc.robot.logging.Logger.DefaultValue;
 
 public class PneumaticsSubsystem extends Subsystem {
   private AnalogInput pressureSensor;
   private final double NORMALIZED_SUPPLY_VOLTAGE = 5.0;
   private Compressor compressor;
-	private final String filename = "PneumaticsSubsystem.java";
+	private final String fileName = "PneumaticsSubsystem.java";
   @Override
   public void initDefaultCommand() {
    
@@ -22,6 +24,7 @@ public class PneumaticsSubsystem extends Subsystem {
   }
     
 	public void periodicLog(){
+    Robot.logger.addData(this.fileName, "pressure", getPressure(), DefaultValue.Previous);
 	}
 
   public double getPressure() {

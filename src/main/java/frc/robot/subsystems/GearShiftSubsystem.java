@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.Robot;
+import frc.robot.logging.Logger.DefaultValue;
 import frc.robot.PortMap;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -15,7 +16,7 @@ public class GearShiftSubsystem extends Subsystem {
     public int countOfContinousCyclesAboveJoystickThreshold;
     public int countOfContinousCyclesBelowJoystickThreshold;
     public double joystickShiftUpThreshold = .5;
-	private final String filename = "GearShiftSubsystem.java";
+	private final String fileName = "GearShiftSubsystem.java";
     public double joystickShiftDownThreshold = .2;
     public int cycleThreshold = 10; //50 Cycles is 1000 milliseconds diveided by 20ms per cycle
     
@@ -33,6 +34,8 @@ public class GearShiftSubsystem extends Subsystem {
     }
     
 	public void periodicLog(){
+        String gear = currentlyInHighGear() ? "high" : "low";
+        Robot.logger.addData(this.fileName, "gear", gear, DefaultValue.Previous);
 	}
     
     public void updateGearShift() {
