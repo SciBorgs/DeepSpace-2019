@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
 
         // cargoFollowing.modeToCargo();
 
-        // logger.incrementPrevious("robot.java", "deploy", DefaultValue.Previous);
+        logger.incrementPrevious("robot.java", "deploy", DefaultValue.Previous);
 
            /* STARTS THE LIDAR     
         try {

@@ -131,7 +131,7 @@ public class Logger{
         String stringValue = getLastValueLogged(fileName, valueName);
         try {
             return Double.valueOf(stringValue);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             return 0;
         }
     }
