@@ -27,23 +27,25 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class Robot extends TimedRobot {
     private String m_autoSelected;
-    public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-    public static DriveSubsystem driveSubsystem = new DriveSubsystem();
-	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
-    public static LiftSubsystem liftSubsystem = new LiftSubsystem();
-    public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
-    public static OI oi = new OI();
+    public static IntakeSubsystem intakeSubsystem; // = new IntakeSubsystem();
+    public static DriveSubsystem driveSubsystem; // = new DriveSubsystem();
+	public static PositioningSubsystem positioningSubsystem; // = new PositioningSubsystem();
+    public static LiftSubsystem liftSubsystem; // = new LiftSubsystem();
+    public static GearShiftSubsystem gearShiftSubsystem; // = new GearShiftSubsystem();
+    public static OI oi; // = new OI();
     public static Logger logger = new Logger();
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
-    public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-    public static CargoFollowing cargoFollowing = new CargoFollowing();
-    public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
-    public static Lineup lineup = new Lineup();
+    public static LimelightSubsystem limelightSubsystem; // = new LimelightSubsystem();
+    public static CargoFollowing cargoFollowing; // = new CargoFollowing();
+    public static PneumaticsSubsystem pneumaticsSubsystem; // = new PneumaticsSubsystem();
+    public static Lineup lineup; // = new Lineup();
     private final ControlScheme xboxControl = new XboxControl();
     private final PowerDistributionPanel pdp = new PowerDistributionPanel();
     private final DigitalOutput targetingLight = new DigitalOutput(5);
     private boolean lightOn = false;
     private boolean prevLightButton = false;
+    private int attemptsSinceLastLog;
+    public static final int LOG_PERIOD = 5;
 
     private void allPeriodicLogs(){
         driveSubsystem.periodicLog();
@@ -73,16 +75,16 @@ public class Robot extends TimedRobot {
     }
 
     public void robotInit() {
-        xboxControl.getShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, getSparks(), getTalons(), liftSubsystem.getLiftSpark(), cargoFollowing.getPid(), driveSubsystem.getTankAnglePID(), driveSubsystem.getMaxOmegaGoal(), liftSubsystem.getArmPID()).start();
-
-        positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
+        // xboxControl.getShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, getSparks(), getTalons(), liftSubsystem.getLiftSpark(), cargoFollowing.getPid(), driveSubsystem.getTankAnglePID(), driveSubsystem.getMaxOmegaGoal(), liftSubsystem.getArmPID()).start();
+        attemptsSinceLastLog = 0;
+        // positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
-        positioningSubsystem.updatePositionTank();
+        // positioningSubsystem.updatePositionTank();
 
 
-        cargoFollowing.modeToCargo();
+        // cargoFollowing.modeToCargo();
 
-        logger.incrementPrevious("robot.java", "deploy", DefaultValue.Previous);
+        // logger.incrementPrevious("robot.java", "deploy", DefaultValue.Previous);
 
            /* STARTS THE LIDAR     
         try {
@@ -98,10 +100,19 @@ public class Robot extends TimedRobot {
         logger.logData();
 
     }
+
+    public void logDataPeriodic(){
+        if (LOG_PERIOD == attemptsSinceLastLog){
+            attemptsSinceLastLog = 0;
+            logger.logData();
+        } else {
+            attemptsSinceLastLog++;
+        }
+    }
  
     public void robotPeriodic() {
         Scheduler.getInstance().run();
-        positioningSubsystem.updatePositionTank();
+        //positioningSubsystem.updatePositionTank();
         //System.out.println("arm angle: " + Math.toDegrees(liftSubsystem.getArmAngle()));
         //System.out.println("unadjusted arm angle: " + Math.toDegrees(liftSubsystem.getUnadjustedArmAngle()));
         //positioningSubsystem.printPosition();
@@ -142,7 +153,7 @@ public class Robot extends TimedRobot {
             Robot.liftSubsystem.setArmTiltSpeed(0);
         }
         allPeriodicLogs();
-        logger.logData();
+        logDataPeriodic();
     }
     
     @Override
@@ -184,13 +195,13 @@ public class Robot extends TimedRobot {
         prevLightButton = targetLightButton;
 
         allPeriodicLogs();
-        logger.logData();
+        logDataPeriodic();
     }
 
     public void testPeriodic() {
-        liftSubsystem.moveToTarget(Target.Initial);
-        allPeriodicLogs();
-        logger.logData();
+        //liftSubsystem.moveToTarget(Target.Initial);
+        //allPeriodicLogs();
+        logDataPeriodic();
     }
 
     public void disabledInit() {

@@ -20,7 +20,7 @@ public class CSVHelper {
     // Precondition: File already has 1 entry that doesn't end in a comma
 
     public CSVHelper(String filename) throws IOException{
-        fileName = filename;
+        this.fileName = filename;
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         topics = new ArrayList<String>();
         try{
@@ -37,7 +37,7 @@ public class CSVHelper {
     }
 
     private void fileNotFound(){
-        System.out.println("FILE NOT FOUND");
+        System.out.println("FILE NOT FOUND (CSVHelper)");
     }
 
     private BufferedReader newBufferedReader(String fileName){
@@ -128,7 +128,11 @@ public class CSVHelper {
         PrintWriter writer = newPrintWriter(fileName, true);
         String content = "";
         for(String topic : topics){
-            content += row.get(topic) + ",";
+            String value = row.get(topic);
+            if (value == null){
+                value = "";
+            }
+            content += (value + ",");
         }
         int contentSize = content.length();
         content = content.substring(0, contentSize - 1);
@@ -143,7 +147,15 @@ public class CSVHelper {
             return;
         }
         File oldFile = new File(fileName);
-        File newFile = new File("0"+fileName);
+        int insertionSpot = fileName.length() - 4;
+        String newFileName = fileName.substring(0, insertionSpot) + "0" + fileName.substring(insertionSpot);
+        File newFile = new File(newFileName);
+        try {
+            newFile.createNewFile();
+        } catch (Exception e) {
+            System.out.println("couldn't create file: ");
+            System.out.println(newFileName);
+        };
         BufferedReader reader = newBufferedReader(oldFile);
         PrintWriter writer = newPrintWriter(newFile);
         
@@ -157,10 +169,14 @@ public class CSVHelper {
                 writer.println(line);
             }
         }
-        closeReader(reader);
+        if (firstRow){
+            // IE: the file is empty
+            writer.println(topic);
+        }
         oldFile.delete();
-        writer.close();
         newFile.renameTo(oldFile);
+        closeReader(reader);
+        writer.close();
         topics.add(topic);
         topicLookup.add(topic);
     }

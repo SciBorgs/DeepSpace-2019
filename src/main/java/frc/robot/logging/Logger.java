@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.RobotController;
+import java.io.*;
 
 import frc.robot.Utils;
 import frc.robot.helpers.PID;
@@ -27,17 +28,22 @@ public class Logger{
 
     public Logger(){
         calendar = Calendar.getInstance();
-        try{
+        try{                
             csvHelper = new CSVHelper(loggingFilePath);
         }catch (Exception E){
-            fileNotFound();
+            try{
+                (new File(loggingFilePath)).createNewFile();
+                csvHelper = new CSVHelper(loggingFilePath);
+            }catch (Exception E2){
+                fileNotFound();
+            }
         }
         resetCurrentData();
         defaultValues = new Hashtable<String,DefaultValue>();
     }
 
     private void fileNotFound(){
-        System.out.println("FILE NOT FOUND");
+        System.out.println("FILE NOT FOUND (logger)");
         // Probably throw an error
     }
 
@@ -68,6 +74,7 @@ public class Logger{
         // Adds a singular piece of data to the currentData hash. Also will add the column if it is unrecognized
         String columnName = getColumnName(fileName, valueName);
         if (!columnExists(columnName)) { 
+            System.out.println("adding column " + columnName);
             addNewColumn(columnName);
         }
         defaultValues.put(columnName, defaultValue);
@@ -146,11 +153,8 @@ public class Logger{
         addToPrevious(fileName, valueName, defaultValue, 1);
     }
 
-    private Hashtable<String,Object> defaultData(){
+    private void addDefaultData(){
         // All this data will be done automatically
-
-        Hashtable<String,Object> defaultData = new Hashtable<String,Object>();
-
         double year   = calendar.get(Calendar.YEAR);
         double month  = calendar.get(Calendar.MONTH);
         double day    = calendar.get(Calendar.DAY_OF_MONTH);
@@ -159,22 +163,21 @@ public class Logger{
         double second = calendar.get(Calendar.SECOND);
         double matchTime = Timer.getMatchTime();
         double batteryVoltage = RobotController.getBatteryVoltage();
-        String prefix = "default: ";
-        defaultData.put(prefix + "year",year);
-        defaultData.put(prefix + "month",month);
-        defaultData.put(prefix + "day",day);
-        defaultData.put(prefix + "hour",hour);
-        defaultData.put(prefix + "minute",minute);
-        defaultData.put(prefix + "second",second);
-        defaultData.put(prefix + "match time",matchTime);
-        defaultData.put(prefix + "battery voltage",batteryVoltage);
-
-        return defaultData;
+        String prefix = "default";
+        addData(prefix, "year",year, DefaultValue.Previous);
+        addData(prefix, "month",month, DefaultValue.Previous);
+        addData(prefix, "day",day, DefaultValue.Previous);
+        addData(prefix, "hour",hour, DefaultValue.Previous);
+        addData(prefix, "minute",minute, DefaultValue.Previous);
+        addData(prefix, "second",second, DefaultValue.Previous);
+        addData(prefix, "match time",matchTime, DefaultValue.Previous);
+        addData(prefix, "battery voltage",batteryVoltage, DefaultValue.Previous);
     }
 
     private Hashtable<String,String> createFullCurrentData(){
         // Takes the defaultData() and the currentData to create the hash that will be given for the csvHelper to record
-        Hashtable<String,Object> fullData = defaultData();
+        addDefaultData();
+        Hashtable<String,Object> fullData = new Hashtable<>();
         for(String column : getColumns()) {
             if (currentData.containsKey(column)) {
                 fullData.put(column, currentData.get(column));
@@ -187,6 +190,7 @@ public class Logger{
     }
 
     public void logData(){
+        System.out.println("attempting to log data...");
         // adds a new data record to the file and resets our current data
         csvHelper.addRow(createFullCurrentData());
         resetCurrentData();
