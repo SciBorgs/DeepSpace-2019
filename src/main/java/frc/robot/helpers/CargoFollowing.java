@@ -6,7 +6,7 @@ public class CargoFollowing {
 	private final String fileName = "DriveSubsystem.java";
 
     PID ballFollowerPID;
-    public final static double ballFollowerP = 0.05;
+    public final static double ballFollowerP = 0.06;
     public final static double ballFollowerI = 0;
     public final static double ballFollowerD = 0.00215;
 

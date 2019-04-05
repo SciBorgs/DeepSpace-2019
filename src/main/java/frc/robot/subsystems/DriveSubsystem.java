@@ -16,8 +16,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class DriveSubsystem extends Subsystem {
     // Define tested error values here
-    double TANK_ANGLE_P = .06, TANK_ANGLE_D = 0.0, TANK_ANGLE_I = 0;
-    double goalOmegaConstant = 68; // Change this to change angle
+    double TANK_ANGLE_P = .075, TANK_ANGLE_D = 0.0, TANK_ANGLE_I = 0;
+    double goalOmegaConstant = 8; // Change this to change angle
     private double[] maxOmegaGoal = {1 * goalOmegaConstant}; // must be an array so it's mutable
     public CANSparkMax lf, lm, lb, rf, rm, rb;
 	private final String fileName = "DriveSubsystem.java";

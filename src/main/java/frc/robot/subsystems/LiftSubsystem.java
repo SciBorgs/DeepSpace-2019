@@ -26,10 +26,10 @@ public class LiftSubsystem extends Subsystem {
 	private PID armPID;
 	private PID liftPID;
 	private final String fileName = "LiftSubsystem.java";
-	private double ARM_P = 0.45, ARM_I = 0.0, ARM_D = 0, LIFT_P = 1, LIFT_I = 0.0, LIFT_D = 0.05;
+	private double ARM_P = 0.65, ARM_I = 0.0, ARM_D = 0, LIFT_P = 1, LIFT_I = 0.0, LIFT_D = 0.05;
 	static final double SPARK_ENCODER_WHEEL_RATIO = 1 / 20.0; // For the cascade
 	static final double TALON_ENCODER_WHEEL_RATIO = 24.0 / 56; // For the carriage
-	static final double LIFT_WHEEL_RADIUS = Utils.inchesToMeters(1.5); // In meters, the radius of the wheel that is pulling up the lift
+	static final double LIFT_WHEEL_RADIUS = Utils.inchesToMeters(.75); // In meters, the radius of the wheel that is pulling up the lift
 	static final double LIFT_STATIC_INPUT = 0.018;
 	private SimpleWidget levelCounterWidget;
 	private int levelCounter = 0;
@@ -44,7 +44,7 @@ public class LiftSubsystem extends Subsystem {
 		}
 	}; 
 	static final double HATCH_TO_CARGO_DEPOSIT = Utils.inchesToMeters(8.5);
-	public static final double MAX_HINGE_HEIGHT = Utils.inchesToMeters(72.5);
+	public static final double MAX_HINGE_HEIGHT = 1.05;
 	static final double ARM_MAX_ANGLE = Math.toRadians(62);
 	static final double ARM_TARGET_ANGLE = Math.toRadians(30);
 	static final double ARM_LENGTH = Utils.inchesToMeters(20);
@@ -53,7 +53,7 @@ public class LiftSubsystem extends Subsystem {
 	static final double INITIAL_GAP_TO_GROUND = Utils.inchesToMeters(0); // How far up the intake should be when it's sucking in cargo
 	static final double RESTING_ANGLE = Math.asin((INITIAL_GAP_TO_GROUND - BOTTOM_HEIGHT) / ARM_LENGTH); // In radians
 	static final double HEIGHT_PRECISION = 0.05; // In meters
-	static final double ANGLE_PRECISION = Math.toRadians(3);
+	static final double ANGLE_PRECISION = Math.toRadians(1);
 	static final double IS_BOTTOM_PRECISION = 0.1; // In meters, precision as to whether it's at the bottom
 	static final double INITIAL_ANGLE  = ARM_MAX_ANGLE; // In reality should be 60ish
 	static final double INITIAL_HEIGHT = BOTTOM_HEIGHT;
@@ -143,8 +143,8 @@ public class LiftSubsystem extends Subsystem {
 		boolean hitCorrectHeight = Math.abs(error) < HEIGHT_PRECISION;
 		movingLift = !hitCorrectHeight;
 		liftPID.add_measurement(error);
-		//System.out.println("error: " + error);
-		//System.out.println("spark input: " + liftSpark.get());
+		System.out.println("error: " + error);
+		System.out.println("spark input: " + liftSpark.get());
 		double output = liftPID.getOutput();
 		if (hitCorrectHeight && targetLiftHeight == INITIAL_HEIGHT){
 			setLiftSpeedRaw(0);
@@ -202,9 +202,9 @@ public class LiftSubsystem extends Subsystem {
 		if (target == Target.Ground){
 			targetHeight = 0;
 		} else if (target == Target.Low) {
-			targetHeight = Utils.inchesToMeters(19);
+			targetHeight = Utils.inchesToMeters(17);
 		} else {
-			targetHeight = Utils.inchesToMeters(27);
+			targetHeight = Utils.inchesToMeters(29);
 		}
 		double targetAngle = Math.asin((targetHeight - BOTTOM_HEIGHT)/ARM_LENGTH);
 		System.out.println("target angle : "+ targetAngle);
@@ -297,10 +297,10 @@ public class LiftSubsystem extends Subsystem {
 		} else {
 			double angle = getUnadjustedArmAngle();
 			double armHeight = getLiftHeight() + Math.sin(angle) * ARM_LENGTH;
-			/*if (armHeight < 0) {
+			/* if (armHeight < 0) {
 				angle = Math.asin(- getLiftHeight() / ARM_LENGTH);
 				realArmAngleIs(angle);
-			}*/
+			} */
 			return angle;
 		}
 	}
@@ -311,6 +311,9 @@ public class LiftSubsystem extends Subsystem {
 		previousLiftLimitSwitch = currentOutput;
 		return end;
 	} 
+	public boolean liftAtTop(){
+		return getLiftHeight() > MAX_HINGE_HEIGHT;
+	}
 
 	public boolean armAtMaxAngle(){
 		boolean currentOutput = !armAtTopSwitch.get();
@@ -351,6 +354,10 @@ public class LiftSubsystem extends Subsystem {
 		//System.out.println("lift current: " + liftSpark.getOutputCurrent());
 	}
 	public void setLiftSpeed(double speed){
+		if (liftAtTop()){
+			System.out.println("preventing you from going up");
+			speed = Math.min(speed,0);
+		}
 		if (speed != 0){
 			if (Math.abs(getLiftHeight() - BOTTOM_HEIGHT) < GEAR_SHIFT_PRECISION){
 				Robot.gearShiftSubsystem.shiftUp();

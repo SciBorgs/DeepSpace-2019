@@ -167,8 +167,7 @@ public class Robot extends TimedRobot {
 
     public void teleopPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
-        
-        System.out.println("leftPOV: " + Robot.oi.leftStick.getPOV());
+        System.out.println("cascade height: " + liftSubsystem.getLiftHeight());
         if(Robot.oi.leftStick.getPOV() == 0){
             //System.out.println("up");
             Robot.liftSubsystem.setLiftSpeed(manualCascadeInput);
