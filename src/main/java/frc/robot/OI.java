@@ -8,7 +8,7 @@ import frc.robot.commands.LevelCounterUpdateCommand.LevelChange;
 
 public class OI {
     public Joystick leftStick, rightStick;
-    public JoystickButton gearShiftButton, cargoFollowButton, lineupButton, startZLiftButton, liftLevelUpButton, liftLevelDownButton, suckButton, spitButton, depositPanelButton, hatchSecureModeButton, armModeButton;
+    public JoystickButton gearShiftButton, cargoFollowButton, lineupButton, startZLiftButton, liftLevelUpButton, liftLevelDownButton, suckButton, spitButton, depositPanelButton, hatchSecureModeButton, armModeButton, climbFrontButton, climbBackButton;
     public XboxController xboxController;
 
     public OI() {
@@ -55,6 +55,14 @@ public class OI {
         gearShiftButton = new JoystickButton(rightStick, PortMap.JOYSTICK_RIGHT_BUTTON);
         gearShiftButton.whileHeld(new GearShiftCommand());
 
+        // Xbox 
+        climbFrontButton = new JoystickButton(xbox, PortMap.XBOX_BUMPER_RIGHT);
+        climbFrontButton.whenPressed(new ClimbFrontExtendCommand());
+        climbFrontButton.whenReleased(new ClimbFrontRetractCommand());
+
+        climbBackButton = new JoystickButton(xbox, PortMap.XBOX_BUMPER_LEFT);
+        climbBackButton.whenPressed(new ClimbBackExtendCommand());
+        climbBackButton.whenReleased(new ClimbBackRetractCommand());
 
     }
 }

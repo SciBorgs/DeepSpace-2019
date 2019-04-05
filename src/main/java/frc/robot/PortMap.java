@@ -52,6 +52,9 @@ public class PortMap {
     // public static final int[] SCOOP_SOLENOID = {6, 7}; // Flips up the hatch
     public static final int[] ARM_SOLENOID = {6, 7};
 
+    public static final int[] FRONT_CLIMB_SOLENOID = {8, 9};
+    public static final int[] BACK_CLIMB_SOLENOID = {10, 11};
+
     public static final int[] ZLIFT_SOLENOID = {2,3};
 
     //*******************MISC********************//
