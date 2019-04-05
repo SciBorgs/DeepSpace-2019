@@ -97,7 +97,7 @@ public class ShuffleboardCommand extends Command {
         cargoSelection = 0;
         cargoSelectionText = driverStationTab.add("Selection", "-1").withWidget("Text View").withPosition(0, 4).withSize(1, 1);
         setUpCargoList();
-        setUpTestTab(); // Comment out to disable command
+        //setUpTestTab(); // Comment out to disable command
 
         setRunWhenDisabled(true);
     }
@@ -116,7 +116,7 @@ public class ShuffleboardCommand extends Command {
         updateCascadeMotorTemp();
         updateLiftPosition();
         updateAirPressure();
-        updateTestTab(); // Comment out to disable command
+        //updateTestTab(); // Comment out to disable command
     }
 
     @Override

@@ -35,6 +35,7 @@ public class DriveSubsystem extends Subsystem {
     private static final double HIGH_REDUCTION_END = 0.8;
     private static final double LOW_REDUCTION_START = 0.4;
     private static final double STRAIGHT_DEADZONE = 0.15;
+    private static final double STRAIGHT_EQUAL_INPUT_DEADZONE = 0; // If goal Omega is 0 and our regular input diff magnitude is less than this, the input diff goes to 0
     private boolean highReduction = true;
     private PID tankAnglePID;
     public boolean assisted = false;
@@ -243,6 +244,9 @@ public class DriveSubsystem extends Subsystem {
         double error = goalOmega - Robot.positioningSubsystem.getAngularSpeed();
         tankAnglePID.add_measurement(error);
         double inputDiff = tankAnglePID.getOutput();
+        if (goalOmega == 0 && (Math.abs(inputDiff) < STRAIGHT_EQUAL_INPUT_DEADZONE)){
+            inputDiff = 0;
+        }
         Robot.logger.addData(this.fileName, "input diff", inputDiff, DefaultValue.Empty);
         Robot.logger.addData(this.fileName, "error", error, DefaultValue.Empty);
         //System.out.println("Output: " + change);

@@ -22,7 +22,7 @@ public class GearShiftCommand extends Command {
 
     @Override protected void initialize(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
-        Robot.gearShiftSubsystem.gearShiftSolenoid.set(DoubleSolenoid.Value.kForward);
+        Robot.gearShiftSubsystem.gearShiftSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
 	@Override protected void execute(){
@@ -36,7 +36,7 @@ public class GearShiftCommand extends Command {
     }
     @Override protected void end(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
-        Robot.gearShiftSubsystem.gearShiftSolenoid.set(DoubleSolenoid.Value.kReverse);
+        Robot.gearShiftSubsystem.gearShiftSolenoid.set(DoubleSolenoid.Value.kForward);
     }
     @Override protected void interrupted(){
         Robot.logger.logCommandStatus(this.fileName, CommandStatus.Interrupted);

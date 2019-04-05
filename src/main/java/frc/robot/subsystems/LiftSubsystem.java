@@ -45,7 +45,7 @@ public class LiftSubsystem extends Subsystem {
 	}; 
 	static final double HATCH_TO_CARGO_DEPOSIT = Utils.inchesToMeters(8.5);
 	public static final double MAX_HINGE_HEIGHT = Utils.inchesToMeters(72.5);
-	static final double ARM_MAX_ANGLE = Math.toRadians(59);
+	static final double ARM_MAX_ANGLE = Math.toRadians(62);
 	static final double ARM_TARGET_ANGLE = Math.toRadians(30);
 	static final double ARM_LENGTH = Utils.inchesToMeters(20);
 	static final double GEAR_SHIFT_PRECISION = Utils.inchesToMeters(5);
@@ -137,7 +137,7 @@ public class LiftSubsystem extends Subsystem {
 		}
 	}
 
-	public void moveLiftToheight(double targetLiftHeight){
+	public void moveLiftToHeight(double targetLiftHeight){
 		Robot.logger.addData(this.fileName, "target lift height (m)", targetLiftHeight, DefaultValue.Empty);
 		double error = targetLiftHeight - getLiftHeight();
 		boolean hitCorrectHeight = Math.abs(error) < HEIGHT_PRECISION;
@@ -172,7 +172,7 @@ public class LiftSubsystem extends Subsystem {
 	
 	public void moveToPosition(double targetAngle, double targetLiftHeight){
 		moveArmToAngle(targetAngle);
-		moveLiftToheight(targetLiftHeight);
+		moveLiftToHeight(targetLiftHeight);
 	}
 
 	public double getTargetLiftHeight(double depositHeight){
@@ -344,8 +344,10 @@ public class LiftSubsystem extends Subsystem {
 	}
 
     public void setLiftSpeedRaw(double speed) {
-		Robot.logger.addData(this.fileName, "cascade input", speed, DefaultValue.Previous);
+		//Robot.logger.addData(this.fileName, "cascade input", speed, DefaultValue.Previous);
+		//System.out.println("cascade speed:" + speed);
 		Robot.driveSubsystem.setMotorSpeed(liftSpark, speed);
+		//System.out.println("cascade output:" + liftSpark.get());
 		//System.out.println("lift current: " + liftSpark.getOutputCurrent());
 	}
 	public void setLiftSpeed(double speed){

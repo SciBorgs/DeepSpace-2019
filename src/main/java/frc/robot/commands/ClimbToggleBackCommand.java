@@ -15,6 +15,6 @@ public class ClimbToggleBackCommand extends InstantCommand {
     @Override protected void execute() {
         Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         System.out.println("back climb extend");
-        Robot.climbSubsystem.ExtendBack();
+        Robot.climbSubsystem.toggleBack();
     }
 }

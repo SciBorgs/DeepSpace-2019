@@ -19,9 +19,10 @@ public class Logger{
     public final static String loggingFilePath = "/home/lvuser/Logs/MainLog.csv"; // Path to file where data is logged
     private Hashtable<String,Object> currentData; // Data of the current cycle
     private Hashtable<String,DefaultValue> defaultValues; // Data of the current default values for each column
-    // TODO: make default values not reset every deplot
+    // TODO: make default values not reset every deploy
     private CSVHelper csvHelper;
     private Calendar calendar;
+    private boolean loggingDisabled = true;
 
     // Universal naming conventions
     public String commandStatusName = "status";
@@ -66,12 +67,14 @@ public class Logger{
         csvHelper.addTopic(columnName);
     }
     public void newDataPoint(String fileName, String valueName){
+        if (loggingDisabled){return;}
         // Same as add new column but is what should generally be called directly
         addNewColumn(getColumnName(fileName, valueName));
     }
 
     public void addData(String fileName, String valueName, Object data, DefaultValue defaultValue){
         // Adds a singular piece of data to the currentData hash. Also will add the column if it is unrecognized
+        if (loggingDisabled){return;}
         String columnName = getColumnName(fileName, valueName);
         if (!columnExists(columnName)) { 
             System.out.println("adding column " + columnName);
@@ -190,6 +193,7 @@ public class Logger{
     }
 
     public void logData(){
+        if (loggingDisabled){return;}
         System.out.println("attempting to log data...");
         // adds a new data record to the file and resets our current data
         csvHelper.addRow(createFullCurrentData());

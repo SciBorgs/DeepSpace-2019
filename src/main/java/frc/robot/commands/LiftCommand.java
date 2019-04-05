@@ -32,7 +32,7 @@ public class LiftCommand extends Command {
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
 		System.out.println("lifting command");
 		//Robot.liftSubsystem.moveToTarget(Robot.liftSubsystem.getTarget());
-		Robot.liftSubsystem.moveArmToTarget(Robot.liftSubsystem.getTarget());
+		//Robot.liftSubsystem.moveArmToTarget(Robot.liftSubsystem.getTarget());
 	}
 
 	@Override protected boolean isFinished(){
