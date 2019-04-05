@@ -168,8 +168,8 @@ public class DriveSubsystem extends Subsystem {
             //double right = processStickGearShift(rightStick);
 
             //System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
-            //setSpeedTankAngularControl(left, right);
-            setSpeedTank(left,right);
+            setSpeedTankAngularControl(left, right);
+            //setSpeedTank(left,right);
         }
     }
 	
@@ -242,9 +242,11 @@ public class DriveSubsystem extends Subsystem {
         //System.out.println("desired angular speed: " + goalOmega);
         double error = goalOmega - Robot.positioningSubsystem.getAngularSpeed();
         tankAnglePID.add_measurement(error);
-        double change = tankAnglePID.getOutput();
+        double inputDiff = tankAnglePID.getOutput();
+        Robot.logger.addData(this.fileName, "input diff", inputDiff, DefaultValue.Empty);
+        Robot.logger.addData(this.fileName, "error", error, DefaultValue.Empty);
         //System.out.println("Output: " + change);
-		setSpeedTank(averageOutput - change, averageOutput + change); 
+		setSpeedTank(averageOutput - inputDiff, averageOutput + inputDiff); 
 	}
 	
 	public void setSpeedTankForwardManual(double leftSpeed, double rightSpeed, double turnMagnitude) {
