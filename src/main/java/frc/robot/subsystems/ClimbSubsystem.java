@@ -26,11 +26,11 @@ public class ClimbSubsystem extends Subsystem {
 	}
 
 	public void retractFront() {
-		frontSolenoid.set(Value.kForward);
+		frontSolenoid.set(Value.kReverse);
 	}
  
 	public void retractBack() {
-		backSolenoid.set(Value.kForward);	
+		backSolenoid.set(Value.kReverse);	
 	}
 	
 	@Override
