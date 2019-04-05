@@ -99,6 +99,10 @@ public class LiftSubsystem extends Subsystem {
 		return armPID;
 	}
 
+	public PID getLiftPID() {
+		return liftPID;
+	}
+
 	public CANSparkMax[] getSparks() {
 		return new CANSparkMax[]{liftSpark};
 	}

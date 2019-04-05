@@ -55,8 +55,8 @@ public class XboxControl implements ControlScheme {
     */
 
     @Override
-    public ShuffleboardCommand getShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, PID cargoPID, PID drivePID, double[] maxOmegaGoal, PID liftArmPID) {
-        return new ShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, canSparkMaxs, talonSRXs, cascadeSpark, getButton(XboxControlButton.Button.BUMPER_LEFT), getButton(XboxControlButton.Button.BUMPER_RIGHT), getButton(XboxControlButton.Button.A), cargoPID, drivePID, maxOmegaGoal, liftArmPID);
+    public ShuffleboardCommand getShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, PID cargoPID, PID drivePID, double[] maxOmegaGoal, PID liftArmPID, PID liftLiftPID, PID lineupPID) {
+        return new ShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, canSparkMaxs, talonSRXs, cascadeSpark, getButton(XboxControlButton.Button.BUMPER_LEFT), getButton(XboxControlButton.Button.BUMPER_RIGHT), getButton(XboxControlButton.Button.A), cargoPID, drivePID, maxOmegaGoal, liftArmPID, liftLiftPID, lineupPID);
     }
 
     @Override
