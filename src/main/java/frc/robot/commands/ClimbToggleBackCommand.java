@@ -5,10 +5,10 @@ import frc.robot.Robot;
 import frc.robot.logging.Logger.CommandStatus;
 import frc.robot.logging.Logger.DefaultValue;
 
-public class ClimbBackExtendCommand extends InstantCommand {
-    private final String fileName = "ClimbBackExtendCommand.java";
+public class ClimbToggleBackCommand extends InstantCommand {
+    private final String fileName = "ClimbToggleBackCommand.java";
 
-    public ClimbBackExtendCommand(){
+    public ClimbToggleBackCommand(){
         requires(Robot.climbSubsystem);
     }
 

@@ -15,8 +15,32 @@ public class PortMap {
     public static final int[][] JOYSTICK_BUTTON_MATRIX_LEFT = { { 5, 6, 7 }, { 10, 9, 8 } };
     public static final int[][] JOYSTICK_BUTTON_MATRIX_RIGHT = { { 13, 12, 11 }, { 14, 15, 16 } };
 
-    //****************ECKS BOCKS*****************//
+    // *****************XBOX*****************//
+  
     public static final int XBOX_CONTROLLER = 2;
+  
+    public static final int XBOX_A = 1;
+    public static final int XBOX_B = 2;
+    public static final int XBOX_X = 3;
+    public static final int XBOX_Y = 4;
+  
+    public static final int XBOX_BUMPER_LEFT = 5;
+    public static final int XBOX_BUMPER_RIGHT = 6;
+  
+    public static final int XBOX_BACK = 7;
+    public static final int XBOX_START = 8;
+  
+    public static final int XBOX_STICK_LEFT_BUTTON = 9;
+    public static final int XBOX_STICK_RIGHT_BUTTON = 10;
+  
+    public static final int XBOX_TRIGGER_LEFT = 2;
+    public static final int XBOX_TRIGGER_RIGHT = 3;
+  
+    public static final int XBOX_LEFT_JOY_X = 0;
+    public static final int XBOX_LEFT_JOY_Y = 1;
+  
+    public static final int XBOX_RIGHT_JOY_X = 4;
+    public static final int XBOX_RIGHT_JOY_Y = 5;
     
     //*******************SPARKS******************//
 

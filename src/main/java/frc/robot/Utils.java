@@ -3,6 +3,9 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+
 import java.util.*;
 
 public class Utils{
@@ -67,5 +70,19 @@ public class Utils{
             end.put(key,hashTable.get(key).toString());
         }
         return end;
+    }
+
+    public static Value oppositeDoubleSolenoidValue(Value val){
+        switch (val) {
+            case kForward:
+                return Value.kReverse;
+            case kReverse:
+                return Value.kForward;
+        }
+        return Value.kOff;
+    }
+
+    public static void toggleDoubleSolenoid(DoubleSolenoid doubleSolenoid){
+        doubleSolenoid.set(oppositeDoubleSolenoidValue(doubleSolenoid.get()));
     }
 }

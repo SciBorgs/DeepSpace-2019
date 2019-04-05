@@ -6,31 +6,27 @@ import frc.robot.Utils;
 import frc.robot.logging.Logger.DefaultValue;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.DoubleSolenoid
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class ClimbSubsystem extends Subsystem {
 
-	private DoubleSolenoid frontSoldenoid, backSoldenoid;
+	private DoubleSolenoid frontSolenoid, backSolenoid;
+	private Value defaultValue = Value.kForward; 
 
 	public ClimbSubsystem() {
 		frontSolenoid = new DoubleSolenoid(PortMap.FRONT_CLIMB_SOLENOID[0], PortMap.FRONT_CLIMB_SOLENOID[1]);
 		backSolenoid  = new DoubleSolenoid(PortMap.BACK_CLIMB_SOLENOID[0], PortMap.BACK_CLIMB_SOLENOID[1]);
+		frontSolenoid.set(defaultValue);
+		backSolenoid.set(defaultValue);
 	}
 
-	public void extendFront() {
-		frontSolenoid.set(Value.kForward);
+	public void toggleFront() {
+		Utils.toggleDoubleSolenoid(frontSolenoid);
 	}
 
-	public void extendBack() {
-		backSolenoid.set(Value.kForward);
-	}
-
-	public void retractFront() {
-		frontSolenoid.set(Value.kReverse);
-	}
- 
-	public void retractBack() {
-		backSolenoid.set(Value.kReverse);	
+	public void toggleBack() {
+		Utils.toggleDoubleSolenoid(backSolenoid);
 	}
 	
 	@Override

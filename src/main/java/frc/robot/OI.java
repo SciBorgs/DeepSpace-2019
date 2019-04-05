@@ -56,13 +56,11 @@ public class OI {
         gearShiftButton.whileHeld(new GearShiftCommand());
 
         // Xbox 
-        climbFrontButton = new JoystickButton(xbox, PortMap.XBOX_BUMPER_RIGHT);
-        climbFrontButton.whenPressed(new ClimbFrontExtendCommand());
-        climbFrontButton.whenReleased(new ClimbFrontRetractCommand());
+        climbFrontButton = new JoystickButton(xboxController, PortMap.XBOX_BUMPER_RIGHT);
+        climbFrontButton.whenPressed(new ClimbToggleFrontCommand());
 
-        climbBackButton = new JoystickButton(xbox, PortMap.XBOX_BUMPER_LEFT);
-        climbBackButton.whenPressed(new ClimbBackExtendCommand());
-        climbBackButton.whenReleased(new ClimbBackRetractCommand());
+        climbBackButton = new JoystickButton(xboxController, PortMap.XBOX_BUMPER_LEFT);
+        climbBackButton.whenPressed(new ClimbToggleBackCommand());
 
     }
 }

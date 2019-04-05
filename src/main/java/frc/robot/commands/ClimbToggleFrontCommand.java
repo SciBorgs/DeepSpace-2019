@@ -5,16 +5,16 @@ import frc.robot.Robot;
 import frc.robot.logging.Logger.CommandStatus;
 import frc.robot.logging.Logger.DefaultValue;
 
-public class ClimbFrontExtendCommand extends InstantCommand {
-    private final String fileName = "ClimbFrontExtendCommand.java";
+public class ClimbToggleFrontCommand extends InstantCommand {
+    private final String fileName = "ClimbToggleFrontCommand.java";
 
-    public ClimbFrontExtendCommand(){
+    public ClimbToggleFrontCommand(){
         requires(Robot.climbSubsystem);
     }
 
     @Override protected void execute() {
         Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         System.out.println("front climb extend");
-        Robot.climbSubsystem.ExtendFront();
+        Robot.climbSubsystem.toggleFront();
     }
 }
