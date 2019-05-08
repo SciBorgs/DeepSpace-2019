@@ -46,7 +46,8 @@ public class Robot extends TimedRobot {
     private boolean lightOn = false;
     private boolean prevLightButton = false;
     private int attemptsSinceLastLog;
-    public static double manualCascadeInput = 1;
+    public static double MANUAL_CASCADE_INPUT = 1;
+    public static double MANUAL_CARRIAGE_INPUT = .55;
     public static final int LOG_PERIOD = 5;
 
     private void allPeriodicLogs(){
@@ -82,6 +83,8 @@ public class Robot extends TimedRobot {
         // positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
         positioningSubsystem.updatePositionTank();
+
+        //pneumaticsSubsystem.stopCompressor();
 
         intakeSubsystem.closeArm();
         cargoFollowing.modeToCargo();
@@ -132,6 +135,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         cargoFollowing.modeToCargo();
         new TankDriveCommand().start();
+        (new LiftCommand()).start();
         //(new LiftCommand()).start();
         pneumaticsSubsystem.startCompressor();
     }
@@ -139,22 +143,7 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         
-        if(Robot.oi.leftStick.getPOV() == 0){
-            Robot.liftSubsystem.setLiftSpeed(manualCascadeInput);
-        }else if(Robot.oi.leftStick.getPOV() == 180){
-            Robot.liftSubsystem.setLiftSpeed(-manualCascadeInput);
-        }else{
-            System.out.println("stopping");
-            Robot.liftSubsystem.setLiftSpeed(0);
-        }
-        if(Robot.oi.rightStick.getPOV() == 0){
-            Robot.liftSubsystem.setArmTiltSpeed(.55);
-        }else if(Robot.oi.rightStick.getPOV() == 180){
-            Robot.liftSubsystem.setArmTiltSpeed(-.55);
-        //}else if(liftSubsystem.manualArmMode){
-        }else{
-            Robot.liftSubsystem.setArmTiltSpeed(0);
-        }
+        manualArmAndCascade();
         //allPeriodicLogs();
         //logDataPeriodic();
     }
@@ -163,29 +152,34 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         liftSubsystem.setLiftSpeed(0);
         new TankDriveCommand().start();
+        (new LiftCommand()).start();
     }
 
-    public void teleopPeriodic() {
-        //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
-        System.out.println("cascade height: " + liftSubsystem.getLiftHeight());
+    public void manualArmAndCascade(){
         if(Robot.oi.leftStick.getPOV() == 0){
             //System.out.println("up");
-            Robot.liftSubsystem.setLiftSpeed(manualCascadeInput);
+            Robot.liftSubsystem.setLiftSpeed(MANUAL_CASCADE_INPUT);
         }else if(Robot.oi.leftStick.getPOV() == 180){
             //System.out.println("down");
-            Robot.liftSubsystem.setLiftSpeed(-manualCascadeInput);
-        }else{
+            Robot.liftSubsystem.setLiftSpeed(-MANUAL_CASCADE_INPUT);
+        //}else{
+        }else if(liftSubsystem.manualCascadeMode){
             //System.out.println("stopping");
             Robot.liftSubsystem.setLiftSpeed(0);
         }
         if(Robot.oi.rightStick.getPOV() == 0){
-            Robot.liftSubsystem.setArmTiltSpeed(.55);
+            Robot.liftSubsystem.setArmTiltSpeed(MANUAL_CARRIAGE_INPUT);
         }else if(Robot.oi.rightStick.getPOV() == 180){
-            Robot.liftSubsystem.setArmTiltSpeed(-.55);
-        //}else if(liftSubsystem.manualArmMode){
-        }else{
+            Robot.liftSubsystem.setArmTiltSpeed(-MANUAL_CARRIAGE_INPUT);
+        }else if(liftSubsystem.manualArmMode){
+        //}else{
             Robot.liftSubsystem.setArmTiltSpeed(0);
         }
+    }
+
+    public void teleopPeriodic() {
+        //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
+        manualArmAndCascade();
 
         boolean targetLightButton = oi.xboxController.getBButton();
 
@@ -202,6 +196,7 @@ public class Robot extends TimedRobot {
         }
         prevLightButton = targetLightButton;
 
+        pneumaticsSubsystem.startCompressor();
         //allPeriodicLogs();
         //logDataPeriodic();
     }
@@ -209,8 +204,10 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {
         //liftSubsystem.moveToTarget(Target.Initial);
         liftSubsystem.moveToInitial();
+        cargoFollowing.modeToCargo();
         //liftSubsystem.moveLiftToHeight(Utils.inchesToMeters(40));
         System.out.println("leftPOV: " + Robot.oi.leftStick.getPOV());
+        //liftSubsystem.currentlAtInitial();
         //allPeriodicLogs();
         //logDataPeriodic();
     }

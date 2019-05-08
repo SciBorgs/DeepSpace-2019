@@ -12,13 +12,14 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 public class ClimbSubsystem extends Subsystem {
 
 	private DoubleSolenoid frontSolenoid, backSolenoid;
-	private Value defaultValue = Value.kReverse; 
 
 	public ClimbSubsystem() {
-		frontSolenoid = new DoubleSolenoid(0, PortMap.FRONT_CLIMB_SOLENOID[0], PortMap.FRONT_CLIMB_SOLENOID[1]);
-		backSolenoid  = new DoubleSolenoid(1, PortMap.BACK_CLIMB_SOLENOID[0], PortMap.BACK_CLIMB_SOLENOID[1]);
-		frontSolenoid.set(Value.kReverse);
-		backSolenoid.set(Value.kForward);
+		//UNCOMMENT TO USE CLIMBER!!!
+
+		// frontSolenoid = new DoubleSolenoid(0, PortMap.FRONT_CLIMB_SOLENOID[0], PortMap.FRONT_CLIMB_SOLENOID[1]);
+		// backSolenoid  = new DoubleSolenoid(1, PortMap.BACK_CLIMB_SOLENOID[0], PortMap.BACK_CLIMB_SOLENOID[1]);
+		//frontSolenoid.set(Value.kReverse); //YOU MIGHT HAVE TO REVERSE THIS
+		//backSolenoid.set(Value.kForward); 
 	}
 
 	public void toggleFront() {

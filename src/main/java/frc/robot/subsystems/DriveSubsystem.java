@@ -178,6 +178,10 @@ public class DriveSubsystem extends Subsystem {
 		setSpeedTank(processStick(leftStick),processStick(rightStick));
     }
 
+    public double avgMotorInput(){
+        return (lf.get() + rf.get())/2.0;
+    }
+
     public double limitJerk(double oldSpeed, double newSpeed, double maxJerk){
         if (oldSpeed - newSpeed > maxJerk){
             return oldSpeed - maxJerk;

@@ -26,27 +26,31 @@ public class LiftCommand extends Command {
 	@Override protected void initialize(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
 		Robot.liftSubsystem.autoArmMode();
+		Robot.liftSubsystem.currentlyTiltingArm();
+		// Robot.liftSubsystem.autoCascadeMode(); // Comment for regular auto-carriage
 	}
 
 	@Override protected void execute(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
-		System.out.println("lifting command");
-		//Robot.liftSubsystem.moveToTarget(Robot.liftSubsystem.getTarget());
-		Robot.liftSubsystem.moveArmToTarget(Robot.liftSubsystem.getTarget());
+		//System.out.println("lifting command");
+		//Robot.liftSubsystem.moveToTarget(Robot.liftSubsystem.getTarget()); // Comment for regular auto-carriage
+		Robot.liftSubsystem.moveArmToTarget(Robot.liftSubsystem.getTarget()); // Uncomment for regular auto-carriage
 	}
 
 	@Override protected boolean isFinished(){
-		if (lastStatic){
-			return Robot.liftSubsystem.isStatic();
+		/*if (lastStatic){
+			return Robot.liftSubsystem.isArmStatic();
 		} else {
-			lastStatic = Robot.liftSubsystem.isStatic();
+			lastStatic = Robot.liftSubsystem.isArmStatic();
 			return false;
-		}
+		}*/
+		return false;
 	}
 
 	@Override protected void end(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
 		Robot.liftSubsystem.manualArmMode();
+		Robot.liftSubsystem.manualCascadeMode();
 	}
 
 	@Override protected void interrupted(){

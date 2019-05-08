@@ -26,13 +26,18 @@ public class LiftSubsystem extends Subsystem {
 	private PID armPID;
 	private PID liftPID;
 	private final String fileName = "LiftSubsystem.java";
-	private double ARM_P = 0.65, ARM_I = 0.0, ARM_D = 0, LIFT_P = 1, LIFT_I = 0.0, LIFT_D = 0.05;
+	private double ARM_P = 0.62, ARM_I = 0.0, ARM_D = 0, LIFT_P = 1, LIFT_I = 0.0, LIFT_D = 0.05;
 	static final double SPARK_ENCODER_WHEEL_RATIO = 1 / 20.0; // For the cascade
 	static final double TALON_ENCODER_WHEEL_RATIO = 24.0 / 56; // For the carriage
 	static final double LIFT_WHEEL_RADIUS = Utils.inchesToMeters(.75); // In meters, the radius of the wheel that is pulling up the lift
 	static final double LIFT_STATIC_INPUT = 0.018;
+	static final double ARM_STATIC_INPUT = 0.065;
+	static final double MAX_CARRIAGE_ADDED_SPEED = .18;
+	static final double MINIMUM_CARRIAGE_INPUT = 0.025;
+	static final double MINIMUM_CASCADE_INPUT = .005;
 	private SimpleWidget levelCounterWidget;
-	private int levelCounter = 0;
+	static final boolean LOOK_FOR_LIMIT_SWITCH = true;
+	private int levelCounter = 2;
 	private double ARM_OUTPUT_LIMIT = 1;
 	static final double ROCKET_HATCH_GAP = Utils.inchesToMeters(28);
 	static final double LOW_HATCH_HEIGHT = Utils.inchesToMeters(17);
@@ -44,16 +49,16 @@ public class LiftSubsystem extends Subsystem {
 		}
 	}; 
 	static final double HATCH_TO_CARGO_DEPOSIT = Utils.inchesToMeters(8.5);
-	public static final double MAX_HINGE_HEIGHT = 1.05;
-	static final double ARM_MAX_ANGLE = Math.toRadians(62);
+	public static final double MAX_HINGE_HEIGHT = .97;
+	static final double ARM_MAX_ANGLE = Math.toRadians(67);
 	static final double ARM_TARGET_ANGLE = Math.toRadians(30);
 	static final double ARM_LENGTH = Utils.inchesToMeters(20);
 	static final double GEAR_SHIFT_PRECISION = Utils.inchesToMeters(5);
-	static final double BOTTOM_HEIGHT = Utils.inchesToMeters(9.75); // In meters, the height at the lift's lowest point
+	static final double BOTTOM_HEIGHT = Utils.inchesToMeters(9); // In meters, the height at the lift's lowest point
 	static final double INITIAL_GAP_TO_GROUND = Utils.inchesToMeters(0); // How far up the intake should be when it's sucking in cargo
 	static final double RESTING_ANGLE = Math.asin((INITIAL_GAP_TO_GROUND - BOTTOM_HEIGHT) / ARM_LENGTH); // In radians
 	static final double HEIGHT_PRECISION = 0.05; // In meters
-	static final double ANGLE_PRECISION = Math.toRadians(1);
+	static final double ANGLE_PRECISION = Math.toRadians(2);
 	static final double IS_BOTTOM_PRECISION = 0.1; // In meters, precision as to whether it's at the bottom
 	static final double INITIAL_ANGLE  = ARM_MAX_ANGLE; // In reality should be 60ish
 	static final double INITIAL_HEIGHT = BOTTOM_HEIGHT;
@@ -72,6 +77,7 @@ public class LiftSubsystem extends Subsystem {
 	boolean movingLift = false;
 	boolean tiltingArm = false;
 	public boolean manualArmMode = true;
+	public boolean manualCascadeMode = true;
 
 	public void initDefaultCommand() {
     }
@@ -123,6 +129,9 @@ public class LiftSubsystem extends Subsystem {
 	public void manualArmMode(){manualArmMode = true;}
 	public void autoArmMode(){manualArmMode = false;}
 	
+	public void manualCascadeMode(){manualCascadeMode = true;}
+	public void autoCascadeMode(){manualCascadeMode = false;}
+	
 	private double getTargetHeight(Target target){
 		double hatchTargetHeight = LOW_HATCH_HEIGHT + HATCH_POSITIONS.get(target) * ROCKET_HATCH_GAP;
 		double cargoTargetHeight = hatchTargetHeight + HATCH_TO_CARGO_DEPOSIT;
@@ -141,10 +150,9 @@ public class LiftSubsystem extends Subsystem {
 		Robot.logger.addData(this.fileName, "target lift height (m)", targetLiftHeight, DefaultValue.Empty);
 		double error = targetLiftHeight - getLiftHeight();
 		boolean hitCorrectHeight = Math.abs(error) < HEIGHT_PRECISION;
-		movingLift = !hitCorrectHeight;
 		liftPID.add_measurement(error);
-		System.out.println("error: " + error);
-		System.out.println("spark input: " + liftSpark.get());
+		//System.out.println("error: " + error);
+		//System.out.println("spark input: " + liftSpark.get());
 		double output = liftPID.getOutput();
 		if (hitCorrectHeight && targetLiftHeight == INITIAL_HEIGHT){
 			setLiftSpeedRaw(0);
@@ -161,13 +169,23 @@ public class LiftSubsystem extends Subsystem {
 		//System.out.println("error: " + error);
 		boolean hitCorrectAngle  = Math.abs(error) < ANGLE_PRECISION;
 		//System.out.println("hit correct angle: " + hitCorrectAngle);
-		tiltingArm = !hitCorrectAngle;
 		armPID.add_measurement(error);
-		conditionalSetArmTiltSpeed(armPID.getLimitOutput(ARM_OUTPUT_LIMIT), !hitCorrectAngle);
+		double output = armPID.getLimitOutput(ARM_OUTPUT_LIMIT);
+		//System.out.println("output: " + output);
+		if (targetAngle == ARM_MAX_ANGLE){
+			output += MAX_CARRIAGE_ADDED_SPEED;
+			if (LOOK_FOR_LIMIT_SWITCH) {
+				output = Math.max(SLOW_ARM_INPUT, output);
+			}
+		}
+		setArmTiltSpeed(output);
+		if (hitCorrectAngle && (targetAngle == ARM_MAX_ANGLE)){
+			moveArmToMaxAngle();
+		}
 		Robot.logger.addData(this.fileName, "target angle (deg)", Math.toDegrees(targetAngle), DefaultValue.Empty);
-		System.out.println("arm angle: " + Math.toDegrees(getArmAngle()));
-		System.out.println("desired angle: " + Math.toDegrees(targetAngle));
-		System.out.println("angle input: " + armPID.getLimitOutput(ARM_OUTPUT_LIMIT));
+		//System.out.println("arm angle: " + Math.toDegrees(getArmAngle()));
+		//System.out.println("desired angle: " + Math.toDegrees(targetAngle));
+		//System.out.println("angle input: " + armPID.getLimitOutput(ARM_OUTPUT_LIMIT));
 	}
 	
 	public void moveToPosition(double targetAngle, double targetLiftHeight){
@@ -202,12 +220,15 @@ public class LiftSubsystem extends Subsystem {
 		if (target == Target.Ground){
 			targetHeight = 0;
 		} else if (target == Target.Low) {
-			targetHeight = Utils.inchesToMeters(17);
+			targetHeight = Utils.inchesToMeters(14.5);
 		} else {
 			targetHeight = Utils.inchesToMeters(29);
 		}
 		double targetAngle = Math.asin((targetHeight - BOTTOM_HEIGHT)/ARM_LENGTH);
-		System.out.println("target angle : "+ targetAngle);
+		if (target == Target.Mid){
+			targetAngle = ARM_MAX_ANGLE;
+		}
+		//System.out.println("target angle : "+ targetAngle);
 		moveArmToAngle(targetAngle);
 	}
 
@@ -222,10 +243,16 @@ public class LiftSubsystem extends Subsystem {
 		}
 	}
 
-	public void moveToInitial(){
-		System.out.println("not arm at max angle: " + !armAtMaxAngle());
-		conditionalSetLiftSpeed(-SLOW_LIFT_INPUT, !liftAtBottom());
+	public void moveLiftToBottom(){
+		conditionalSetLiftSpeed(-SLOW_LIFT_INPUT, !liftAtBottom());	
+	}
+	public void moveArmToMaxAngle(){
 		conditionalSetArmTiltSpeed(SLOW_ARM_INPUT, !armAtMaxAngle());
+	}
+
+	public void moveToInitial(){
+		moveLiftToBottom();
+		moveArmToMaxAngle();
 	}
 
 	public void moveLevelCounter(int change) {
@@ -241,6 +268,11 @@ public class LiftSubsystem extends Subsystem {
 		liftPID.reset();
 		armPID.reset();
 	}
+
+	public void moveArmToCurrentTarget(){
+		moveArmToTarget(getTarget());
+	}
+
 
 	public Target getTarget() {
 		switch (levelCounter) {
@@ -278,16 +310,21 @@ public class LiftSubsystem extends Subsystem {
 			return BOTTOM_HEIGHT;
 		} else {
 			double height = getUnadjustedLiftHeight();
-			if (height < MAX_HINGE_HEIGHT){
+			/*if (height > MAX_HINGE_HEIGHT){
 				realLiftHeightIs(MAX_HINGE_HEIGHT);
 				return MAX_HINGE_HEIGHT;
-			}
+			}*/
 			return height;
 		}
 	}
 
 	public double getUnadjustedArmAngle(){
 		return TALON_ENCODER_WHEEL_RATIO * Robot.positioningSubsystem.getTalonAngle(armTiltTalon) + RESTING_ANGLE + offsetArmAngle;
+	}
+
+	public void currentlAtInitial(){
+		realArmAngleIs(INITIAL_ANGLE);
+		realLiftHeightIs(INITIAL_HEIGHT);
 	}
 	
 	public double getArmAngle() {
@@ -326,6 +363,9 @@ public class LiftSubsystem extends Subsystem {
 		return !(tiltingArm || movingLift);
 		//return false;
 	}
+	public boolean isArmStatic(){
+		return !tiltingArm;
+	}
 
 	private void conditionalSetLiftSpeed(double speed, boolean b){
 		// if the boolean is true it will simply do a set lift speed. Otherwise, it will set it to zero
@@ -358,19 +398,22 @@ public class LiftSubsystem extends Subsystem {
 			System.out.println("preventing you from going up");
 			speed = Math.min(speed,0);
 		}
-		if (speed != 0){
-			if (Math.abs(getLiftHeight() - BOTTOM_HEIGHT) < GEAR_SHIFT_PRECISION){
-				Robot.gearShiftSubsystem.shiftUp();
-			} else {
-				Robot.gearShiftSubsystem.shiftDown();
-			}
-		}
+		movingLift = Math.abs(speed) > MINIMUM_CASCADE_INPUT;
 		setLiftSpeedRaw(speed + LIFT_STATIC_INPUT);
+	}
+
+	public void currentlyTiltingArm(){
+		tiltingArm = true;
 	}
 	
 	public void setArmTiltSpeed(double speed) {
+		//System.out.println("carriage input: " + speed);
+		tiltingArm = Math.abs(speed) > MINIMUM_CARRIAGE_INPUT;
+		if (armAtMaxAngle() && speed > 0){
+			speed = 0;
+		}
 		Robot.logger.addData(this.fileName, "arm input", speed, DefaultValue.Previous);
-		Robot.driveSubsystem.setMotorSpeed(armTiltTalon, speed, 1);
+		Robot.driveSubsystem.setMotorSpeed(armTiltTalon, speed + ARM_STATIC_INPUT, 1);
 		//System.out.println("current angle input:" + armTiltTalon.getMotorOutputPercent());
 	}
     

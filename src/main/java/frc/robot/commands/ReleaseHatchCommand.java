@@ -20,6 +20,6 @@ public class ReleaseHatchCommand extends InstantCommand {
         Robot.intakeSubsystem.closeArm();
         Robot.intakeSubsystem.updateHoldingHatch(false);
         Robot.driveSubsystem.setTankMultiplier(RELEASE_HATCH_DRIVE_MULTIPLIER);
-        Robot.gearShiftSubsystem.shiftUp();
+        //Robot.gearShiftSubsystem.shiftUp();
     }
 }

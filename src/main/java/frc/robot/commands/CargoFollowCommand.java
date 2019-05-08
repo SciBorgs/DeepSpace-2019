@@ -17,11 +17,12 @@ public class CargoFollowCommand extends CommandGroup {
     @Override protected void initialize() {
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
 		System.out.println("following cargo");
-		Robot.cargoFollowing.modeToCargo();
-        Robot.gearShiftSubsystem.shiftUp();
+		Robot.cargoFollowing.resetCargoPID();
+        //Robot.gearShiftSubsystem.shiftUp();
     }
 
 	@Override protected void execute(){
+		Robot.cargoFollowing.modeToCargo();
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
 		System.out.println("following cargo");
 		if (Robot.oi.cargoFollowButton.get()){
@@ -39,7 +40,7 @@ public class CargoFollowCommand extends CommandGroup {
 
 	@Override protected void end(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
-		Robot.gearShiftSubsystem.shiftDown();
+		//Robot.gearShiftSubsystem.shiftDown();
 		Robot.driveSubsystem.manualDriveMode();
 		//return;
 	}

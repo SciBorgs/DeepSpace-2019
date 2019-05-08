@@ -15,8 +15,10 @@ public class LevelCounterUpdateCommand extends InstantCommand {
     }
 
     @Override protected void execute() {
+        System.out.println("updating set point");
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         Robot.liftSubsystem.moveLevelCounter(change);
         Robot.liftSubsystem.updateLevelCounterWidget();
+        //(new LiftCommand()).start();
     }
 }

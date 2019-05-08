@@ -20,17 +20,16 @@ public class OI {
         
         // Left Stick
         lineupButton = new JoystickButton(rightStick, PortMap.JOYSTICK_LEFT_BUTTON);
-        lineupButton.whenPressed(new ResetLineupInfoCommand());
-        lineupButton.whileHeld(new LineupCommand());
+        lineupButton.whenPressed(new LineupCommand());
 
         liftLevelUpButton = new JoystickButton(leftStick, PortMap.JOYSTICK_CENTER_BUTTON);
         liftLevelUpButton.whenPressed(new LevelCounterUpdateCommand(LevelChange.Up));
-        liftLevelUpButton.whenPressed(new LiftCommand());
+        //liftLevelUpButton.whenPressed(new LiftCommand());
 
         liftLevelDownButton = new JoystickButton(leftStick, PortMap.JOYSTICK_TRIGGER);
         cargoFollowButton = liftLevelDownButton; // Only works if we are at the lowest level
         liftLevelDownButton.whenPressed(new LevelCounterUpdateCommand(LevelChange.Down));
-        liftLevelDownButton.whenPressed(new LiftCommand());
+        //liftLevelDownButton.whenPressed(new LiftCommand());
 
         // Right Stick
         //startZLiftButton = new JoystickButton(rightStick, PortMap.JOYSTICK_LEFT_BUTTON);
@@ -48,6 +47,7 @@ public class OI {
         hatchSecureModeButton = new JoystickButton(rightStick, PortMap.JOYSTICK_TRIGGER);
         hatchSecureModeButton.whenPressed(new ReleaseHatchCommand());
         hatchSecureModeButton.whenReleased(new SecureHatchCommand());
+        hatchSecureModeButton.whenPressed(new PopHatchCommand());
 
         armModeButton = new JoystickButton(rightStick, PortMap.JOYSTICK_CENTER_BUTTON);
         armModeButton.whenPressed(new ToggleArmCommand());

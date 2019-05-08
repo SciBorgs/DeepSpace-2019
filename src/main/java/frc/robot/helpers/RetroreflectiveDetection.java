@@ -19,12 +19,6 @@ public class RetroreflectiveDetection {
     public final static double SEPERATION = .31; // Distance between the centers about
     public final static double SOROUNDING_BOX_WIDTH = TAPE_WIDTH + TAPE_LENGTH * Math.sin(TAPE_ANGLE); // The horizontal distance between the top left and bottom right corners
 
-    public static void autoModeToRetroreflective() {
-        if (Robot.intakeSubsystem.holdingGamePiece()) {
-            modeToRetroreflective();
-        }
-    }
-
     public static void modeToRetroreflective() {
         Robot.limelightSubsystem.setCameraParams("ledMode", 3); // Force LED Off
         Robot.limelightSubsystem.setCameraParams("pipeline", 0); // Switch to Retroreflective Tape Pipeline
@@ -62,6 +56,9 @@ public class RetroreflectiveDetection {
         end.put("nth",(double) nth);
         end.put("a",get(t,"ta" + nth));
         double txPer = isContour(end) ? get(t,"tx" + nth) : 1.01; // B/c we sort by tx, we want the data that isn't a contour to be off to the side
+        System.out.println("tx" + nth + ": " + screenPercentToDegrees(txPer));
+        System.out.println("s" + nth + ": " + get(t, "tx" + nth));
+        System.out.println("a" + nth + ": " + end.get("a"));
         end.put("x",screenPercentToDegrees(txPer));
         end.put("y",get(t,"ty" + nth));
         end.put("s",get(t,"ts" + nth));
@@ -132,8 +129,11 @@ public class RetroreflectiveDetection {
         double shiftL = leftPair(values) ? shift0 : shift1; //Negative to the Left, Positive to the Right
         double shiftR = leftPair(values) ? shift1 : shift2;
         double shift = (shiftL + shiftR) / 2;
+        double tx0 = leftPair(values) ? values.get(0).get("x") : values.get(1).get("x");
+        double tx1 = leftPair(values) ? values.get(1).get("x") : values.get(2).get("x");
+        double angle = Math.atan(.5*(Math.tan(tx0) + Math.tan(tx1)));
         data.put("detected",1.0);
-        data.put("angle",Math.atan(shift/distance));
+        data.put("angle",angle);
         data.put("shiftL",shiftL);
         data.put("shiftR",shiftR);
         data.put("centerX",centerPos[0]);

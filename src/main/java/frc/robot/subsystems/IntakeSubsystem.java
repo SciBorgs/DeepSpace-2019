@@ -16,11 +16,11 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class IntakeSubsystem extends Subsystem {
 
     public TalonSRX intakeTalon;
-	public DoubleSolenoid scoopSolenoid, secureHatchSolenoid, armSolenoid;
+	public DoubleSolenoid scoopSolenoid, secureHatchSolenoid, armSolenoid, popHatchSolenoid;
 	private double lastHeld;
 	private Timer timer;
 	private final String filename = "IntakeSubsystem.java";
-	public final static double SUCK_SPEED = 1;
+	public final static double SUCK_SPEED = -1;
 	public final static double SPIT_SPEED = SUCK_SPEED * -1;
 	public final static double PICKUP_HATCH_SPEED = -0.3;
 	public final static double SUCK_IF_OUT_PERIOD = 1; // The amount of time that the intake should suck if the ball stops pressing the button in seconds
@@ -39,9 +39,10 @@ public class IntakeSubsystem extends Subsystem {
 		intakeTalon.enableCurrentLimit(true);
 		holdingHatch = false;
 		holdingCargo = false;
-		secureHatchSolenoid = new DoubleSolenoid(0, PortMap.SECURE_HATCH_SOLENOID[0], PortMap.SECURE_HATCH_SOLENOID[1]);
+		secureHatchSolenoid = new DoubleSolenoid(1, PortMap.SECURE_HATCH_SOLENOID[0], PortMap.SECURE_HATCH_SOLENOID[1]);
 		// scoopSolenoid = new DoubleSolenoid(PortMap.SCOOP_SOLENOID[0], PortMap.SCOOP_SOLENOID[1]);
 		armSolenoid = new DoubleSolenoid(0, PortMap.ARM_SOLENOID[0], PortMap.ARM_SOLENOID[1]);
+		popHatchSolenoid = new DoubleSolenoid(0, PortMap.POP_HATCH_SOLENOID[0], PortMap.POP_HATCH_SOLENOID[1]);
 	}
     
 	public void periodicLog(){
@@ -122,8 +123,19 @@ public class IntakeSubsystem extends Subsystem {
 		return holdingCargo() || holdingHatch();
 	}
 
+	public void extendPopHatchPistons(){
+		System.out.println("unlocking");
+		popHatchSolenoid.set(DoubleSolenoid.Value.kReverse);
+	}
+
+	public void retractPopHatchPistons(){
+		System.out.println("retracting");
+		popHatchSolenoid.set(DoubleSolenoid.Value.kForward);
+	}
+
     @Override
     protected void initDefaultCommand() {
         // LITTERALLY DIE
-    }
+	}
+	
 }
