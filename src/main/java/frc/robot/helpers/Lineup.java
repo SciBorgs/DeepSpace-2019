@@ -24,7 +24,7 @@ public class Lineup {
     }
     
     public void resetInfo(double forwardChange, double shiftChange, double angleChange) {
-    	lineAngle = Robot.positioningSubsystem.getAngle() + angleChange;
+    	lineAngle = Robot.robotPosition.getAngle() + angleChange;
     	desiredForward = forwardScale * forwardChange + parallelCoordinate();
         desiredShift = shiftChange + shiftCoordinate();
         shiftPID = new PID(.7,0,.13);
@@ -71,10 +71,10 @@ public class Lineup {
         return x * Math.cos(angle) + y * Math.sin(angle);
     }
     public double shiftCoordinate(){
-        return shift(Robot.positioningSubsystem.getX(),Robot.positioningSubsystem.getY(),lineAngle);
+        return shift(Robot.robotPosition.getX(),Robot.robotPosition.getY(),lineAngle);
     } // turns the line we are lining up with into the y-axis
     public double parallelCoordinate(){
-        return parallel(Robot.positioningSubsystem.getX(),Robot.positioningSubsystem.getY(),lineAngle);
+        return parallel(Robot.robotPosition.getX(),Robot.robotPosition.getY(),lineAngle);
     }
     
     public double shiftError(){
@@ -84,7 +84,7 @@ public class Lineup {
         return desiredForward - parallelCoordinate();
     }
     public double deltaTheta(){
-        return Robot.positioningSubsystem.getAngle() - lineAngle;
+        return Robot.robotPosition.getAngle() - lineAngle;
     }
 
     public Hashtable<String,Double> retroData(){

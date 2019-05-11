@@ -19,5 +19,9 @@ public class Pigeon {
         double[] yawPitchRoll = new double[3];
 		getPigeon().getYawPitchRoll(yawPitchRoll);
         return Math.toRadians(yawPitchRoll[0]); //raw goes from 0 to 22 and we want from 0 to 360
-	}
+    }
+    
+    public void setAngle(double angle){
+        pigeon.setYaw(angle);
+    }
 }
