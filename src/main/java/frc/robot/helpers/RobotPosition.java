@@ -34,7 +34,7 @@ public class RobotPosition {
     public static final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
     public static final double STATIC_POSITION_ERROR = .05;
     public static final double STATIC_ANGLE_ERROR = Math.toRadians(2);
-	private final String fileName = "liftSubsystem.java";
+	private final String fileName = "robotPosition.java";
 
     private ArrayList<Double> robotXs, robotYs, robotAngles;
     private Hashtable<CANSparkMax,ArrayList<Double>> wheelPositions;
@@ -43,15 +43,15 @@ public class RobotPosition {
     private Pigeon pigeon;
     private TalonSRX pigeonTalon;
     
-    public ArrayList<Double> getRobotXs(){return robotXs;}   
-    public ArrayList<Double> getRobotYs(){return robotYs;}
-    public ArrayList<Double> getAngles() {return robotAngles;}
+    public ArrayList<Double> getRobotXs(){return this.robotXs;}   
+    public ArrayList<Double> getRobotYs(){return this.robotYs;}
+    public ArrayList<Double> getAngles() {return this.robotAngles;}
 
     public void keepTrackOfWheel(CANSparkMax spark,ChassisSide chassisSide){
         // this allows the code to easily keep track of the position of motors for the chassis
-        wheelPositions.put(spark,new ArrayList<Double>());
-        negated.put(spark,chassisSide == ChassisSide.Left);
-        sparks.add(spark);
+        this.wheelPositions.put(spark,new ArrayList<Double>());
+        this.negated.put(spark,chassisSide == ChassisSide.Left);
+        this.sparks.add(spark);
     }
 
     public RobotPosition(){
@@ -95,11 +95,11 @@ public class RobotPosition {
     public double wheelPosition(CANSparkMax motor) {
         // Returns the encoder position of a spark
         double value = ENC_WHEEL_RATIO_LOW_GEAR * Robot.positioningSubsystem.getSparkAngle(motor) * WHEEL_RADIUS; // Should change to alternate low gear/high gear with whatever it is
-        return negated.get(motor) ? (0 - value) : value;
+        return this.negated.get(motor) ? (0 - value) : value;
     }
 
     public void recordWheelPosition(CANSparkMax spark){
-        trimAddWheelMeasurement(wheelPositions.get(spark),wheelPosition(spark));
+        trimAddWheelMeasurement(this.wheelPositions.get(spark),wheelPosition(spark));
     }
     public double wheelRotationChange(CANSparkMax spark){
         double lastWheelPosition = lastWheelPosition(spark);
@@ -116,19 +116,19 @@ public class RobotPosition {
         Utils.trimAdd(arr, val, ANGLE_MEASURMENTS);
     }
 
-    public double getAngle(){return Utils.last(robotAngles);}
-    public double getX()    {return Utils.last(robotXs);}
-    public double getY()    {return Utils.last(robotYs);}
+    public double getAngle(){return Utils.last(this.robotAngles);}
+    public double getX()    {return Utils.last(this.robotXs);}
+    public double getY()    {return Utils.last(this.robotYs);}
 
-    public boolean xStatic()    {return Utils.inRange(getX()    ,robotXs.get(0)    ,STATIC_POSITION_ERROR);}
-    public boolean yStatic()    {return Utils.inRange(getY()    ,robotYs.get(0)    ,STATIC_POSITION_ERROR);}
-    public boolean angleStatic(){return Utils.inRange(getAngle(),robotAngles.get(0),STATIC_ANGLE_ERROR);}
+    public boolean xStatic()    {return Utils.inRange(this.robotXs    ,STATIC_POSITION_ERROR);}
+    public boolean yStatic()    {return Utils.inRange(this.robotYs    ,STATIC_POSITION_ERROR);}
+    public boolean angleStatic(){return Utils.inRange(this.robotAngles,STATIC_ANGLE_ERROR);}
     public boolean robotStatic(){
         return xStatic() && yStatic() && angleStatic();
     }
     
     public double getAngularSpeed() {
-    	return Utils.averageRange(robotAngles) / INTERVAL_LENGTH;
+    	return Utils.averageRange(this.robotAngles) / INTERVAL_LENGTH;
     }
     
     public double lastWheelPosition(CANSparkMax spark)  {

@@ -30,7 +30,8 @@ public class Robot extends TimedRobot {
     public static Logger logger = new Logger();
     public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
-	public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
+    public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
+    public static RobotPosition robotPosition = new RobotPosition();
     public static LiftSubsystem liftSubsystem = new LiftSubsystem();
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -71,7 +72,7 @@ public class Robot extends TimedRobot {
 
     private TalonSRX[] getTalons() {
         List<TalonSRX> list = new ArrayList<>();
-        Collections.addAll(list, positioningSubsystem.getTalons());
+        Collections.addAll(list, robotPosition.getTalons());
         Collections.addAll(list, liftSubsystem.getTalons());
         Collections.addAll(list, intakeSubsystem.getTalons());
         return list.toArray(new TalonSRX[0]);
@@ -82,7 +83,7 @@ public class Robot extends TimedRobot {
         attemptsSinceLastLog = 0;
         // positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
-        positioningSubsystem.updatePositionTank();
+        robotPosition.updatePositionTank();
 
         //pneumaticsSubsystem.stopCompressor();
 
@@ -117,7 +118,7 @@ public class Robot extends TimedRobot {
  
     public void robotPeriodic() {
         Scheduler.getInstance().run();
-        positioningSubsystem.updatePositionTank();
+        robotPosition.updatePositionTank();
         //System.out.println("arm angle: " + Math.toDegrees(liftSubsystem.getArmAngle()));
         //System.out.println("unadjusted arm angle: " + Math.toDegrees(liftSubsystem.getUnadjustedArmAngle()));
         //positioningSubsystem.printPosition();

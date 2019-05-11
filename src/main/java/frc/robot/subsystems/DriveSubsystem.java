@@ -245,7 +245,7 @@ public class DriveSubsystem extends Subsystem {
         goalOmega = Utils.limitOutput(goalOmega, maxOmegaGoal[0]);
         //System.out.println("angular speed: " + Robot.positioningSubsystem.getAngularSpeed());
         //System.out.println("desired angular speed: " + goalOmega);
-        double error = goalOmega - Robot.positioningSubsystem.getAngularSpeed();
+        double error = goalOmega - Robot.robotPosition.getAngularSpeed();
         tankAnglePID.add_measurement(error);
         double inputDiff = tankAnglePID.getOutput();
         if (goalOmega == 0 && (Math.abs(inputDiff) < STRAIGHT_EQUAL_INPUT_DEADZONE)){

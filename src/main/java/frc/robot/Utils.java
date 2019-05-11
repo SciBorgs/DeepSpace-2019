@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 import java.util.*;
+import java.util.Collections;
 
 public class Utils{
 
@@ -27,6 +28,18 @@ public class Utils{
         // Trims an array down to a max size, starting from the start
         while (maxSize < arr.size())
             arr.remove(0);
+    }
+
+    public static boolean inRange(double n1, double n2, double error){
+        return Math.abs(n1 - n2) < error;
+    }
+
+    public static boolean inRange(ArrayList<Double> arr, double error){
+        return inRange(Collections.max(arr), Collections.min(arr), error);
+    }
+
+    public static double averageRange(ArrayList<Double> arr) {
+        return (last(arr) - arr.get(0)) / arr.size();
     }
 
     public static void trimAdd(ArrayList<Double> arr, double val, int maxSize) {
