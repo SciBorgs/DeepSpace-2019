@@ -39,7 +39,6 @@ public class Robot extends TimedRobot {
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     public static Following following = new Following();
     public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
-    public static ClimbSubsystem climbSubsystem = new ClimbSubsystem();
     public static Lineup lineup = new Lineup();
     private final ControlScheme xboxControl = new XboxControl();
     private final PowerDistributionPanel pdp = new PowerDistributionPanel();
