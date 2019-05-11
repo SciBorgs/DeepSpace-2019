@@ -87,7 +87,7 @@ public class Logger{
         addData(fileName, fieldName, fieldValue, DefaultValue.Previous);
     }
     public void logFinalPIDConstants(String fileName, String pidName, PID pid){
-        addData(fileName, pidName, "(" + pid.p + ", " + pid.i + ", " + pid.d + ")", DefaultValue.Previous);
+        addData(fileName, pidName, "(" + pid.getP() + ", " + pid.getI() + ", " + pid.getD() + ")", DefaultValue.Previous);
     }
     public void logCommandStatus(String fileName, CommandStatus commandStatus){
         String stringStatus = "";

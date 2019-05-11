@@ -9,75 +9,64 @@ public class PID {
 	Timer timer;
 	private ArrayList<Double> times, errors;
 	private int maxSize = 4;
-	public double p, i, d, u, integral, deadband;
-
-	public double getP() {
-		return p;
-	}
-
-	public double getI() {
-		return i;
-	}
-
-	public double getD() {
-		return d;
-	}
+	private double p, i, d, u, integral, deadband;
 
 	public PID(double p, double i, double d) {
-		timer = new Timer();
-		timer.start();
-		times  = new ArrayList<Double>();
-		errors = new ArrayList<Double>();
+		this.timer = new Timer();
+		this.timer.start();
+		this.times  = new ArrayList<Double>();
+		this.errors = new ArrayList<Double>();
 		this.p = p;
 		this.i = i;
 		this.d = d;
-		deadband = .0001;
+		this.deadband = .0001;
 	}
 	
-	public ArrayList<Double> getErrors(){return errors;}
-	public ArrayList<Double> getTimes() {return times;}
+	public ArrayList<Double> getErrors(){return this.errors;}
+	public ArrayList<Double> getTimes() {return this.times;}
 	public void reset() {
-		u = 0;
-		integral = 0;
-		times = new ArrayList<Double>();
-		errors = new ArrayList<Double>();
+		this.u = 0;
+		this.integral = 0;
+		this.times = new ArrayList<Double>();
+		this.errors = new ArrayList<Double>();
 	}
 	
 	public void setP(double p) {this.p = p;}
 	public void setI(double i) {this.i = i;}
 	public void setD(double d) {this.d = d;}
 	
-	public void setSmoother(int amount) {maxSize = amount;}
+	public double getP() {return this.p;}
+	public double getI() {return this.i;}
+	public double getD() {return this.d;}
+	
+	public void setSmoother(int maxSize) {this.maxSize = maxSize;}
 	  
 	public void add_measurement(double error) {
-		add_measurement_dd(error,errors.isEmpty() ? 0 : error - errors.get(0)); /// delta error is the dd if nothing is specified
-	}
-
-	public void add_measurement_dd(double error, double dd){
-		double dt;
-		if (errors.isEmpty()){
-			dt = 1;
-		} else  {
-			dt = timer.get() - times.get(0);
+		double dd_dt = 0;
+		if (!this.errors.isEmpty()) {
+			double dd = error - this.errors.get(0);
+			double dt = this.timer.get() - this.times.get(0);
+			add_measurement_with_derivative(error, dd / dt);
 		}
-		add_measurement_derivative(error, dd / dt);
+		add_measurement_with_derivative(error, dd_dt);
 	}
 	  
-	public void add_measurement_derivative(double error, double derivative) {
+	public void add_measurement_with_derivative(double error, double derivative) {
+		// This is split up into two functions because often we will have a better estimate of the derivative of the error
+		// The split up allows us to use that better estimate by calling this step directly
 		double currentTime = timer.get();
+		double dt = 0;
 		if (!(errors.isEmpty())) {
-		    double dt = currentTime - times.get(0);
-		    integral += .5 * dt * (error + errors.get(0));
-		    u = p * error + d * derivative + i * integral;
+			dt = currentTime - Utils.last(times);
 		}
-		else
-			u = p * error;
+		integral += .5 * dt * (error + errors.get(0));
+		u = p * error + d * derivative + i * integral;
 		Utils.trimAdd(times, currentTime, maxSize);
 		Utils.trimAdd(errors, error, maxSize);
 	}
 	  
 	public double getOutput() {return u;}
-	public double getLimitOutput(double limit) {return Utils.limitOutput(u,limit);}
+	public double getLimitedOutput(double limit) {return Utils.limitOutput(u,limit);}
 	public void setTolerance(double tolerance){deadband = tolerance;}
 	public boolean targetReached(){
 		return Math.abs(getOutput()) < deadband;

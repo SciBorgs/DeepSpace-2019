@@ -170,7 +170,7 @@ public class LiftSubsystem extends Subsystem {
 		boolean hitCorrectAngle  = Math.abs(error) < ANGLE_PRECISION;
 		//System.out.println("hit correct angle: " + hitCorrectAngle);
 		armPID.add_measurement(error);
-		double output = armPID.getLimitOutput(ARM_OUTPUT_LIMIT);
+		double output = armPID.getLimitedOutput(ARM_OUTPUT_LIMIT);
 		//System.out.println("output: " + output);
 		if (targetAngle == ARM_MAX_ANGLE){
 			output += MAX_CARRIAGE_ADDED_SPEED;
