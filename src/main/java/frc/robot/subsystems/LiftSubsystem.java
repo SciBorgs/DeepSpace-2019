@@ -301,7 +301,7 @@ public class LiftSubsystem extends Subsystem {
 	}
 
 	public double getUnadjustedLiftHeight(){
-		return SPARK_ENCODER_WHEEL_RATIO * Robot.positioningSubsystem.getSparkAngle(liftSpark) * LIFT_WHEEL_RADIUS + BOTTOM_HEIGHT + offsetCascadeHeight;
+		return SPARK_ENCODER_WHEEL_RATIO * Robot.encoderSubsystem.getSparkAngle(liftSpark) * LIFT_WHEEL_RADIUS + BOTTOM_HEIGHT + offsetCascadeHeight;
 	}
 
 	public double getLiftHeight() {
@@ -319,7 +319,7 @@ public class LiftSubsystem extends Subsystem {
 	}
 
 	public double getUnadjustedArmAngle(){
-		return TALON_ENCODER_WHEEL_RATIO * Robot.positioningSubsystem.getTalonAngle(armTiltTalon) + RESTING_ANGLE + offsetArmAngle;
+		return TALON_ENCODER_WHEEL_RATIO * Robot.encoderSubsystem.getTalonAngle(armTiltTalon) + RESTING_ANGLE + offsetArmAngle;
 	}
 
 	public void currentlAtInitial(){
@@ -332,13 +332,7 @@ public class LiftSubsystem extends Subsystem {
 			realArmAngleIs(INITIAL_ANGLE);
 			return INITIAL_ANGLE;
 		} else {
-			double angle = getUnadjustedArmAngle();
-			double armHeight = getLiftHeight() + Math.sin(angle) * ARM_LENGTH;
-			/* if (armHeight < 0) {
-				angle = Math.asin(- getLiftHeight() / ARM_LENGTH);
-				realArmAngleIs(angle);
-			} */
-			return angle;
+			return getUnadjustedArmAngle();
 		}
 	}
 

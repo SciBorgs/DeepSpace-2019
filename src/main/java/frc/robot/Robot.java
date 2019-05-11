@@ -30,7 +30,7 @@ public class Robot extends TimedRobot {
     public static Logger logger = new Logger();
     public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
-    public static PositioningSubsystem positioningSubsystem = new PositioningSubsystem();
+    public static EncoderSubsystem encoderSubsystem = new EncoderSubsystem();
     public static RobotPosition robotPosition = new RobotPosition();
     public static LiftSubsystem liftSubsystem = new LiftSubsystem();
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
@@ -57,7 +57,7 @@ public class Robot extends TimedRobot {
         intakeSubsystem.periodicLog();
         limelightSubsystem.periodicLog();
         pneumaticsSubsystem.periodicLog();
-        positioningSubsystem.periodicLog();
+        encoderSubsystem.periodicLog();
         liftSubsystem.periodicLog();
         lineup.periodicLog();
         following.periodicLog();
@@ -119,18 +119,6 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         Scheduler.getInstance().run();
         robotPosition.updatePositionTank();
-        //System.out.println("arm angle: " + Math.toDegrees(liftSubsystem.getArmAngle()));
-        //System.out.println("unadjusted arm angle: " + Math.toDegrees(liftSubsystem.getUnadjustedArmAngle()));
-        //positioningSubsystem.printPosition();
-        //System.out.println("pigeon raw: " + positioningSubsystem.getPigeon().getAngle());
-        //retroreflectiveSubsystem.modeToRetroreflectiveByLimitSwitch(); 
-        //gearShiftSubsystem.shiftGear(); 	
-        /*intakeSubsystem.secureCargo();
-        if (intakeSubsystem.holdingGamePiece()){
-            RetroreflectiveDetection.modeToRetroreflective();
-        } else {
-            following.modeToCargo();
-        }*/
     }
         
     public void autonomousInit() {

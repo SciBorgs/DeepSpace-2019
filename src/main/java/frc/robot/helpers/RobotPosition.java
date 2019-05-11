@@ -22,18 +22,16 @@ public class RobotPosition {
     public static enum ChassisSide {Left, Right};
 
     public static final double WHEEL_RADIUS = Utils.inchesToMeters(3);
-    public static final double ENC_WHEEL_RATIO_LOW_GEAR = 1 / 19.16; // 1 rotations of the wheel is 9.08 rotations of
-                                                                          // the encoder
+    public static final double ENC_WHEEL_RATIO_LOW_GEAR = 1 / 19.16; // 1 rotations of the wheel is 9.08 rotations of the encoder
     public static final double ENC_WHEEL_RATIO_HIGH_GEAR = 1 / 9.07;
     public static final double ROBOT_RADIUS = Utils.inchesToMeters(15.945); // Half the distance from wheel to wheel
-    public static final double ROBOT_WIDTH = 2 * ROBOT_RADIUS;
 
     public static final double ORIGINAL_ANGLE = Math.PI/2, ORIGINAL_X = 0, ORIGINAL_Y = 0;
-    public static final int WHEEL_MEASURMENTS = 5; // How many values we keep track of for each encoder
-    public static final int ANGLE_MEASURMENTS = 5;
+    public static final int WHEEL_MEASURMENTS = 5; // How many values we keep track of for each wheel
+    public static final int ANGLE_MEASURMENTS = 5; // How many values we keep track of for our angle
     public static final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
-    public static final double STATIC_POSITION_ERROR = .05;
-    public static final double STATIC_ANGLE_ERROR = Math.toRadians(2);
+    public static final double STATIC_POSITION_ERROR = .01 * WHEEL_MEASURMENTS; // If we have moved less than this, we say we aren't moving (in meters)
+    public static final double STATIC_ANGLE_ERROR = Math.toRadians(2); // If we have turned less than this, we say we aren't turning
 	private final String fileName = "robotPosition.java";
 
     private ArrayList<Double> robotXs, robotYs, robotAngles;
@@ -42,17 +40,6 @@ public class RobotPosition {
     private ArrayList<CANSparkMax> sparks;
     private Pigeon pigeon;
     private TalonSRX pigeonTalon;
-    
-    public ArrayList<Double> getRobotXs(){return this.robotXs;}   
-    public ArrayList<Double> getRobotYs(){return this.robotYs;}
-    public ArrayList<Double> getAngles() {return this.robotAngles;}
-
-    public void keepTrackOfWheel(CANSparkMax spark,ChassisSide chassisSide){
-        // this allows the code to easily keep track of the position of motors for the chassis
-        this.wheelPositions.put(spark,new ArrayList<Double>());
-        this.negated.put(spark,chassisSide == ChassisSide.Left);
-        this.sparks.add(spark);
-    }
 
     public RobotPosition(){
 
@@ -72,6 +59,17 @@ public class RobotPosition {
 
         resetPosition();
     }
+    
+    public ArrayList<Double> getRobotXs(){return this.robotXs;}   
+    public ArrayList<Double> getRobotYs(){return this.robotYs;}
+    public ArrayList<Double> getAngles() {return this.robotAngles;}
+
+    public void keepTrackOfWheel(CANSparkMax spark,ChassisSide chassisSide){
+        // this allows the code to easily keep track of the position of motors for the chassis
+        this.wheelPositions.put(spark,new ArrayList<Double>());
+        this.negated.put(spark,chassisSide == ChassisSide.Left);
+        this.sparks.add(spark);
+    }
 
     public TalonSRX[] getTalons() {
         return new TalonSRX[]{this.pigeonTalon};
@@ -80,6 +78,7 @@ public class RobotPosition {
     public Pigeon getPigeon(){return this.pigeon;}
     
     public void setPosition(double robotX, double robotY, double angle) {
+        // Here we update all of our most recent measurements so we are saying we are at this position now rather than when we did the previous measurement
         for (CANSparkMax spark : sparks) {recordWheelPosition(spark);}
         pigeon.setAngle(angle);
 
@@ -94,7 +93,7 @@ public class RobotPosition {
 
     public double wheelPosition(CANSparkMax motor) {
         // Returns the encoder position of a spark
-        double value = ENC_WHEEL_RATIO_LOW_GEAR * Robot.positioningSubsystem.getSparkAngle(motor) * WHEEL_RADIUS; // Should change to alternate low gear/high gear with whatever it is
+        double value = ENC_WHEEL_RATIO_LOW_GEAR * Robot.encoderSubsystem.getSparkAngle(motor) * WHEEL_RADIUS; // Should change to alternate low gear/high gear with whatever it is
         return this.negated.get(motor) ? (0 - value) : value;
     }
 
