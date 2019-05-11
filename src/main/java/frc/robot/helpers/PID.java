@@ -9,7 +9,7 @@ public class PID {
 	Timer timer;
 	private ArrayList<Double> times, errors;
 	private int maxSize = 4;
-	private double p, i, d, u, integral, deadband;
+	private double p, i, d, u, integral, negligibleOutput;
 
 	public PID(double p, double i, double d) {
 		this.timer = new Timer();
@@ -19,7 +19,7 @@ public class PID {
 		this.p = p;
 		this.i = i;
 		this.d = d;
-		this.deadband = .0001;
+		this.negligibleOutput = 0;
 	}
 	
 	public ArrayList<Double> getErrors(){return this.errors;}
@@ -57,18 +57,18 @@ public class PID {
 		double currentTime = timer.get();
 		double dt = 0;
 		if (!(errors.isEmpty())) {
-			dt = currentTime - Utils.last(times);
+			dt = currentTime - Utils.last(this.times);
 		}
-		integral += .5 * dt * (error + errors.get(0));
-		u = p * error + d * derivative + i * integral;
-		Utils.trimAdd(times, currentTime, maxSize);
-		Utils.trimAdd(errors, error, maxSize);
+		this.integral += .5 * dt * (error + this.errors.get(0));
+		this.u = this.p * error + this.d * derivative + this.i * this.integral;
+		Utils.trimAdd(this.times, currentTime, this.maxSize);
+		Utils.trimAdd(this.errors, error, this.maxSize);
 	}
 	  
 	public double getOutput() {return u;}
 	public double getLimitedOutput(double limit) {return Utils.limitOutput(u,limit);}
-	public void setTolerance(double tolerance){deadband = tolerance;}
-	public boolean targetReached(){
-		return Math.abs(getOutput()) < deadband;
+	public void setTolerance(double tolerance){this.negligibleOutput = tolerance;}
+	public boolean outputIsNegligible(){
+		return Math.abs(getOutput()) < this.negligibleOutput;
 	}
 }
