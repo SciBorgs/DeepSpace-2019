@@ -2,7 +2,7 @@ package frc.robot.helpers;
 
 import frc.robot.Robot;
 
-public class CargoFollowing {
+public class Following {
 	private final String fileName = "DriveSubsystem.java";
 
     PID ballFollowerPID, lineupPID;
@@ -11,7 +11,7 @@ public class CargoFollowing {
     public final static int lineupSmoother = 5;
     public final static double LINEUP_SHIFT = -.95;
 
-    public CargoFollowing() {
+    public Following() {
         resetCargoPID();
         resetLineupPID();
         Robot.logger.logFinalField(this.fileName, "ballFollowerP", ballFollowerP);

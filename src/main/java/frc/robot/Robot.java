@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-    public static CargoFollowing cargoFollowing = new CargoFollowing();
+    public static Following following = new Following();
     public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
     public static ClimbSubsystem climbSubsystem = new ClimbSubsystem();
     public static Lineup lineup = new Lineup();
@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
         positioningSubsystem.periodicLog();
         liftSubsystem.periodicLog();
         lineup.periodicLog();
-        cargoFollowing.periodicLog();
+        following.periodicLog();
     }
 
     private CANSparkMax[] getSparks() {
@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
     }
 
     public void robotInit() {
-        xboxControl.getShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, getSparks(), getTalons(), liftSubsystem.getLiftSpark(), cargoFollowing.getPid(), driveSubsystem.getTankAnglePID(), driveSubsystem.getMaxOmegaGoal(), liftSubsystem.getArmPID(), liftSubsystem.getLiftPID(), lineup.getShiftPID()).start();
+        xboxControl.getShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, getSparks(), getTalons(), liftSubsystem.getLiftSpark(), following.getPid(), driveSubsystem.getTankAnglePID(), driveSubsystem.getMaxOmegaGoal(), liftSubsystem.getArmPID(), liftSubsystem.getLiftPID(), lineup.getShiftPID()).start();
         attemptsSinceLastLog = 0;
         // positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
         System.out.println("roboinited");
@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
         //pneumaticsSubsystem.stopCompressor();
 
         intakeSubsystem.closeArm();
-        cargoFollowing.modeToCargo();
+        following.modeToCargo();
 
         logger.incrementPrevious("robot.java", "deploy", DefaultValue.Previous);
 
@@ -128,12 +128,12 @@ public class Robot extends TimedRobot {
         if (intakeSubsystem.holdingGamePiece()){
             RetroreflectiveDetection.modeToRetroreflective();
         } else {
-            cargoFollowing.modeToCargo();
+            following.modeToCargo();
         }*/
     }
         
     public void autonomousInit() {
-        cargoFollowing.modeToCargo();
+        following.modeToCargo();
         new TankDriveCommand().start();
         (new LiftCommand()).start();
         //(new LiftCommand()).start();
@@ -204,7 +204,7 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {
         //liftSubsystem.moveToTarget(Target.Initial);
         liftSubsystem.moveToInitial();
-        cargoFollowing.modeToCargo();
+        following.modeToCargo();
         //liftSubsystem.moveLiftToHeight(Utils.inchesToMeters(40));
         System.out.println("leftPOV: " + Robot.oi.leftStick.getPOV());
         //liftSubsystem.currentlAtInitial();

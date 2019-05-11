@@ -13,7 +13,7 @@ public class LineupCommand extends Command {
 
     @Override protected void initialize() {
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
-		Robot.cargoFollowing.resetLineupPID();
+		Robot.following.resetLineupPID();
         //Robot.gearShiftSubsystem.shiftUp();
     }
 
@@ -23,7 +23,7 @@ public class LineupCommand extends Command {
         //Robot.lineup.simpleResetInfo();
         //Robot.lineup.move();
         System.out.println("lining up");
-        Robot.cargoFollowing.lineup();
+        Robot.following.lineup();
         Robot.driveSubsystem.assistedDriveMode();
     }
 
@@ -36,7 +36,7 @@ public class LineupCommand extends Command {
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
         //Robot.gearShiftSubsystem.shiftDown();
         Robot.driveSubsystem.manualDriveMode();
-        Robot.cargoFollowing.modeToCargo();
+        Robot.following.modeToCargo();
 		//return;
 	}
 

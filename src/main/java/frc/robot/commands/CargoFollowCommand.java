@@ -17,17 +17,17 @@ public class CargoFollowCommand extends CommandGroup {
     @Override protected void initialize() {
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
 		System.out.println("following cargo");
-		Robot.cargoFollowing.resetCargoPID();
+		Robot.following.resetCargoPID();
         //Robot.gearShiftSubsystem.shiftUp();
     }
 
 	@Override protected void execute(){
-		Robot.cargoFollowing.modeToCargo();
+		Robot.following.modeToCargo();
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
 		System.out.println("following cargo");
 		if (Robot.oi.cargoFollowButton.get()){
 			Robot.driveSubsystem.assistedDriveMode();
-			Robot.cargoFollowing.followBall();
+			Robot.following.followBall();
 		} else {
 			Robot.driveSubsystem.manualDriveMode();
 		}
