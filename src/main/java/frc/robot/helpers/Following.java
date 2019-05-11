@@ -12,8 +12,8 @@ public class Following {
     public final static double LINEUP_SHIFT = -.95;
 
     public Following() {
-        resetCargoPID();
-        resetLineupPID();
+        ballFollowerPID = new PID(ballFollowerP, ballFollowerI, ballFollowerD);
+        lineupPID = new PID(lineupP, lineupI, lineupD);
         Robot.logger.logFinalField(this.fileName, "ballFollowerP", ballFollowerP);
         Robot.logger.logFinalField(this.fileName, "ballFollowerD", ballFollowerD);
     }
@@ -22,57 +22,29 @@ public class Following {
         return ballFollowerPID;
     }
 
-    public void resetCargoPID(){
-        ballFollowerPID = new PID(ballFollowerP, ballFollowerI, ballFollowerD);
-    }
-    public void resetLineupPID(){
-        lineupPID = new PID(lineupP, lineupI, lineupD);
-        lineupPID.setSmoother(lineupSmoother);
-    }
+    public void resetCargoPID() {ballFollowerPID.reset();}
+    public void resetLineupPID(){lineupPID.reset();}
 
-    public void followBallShifted() {
-        double tx = Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "tx");
-        double ta = Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "ta");
-        double shift = 2./5. * Math.tan(tx) * Math.sqrt(ta*Math.tan(Robot.limelightSubsystem.IMAGE_WIDTH)*Math.tan(Robot.limelightSubsystem.IMAGE_HEIGHT)) + Robot.limelightSubsystem.SHIFT;
-        if (Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "tv") == 1) {
-            ballFollowerPID.add_measurement(shift);
-        }
-        System.out.println("tx" + tx);
-        double turnMagnitude = ballFollowerPID.getOutput();
-        Robot.driveSubsystem.setTurningPercentage(turnMagnitude);
-        
-    }
-
-    public void followBallCentered(){
-    }
     public void followObject(PID pid, double tx){
-        if (Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "tv") == 1) {
-            System.out.println("tx: " + tx);
+        if (Robot.limelightSubsystem.contourExists()){
             pid.add_measurement(tx);
         }
         double turnMagnitude = pid.getOutput();
-        System.out.println("turn mag:" + turnMagnitude);
         Robot.driveSubsystem.setTurningPercentage(turnMagnitude);  
     }
 
     public void lineup(){
         modeToLineup();
-        //double tx = Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "tx");
         double txRadians = RetroreflectiveDetection.extractData().get("angle");
-        double tx = Math.toDegrees(txRadians);
-        tx += LINEUP_SHIFT;
-        System.out.println("tx: " + tx);
+        // The lineup_shift is to correct for the intake being off-centered
+        double tx = Math.toDegrees(txRadians) + LINEUP_SHIFT;
         followObject(lineupPID, tx);
     }
 
     public void followBall(){
         modeToCargo();
         double tx = Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "tx");
-        if (Robot.limelightSubsystem.SHIFT == 0){
-            followObject(ballFollowerPID, tx);
-        } else {
-            followBallShifted();
-        }
+        followObject(ballFollowerPID, tx);
     }
 
     public void periodicLog(){
@@ -80,8 +52,6 @@ public class Following {
 
     public void modeToCargo() {
         Robot.limelightSubsystem.setCameraParams("pipeline", 9); // Switch to Cargo Pipeline
-        double pipe = Robot.limelightSubsystem.getTableData(Robot.limelightSubsystem.getCameraTable(), "getpipe");
-        System.out.println("Pipe: " + pipe);
     }
     
     public void modeToLineup() {
