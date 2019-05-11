@@ -22,6 +22,9 @@ public class LimelightSubsystem extends Subsystem{
     public void setCameraParams(String param, int setting){ // According to API, should set a given param (camMode, pipeline... etc.)
         NetworkTableInstance.getDefault().getTable("limelight").getEntry(param).setNumber(setting);
     }
+    public boolean contourExists(){
+        return getTableData(getCameraTable(), "tv") == 1;
+    }
 
     public void periodicLog(){
     }
