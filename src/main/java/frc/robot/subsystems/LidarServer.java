@@ -17,6 +17,7 @@ import java.util.*;
  * values in each line. Each resulting {@link LidarPoint} is passed
  * to {@link LidarProcessor.addPoint(...)}.
  */
+// FILE HAS NOT BEEN CLEANED UP //
 public class LidarServer {
     private static LidarServer mInstance = null;
     private static BufferedReader mBufferedReader;

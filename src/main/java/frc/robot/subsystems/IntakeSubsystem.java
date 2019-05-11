@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DigitalInput;
 
+// FILE HAS NOT BEEN CLEANED UP //
 public class IntakeSubsystem extends Subsystem {
 
     public TalonSRX intakeTalon;

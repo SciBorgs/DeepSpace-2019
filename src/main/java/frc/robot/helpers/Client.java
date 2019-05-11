@@ -5,6 +5,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
+// FILE HAS NOT BEEN CLEANED UP //
 public class Client {
     private static final String SERVER_IP_ADDRESS = "server3"; // set to drive computer static ip/network name
     private static final int SERVER_PORT = 5803;

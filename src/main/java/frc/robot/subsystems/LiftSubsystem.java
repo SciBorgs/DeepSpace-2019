@@ -17,6 +17,7 @@ import frc.robot.logging.Logger.DefaultValue;
 
 import java.util.Hashtable;
 
+// FILE HAS NOT BEEN CLEANED UP //
 public class LiftSubsystem extends Subsystem {	
 
 	public CANSparkMax liftSpark;

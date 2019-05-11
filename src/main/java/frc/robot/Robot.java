@@ -25,6 +25,7 @@ import java.util.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+// FILE HAS NOT BEEN CLEANED UP //
 public class Robot extends TimedRobot {
     private String m_autoSelected;
     public static Logger logger = new Logger();

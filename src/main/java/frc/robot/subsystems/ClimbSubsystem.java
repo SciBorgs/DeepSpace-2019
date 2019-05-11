@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
+// FILE HAS NOT BEEN CLEANED UP //
 public class ClimbSubsystem extends Subsystem {
 
 	private DoubleSolenoid frontSolenoid, backSolenoid;

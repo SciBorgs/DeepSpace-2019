@@ -12,6 +12,7 @@ import java.io.*;
 import frc.robot.Utils;
 import frc.robot.helpers.PID;
 
+// FILE HAS NOT BEEN CLEANED UP //
 public class Logger{
 
     public enum DefaultValue {Previous, Empty} // If in a given cycle a value isn't set, what should that value be in the next row? Empty : "", Previous : the same as the previous value

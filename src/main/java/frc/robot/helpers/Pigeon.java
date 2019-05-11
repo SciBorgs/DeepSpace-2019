@@ -2,26 +2,21 @@ package frc.robot.helpers;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 public class Pigeon {
 
-    private PigeonIMU pigeon;
+    private PigeonIMU pigeonIMU;
     public Pigeon (TalonSRX talon) {
-        pigeon = new PigeonIMU(talon);
+        this.pigeonIMU = new PigeonIMU(talon);
     }
 
-    public PigeonIMU getPigeon() {
-        return pigeon;
-    }
+    public PigeonIMU getPigeonIMU() {return this.pigeonIMU;}
 
     public double getAngle(){
         double[] yawPitchRoll = new double[3];
-		getPigeon().getYawPitchRoll(yawPitchRoll);
+		this.pigeonIMU.getYawPitchRoll(yawPitchRoll);
         return Math.toRadians(yawPitchRoll[0]); //raw goes from 0 to 22 and we want from 0 to 360
     }
     
-    public void setAngle(double angle){
-        pigeon.setYaw(angle);
-    }
+    public void setAngle(double angle){this.pigeonIMU.setYaw(angle);}
 }

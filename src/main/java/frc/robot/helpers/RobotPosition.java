@@ -5,13 +5,9 @@ import frc.robot.Robot;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import javax.print.DocFlavor.CHAR_ARRAY;
-
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.PortMap;
 import frc.robot.Utils;
 import frc.robot.helpers.Pigeon;
