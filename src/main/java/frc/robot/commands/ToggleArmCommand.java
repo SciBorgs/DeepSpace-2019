@@ -14,8 +14,5 @@ public class ToggleArmCommand extends InstantCommand {
     @Override protected void execute(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         Robot.intakeSubsystem.toggleArm();
-        if (Robot.intakeSubsystem.isArmOpen()){
-            Robot.intakeSubsystem.updateHoldingHatch(true);
-        }
     }
 }

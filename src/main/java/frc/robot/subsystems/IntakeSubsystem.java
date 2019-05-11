@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import frc.robot.Utils;
 import frc.robot.PortMap;
-import frc.robot.Robot;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -11,14 +10,17 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DigitalInput;
 
-// FILE HAS NOT BEEN CLEANED UP //
 public class IntakeSubsystem extends Subsystem {
 
     public TalonSRX intakeTalon;
-	public DoubleSolenoid scoopSolenoid, secureHatchSolenoid, armSolenoid, popHatchSolenoid;
-	private double lastHeld;
+	public DoubleSolenoid secureHatchSolenoid, armSolenoid, popHatchSolenoid;
+	public static final DoubleSolenoid.Value RELEASE_HATCH_VALUE = Value.kReverse;
+	public static final DoubleSolenoid.Value SECURE_HATCH_VALUE = Utils.oppositeDoubleSolenoidValue(RELEASE_HATCH_VALUE);
+	public static final DoubleSolenoid.Value OPEN_ARM_VALUE = Value.kForward;
+	public static final DoubleSolenoid.Value CLOSE_ARM_VALUE = Utils.oppositeDoubleSolenoidValue(OPEN_ARM_VALUE);
+	public static final DoubleSolenoid.Value EXTEND_POP_PISTONS = Value.kForward;
+	public static final DoubleSolenoid.Value RETRACT_POP_PISTONS = Utils.oppositeDoubleSolenoidValue(EXTEND_POP_PISTONS);
 	private Timer timer;
 	private final String filename = "IntakeSubsystem.java";
 	public final static double SUCK_SPEED = -1;
@@ -26,112 +28,60 @@ public class IntakeSubsystem extends Subsystem {
 	public final static double PICKUP_HATCH_SPEED = -0.3;
 	public final static double SUCK_IF_OUT_PERIOD = 1; // The amount of time that the intake should suck if the ball stops pressing the button in seconds
 	public final static double SECURE_CARGO_SPEED = SUCK_SPEED / 2;
-	private boolean holdingHatch;
 	private boolean holdingCargo;
 
     public IntakeSubsystem() {
-		timer = new Timer();
-		timer.start();
-		lastHeld = timer.get() - SUCK_IF_OUT_PERIOD;
-		intakeTalon = new TalonSRX(PortMap.INTAKE_TALON);
-		intakeTalon.setNeutralMode(NeutralMode.Brake);
-		intakeTalon.configContinuousCurrentLimit(10);
-		intakeTalon.configPeakCurrentLimit(10);
-		intakeTalon.enableCurrentLimit(true);
-		holdingHatch = false;
-		holdingCargo = false;
-		secureHatchSolenoid = new DoubleSolenoid(1, PortMap.SECURE_HATCH_SOLENOID[0], PortMap.SECURE_HATCH_SOLENOID[1]);
-		// scoopSolenoid = new DoubleSolenoid(PortMap.SCOOP_SOLENOID[0], PortMap.SCOOP_SOLENOID[1]);
-		armSolenoid = new DoubleSolenoid(0, PortMap.ARM_SOLENOID[0], PortMap.ARM_SOLENOID[1]);
-		popHatchSolenoid = new DoubleSolenoid(0, PortMap.POP_HATCH_SOLENOID[0], PortMap.POP_HATCH_SOLENOID[1]);
+		this.timer = new Timer();
+		this.timer.start();
+		this.intakeTalon = new TalonSRX(PortMap.INTAKE_TALON);
+		this.intakeTalon.setNeutralMode(NeutralMode.Brake);
+		this.intakeTalon.configContinuousCurrentLimit(10);
+		this.intakeTalon.configPeakCurrentLimit(10);
+		this.intakeTalon.enableCurrentLimit(true);
+		this.holdingCargo = false;
+		this.secureHatchSolenoid = new DoubleSolenoid(1, PortMap.SECURE_HATCH_SOLENOID[0], PortMap.SECURE_HATCH_SOLENOID[1]);
+		this.armSolenoid = new DoubleSolenoid(0, PortMap.ARM_SOLENOID[0], PortMap.ARM_SOLENOID[1]);
+		this.popHatchSolenoid = new DoubleSolenoid(0, PortMap.POP_HATCH_SOLENOID[0], PortMap.POP_HATCH_SOLENOID[1]);
 	}
     
 	public void periodicLog(){
 	}
 
 	public TalonSRX[] getTalons() {
-    	return new TalonSRX[]{intakeTalon};
+    	return new TalonSRX[]{this.intakeTalon};
 	}
 
-	public void scoopUp() {
-		scoopSolenoid.set(Value.kForward);
-	}
-	public void scoopDown(){
-		scoopSolenoid.set(Value.kReverse);
-	}
+	public void releaseHatch(){this.secureHatchSolenoid.set(RELEASE_HATCH_VALUE);}
+	public void secureHatch() {this.secureHatchSolenoid.set(SECURE_HATCH_VALUE);}
 
-	public void releaseHatch(){
-		System.out.println("releasing Hatch");
-		secureHatchSolenoid.set(Value.kReverse);
-		System.out.println("solenoid: " + secureHatchSolenoid.get());
-	}
-	public void secureHatch(){
-		System.out.println("Securing Hatch");
-		secureHatchSolenoid.set(Value.kForward);
-		System.out.println("solenoid: " + secureHatchSolenoid.get());
-	}
+	public void openArm() {this.armSolenoid.set(OPEN_ARM_VALUE);}
+	public void closeArm(){this.armSolenoid.set(CLOSE_ARM_VALUE);}
+	public void toggleArm(){Utils.toggleDoubleSolenoid(this.armSolenoid);}
 
-	public void openArm(){
-		System.out.println("Opening Arm");
-		armSolenoid.set(Value.kForward);
-	}
-	public void closeArm(){
-		System.out.println("Closing Arm");
-		armSolenoid.set(Value.kReverse);
-	}
-	public boolean isArmOpen(){
-		return armSolenoid.get() == Value.kForward;
-	}
-	public void toggleArm(){
-		if (isArmOpen()){
-			closeArm();
-		} else {
-			openArm();
-		}
-	}
-
-	public void updateHoldingHatch(boolean holdingHatch){
-		this.holdingHatch = holdingHatch;
-	}
-
-	public boolean holdingHatch(){ // assumes when the driver tries to secure a hatch, the robot actually has it
-		return holdingHatch;
-	}
+	public void extendPopHatchPistons() {this.popHatchSolenoid.set(EXTEND_POP_PISTONS);}
+	public void retractPopHatchPistons(){this.popHatchSolenoid.set(RETRACT_POP_PISTONS);}
 
 	public boolean holdingCargo() { // assumes when the drvier tries to intake cargo, the robot actually has it
-		return holdingCargo;
+		return this.holdingCargo;
 	}
 
 	public void setIntakeSpeed(double speed){
-		Utils.setTalon(intakeTalon, speed);
+		Utils.setTalon(this.intakeTalon, speed);
 	}
 
     public void suck() {
-		holdingCargo = true; // We assume that sucknig means we have the cargo. W/o limit switches it is the best we can do
+		this.holdingCargo = true; // We assume that sucknig means we have the cargo. W/o limit switches it is the best we can do
         setIntakeSpeed(SUCK_SPEED);
     }
 
     public void spit() {
-		holdingCargo = false;
+		this.holdingCargo = false;
         setIntakeSpeed(SPIT_SPEED);
 	}
 
 	public void secureCargo() {
+		this.holdingCargo = true;
 		setIntakeSpeed(SECURE_CARGO_SPEED);
-	}
-
-	public boolean holdingGamePiece() {
-		return holdingCargo() || holdingHatch();
-	}
-
-	public void extendPopHatchPistons(){
-		System.out.println("unlocking");
-		popHatchSolenoid.set(DoubleSolenoid.Value.kReverse);
-	}
-
-	public void retractPopHatchPistons(){
-		System.out.println("retracting");
-		popHatchSolenoid.set(DoubleSolenoid.Value.kForward);
 	}
 
     @Override

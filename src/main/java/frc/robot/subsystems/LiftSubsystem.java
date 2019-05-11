@@ -136,14 +136,11 @@ public class LiftSubsystem extends Subsystem {
 	private double getTargetHeight(Target target){
 		double hatchTargetHeight = LOW_HATCH_HEIGHT + HATCH_POSITIONS.get(target) * ROCKET_HATCH_GAP;
 		double cargoTargetHeight = hatchTargetHeight + HATCH_TO_CARGO_DEPOSIT;
-		double defaultTargetHeight = hatchTargetHeight;
-		// Target height will go to the defualt HATCH_HEIGHT if it is holding the hatch, otherwise it will add the gap b/w the hatch and the cargo deposit
-		if (Robot.intakeSubsystem.holdingHatch()) {
-			return hatchTargetHeight;
-		} else if (Robot.intakeSubsystem.holdingCargo()) {
+		// Target height will go to the defualt cargo_height if it is holding a cargo, otherwise it will go to the hatch height
+		if (Robot.intakeSubsystem.holdingCargo()) {
 			return cargoTargetHeight;
 		} else {
-			return defaultTargetHeight;
+			return hatchTargetHeight;
 		}
 	}
 
