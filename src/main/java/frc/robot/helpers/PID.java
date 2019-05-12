@@ -65,7 +65,7 @@ public class PID {
 		Utils.trimAdd(this.errors, error, this.maxSize);
 	}
 	  
-	public double getOutput() {return u;}
+	public double getOutput() {return this.u;}
 	public double getLimitedOutput(double limit) {return Utils.limitOutput(u,limit);}
 	public void setTolerance(double tolerance){this.negligibleOutput = tolerance;}
 	public boolean outputIsNegligible(){
