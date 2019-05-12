@@ -156,14 +156,6 @@ public class Robot extends TimedRobot {
             //System.out.println("stopping");
             Robot.liftSubsystem.setLiftSpeed(0);
         }
-        if(Robot.oi.rightStick.getPOV() == 0){
-            Robot.liftSubsystem.setArmTiltSpeed(MANUAL_CARRIAGE_INPUT);
-        }else if(Robot.oi.rightStick.getPOV() == 180){
-            Robot.liftSubsystem.setArmTiltSpeed(-MANUAL_CARRIAGE_INPUT);
-        }else if(liftSubsystem.manualArmMode){
-        //}else{
-            Robot.liftSubsystem.setArmTiltSpeed(0);
-        }
     }
 
     public void teleopPeriodic() {
