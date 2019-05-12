@@ -35,13 +35,13 @@ public class GearShiftSubsystem extends Subsystem {
         if(speed < LOWER_LOW_GEAR_THRESHOLD) {shiftUp();}
     }
 
-    public boolean currentlyInHighGear(){return gearShiftSolenoid.get() == HIGH_GEAR_VALUE;}
-    public boolean currentlyInLowGear() {return gearShiftSolenoid.get() == LOW_GEAR_VALUE;}
+    public boolean currentlyInHighGear(){return this.gearShiftSolenoid.get() == HIGH_GEAR_VALUE;}
+    public boolean currentlyInLowGear() {return this.gearShiftSolenoid.get() == LOW_GEAR_VALUE;}
 
-    public void shiftUp()  {gearShiftSolenoid.set(HIGH_GEAR_VALUE);}
-    public void shiftDown(){gearShiftSolenoid.set(LOW_GEAR_VALUE);}
+    public void shiftUp()  {this.gearShiftSolenoid.set(HIGH_GEAR_VALUE);}
+    public void shiftDown(){this.gearShiftSolenoid.set(LOW_GEAR_VALUE);}
 
-    public void toggleGear() {Utils.toggleDoubleSolenoid(gearShiftSolenoid);}
+    public void toggleGear() {Utils.toggleDoubleSolenoid(this.gearShiftSolenoid);}
 
     @Override
     protected void initDefaultCommand() {
