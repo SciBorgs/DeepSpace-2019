@@ -5,12 +5,10 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-// FILE HAS NOT BEEN CLEANED UP //
 public class LimelightSubsystem extends Subsystem{
 
     public final static double IMAGE_WIDTH = Math.toRadians(27.); // In degrees
     public final static double IMAGE_HEIGHT = Math.toRadians(20.5); // In degrees
-    public final static double SHIFT = 0; // In meters away from the center
 	private final String filename = "LimelightSubsystem.java";
 
     public NetworkTable getCameraTable(){
