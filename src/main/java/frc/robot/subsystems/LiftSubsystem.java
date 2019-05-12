@@ -230,11 +230,9 @@ public class LiftSubsystem extends Subsystem {
 	}
 
 	public void setLevelCounter(int level) {
-		//System.out.println("level: " + level);
 		levelCounter = level;
 		levelCounter = Math.max(levelCounter, MIN_LEVEL);
 		levelCounter = Math.min(levelCounter, MAX_LEVEL);
-		//System.out.println("actual level: " + levelCounter);
 		liftPID.reset();
 		armPID.reset();
 	}
