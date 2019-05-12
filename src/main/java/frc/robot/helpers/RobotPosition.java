@@ -27,12 +27,12 @@ public class RobotPosition {
     public static final int ANGLE_MEASURMENTS = 5; // How many values we keep track of for our angle
     public static final double INTERVAL_LENGTH = .02; // Seconds between each tick for commands
     public static final double STATIC_POSITION_ERROR = .01 * WHEEL_MEASURMENTS; // If we have moved less than this, we say we aren't moving (in meters)
-    public static final double STATIC_ANGLE_ERROR = Math.toRadians(2); // If we have turned less than this, we say we aren't turning
+    public static final double STATIC_ANGLE_ERROR = Math.toRadians(.4) * ANGLE_MEASURMENTS; // If we have turned less than this, we say we aren't turning
 	private final String fileName = "robotPosition.java";
 
     private ArrayList<Double> robotXs, robotYs, robotAngles;
     private Hashtable<CANSparkMax,ArrayList<Double>> wheelPositions;
-    private Hashtable<CANSparkMax,Boolean> negated;
+    private Hashtable<CANSparkMax,Boolean> negated; // The motors on the left have negated inputs/outputs. This keeps track of that
     private ArrayList<CANSparkMax> sparks;
     private Pigeon pigeon;
     private TalonSRX pigeonTalon;

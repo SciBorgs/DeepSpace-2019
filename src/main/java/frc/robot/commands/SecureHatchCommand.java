@@ -12,7 +12,7 @@ public class SecureHatchCommand extends InstantCommand {
 
     @Override protected void execute(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
-        Robot.driveSubsystem.defaultTankMultilpier();
+        Robot.driveSubsystem.defaultDriveMultilpier();
         Robot.intakeSubsystem.secureHatch();
         //Robot.gearShiftSubsystem.shiftDown();
     }

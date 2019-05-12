@@ -25,6 +25,14 @@ public class Utils{
         return arr.get(arr.size() - 1);
     }
 
+    public static int signOf(double value){
+        if (value == 0){
+            return 0;
+        } else {
+            return (int) (Math.abs(value) / value);
+        }
+    }
+
     public static void trimIf(ArrayList<Double> arr, int maxSize) {
         // Trims an array down to a max size, starting from the start
         while (maxSize < arr.size())

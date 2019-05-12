@@ -48,7 +48,7 @@ public class ShuffleboardCommand extends Command {
     private final ControlButton buttonToggle;
     private final PID cargoPID;
     private final PID drivePID;
-    private final double[] maxOmegaGoal;
+    private final double maxOmegaGoal;
     private final PID liftArmPID;
     private final PID liftLiftPID;
     private final PID lineupPID;
@@ -59,7 +59,7 @@ public class ShuffleboardCommand extends Command {
     // needed for cargo selection
     private int cargoSelection;
 
-    public ShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, ControlButton buttonLeft, ControlButton buttonRight, ControlButton buttonToggle, PID cargoPID, PID drivePID, double[] maxOmegaGoal, PID liftArmPID, PID liftLiftPID,  PID lineupPID) {
+    public ShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, ControlButton buttonLeft, ControlButton buttonRight, ControlButton buttonToggle, PID cargoPID, PID drivePID, double maxOmegaGoal, PID liftArmPID, PID liftLiftPID,  PID lineupPID) {
         this.pdp = pdp;
         this.liftSubsystem = liftSubsystem;
         this.pneumaticsSubsystem = pneumaticsSubsystem;
@@ -220,7 +220,7 @@ public class ShuffleboardCommand extends Command {
         SmartDashboard.putNumber("driveP", drivePID.getP());
         SmartDashboard.putNumber("driveI", drivePID.getI());
         SmartDashboard.putNumber("driveD", drivePID.getD());
-        SmartDashboard.putNumber("driveMaxOmegaGoal", maxOmegaGoal[0]);
+        SmartDashboard.putNumber("driveMaxOmegaGoal", maxOmegaGoal);
         SmartDashboard.putNumber("liftArmP", liftArmPID.getP());
         SmartDashboard.putNumber("liftArmI", liftArmPID.getI());
         SmartDashboard.putNumber("liftArmD", liftArmPID.getD());
@@ -239,7 +239,6 @@ public class ShuffleboardCommand extends Command {
         drivePID.setP(SmartDashboard.getNumber("driveP", 0.0));
         drivePID.setI(SmartDashboard.getNumber("driveI", 0.0));
         drivePID.setD(SmartDashboard.getNumber("driveD", 0.0));
-        maxOmegaGoal[0] = SmartDashboard.getNumber("driveMaxOmegaGoal", 0.0);
         liftArmPID.setP(SmartDashboard.getNumber("liftArmP", 0.0));
         liftArmPID.setI(SmartDashboard.getNumber("liftArmI", 0.0));
         liftArmPID.setD(SmartDashboard.getNumber("liftArmD", 0.0));

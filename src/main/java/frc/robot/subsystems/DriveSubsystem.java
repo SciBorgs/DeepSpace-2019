@@ -14,12 +14,11 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-// FILE HAS NOT BEEN CLEANED UP //
 public class DriveSubsystem extends Subsystem {
     // Define tested error values here
     double TANK_ANGLE_P = .075, TANK_ANGLE_D = 0.0, TANK_ANGLE_I = 0;
-    double goalOmegaConstant = 8; // Change this to change angle
-    private double[] maxOmegaGoal = {1 * goalOmegaConstant}; // must be an array so it's mutable
+    double GOAL_OMEGA_CONSTANT = 8; // Change this to change angle
+    private double MAX_OMEGA_GOAL = 1 * GOAL_OMEGA_CONSTANT;
     public CANSparkMax lf, lm, lb, rf, rm, rb;
 	private final String fileName = "DriveSubsystem.java";
 
@@ -30,14 +29,8 @@ public class DriveSubsystem extends Subsystem {
     private static final double EXPONENT = 10; // x^exponent to in the graph. x=0 is linear. x>0 gives more control in low inputs
     private static final double MAX_JOYSTICK = 1; // max joystick output value
     private static final double DEFAULT_MAX_JERK = 0.1; // Doesn't allow a motor's output to change by more than this in one tick
-    private static final double GEAR_SHIFT_OFFSET = 0.3;
-    private static final double GEAR_SHIFT_DEADZONE = 0.1;
-    private static final double GEAR_SHIFT_FUNC_POWER = 1.4;
-    private static final double HIGH_REDUCTION_END = 0.8;
-    private static final double LOW_REDUCTION_START = 0.4;
     private static final double STRAIGHT_DEADZONE = 0.15;
     private static final double STRAIGHT_EQUAL_INPUT_DEADZONE = 0; // If goal Omega is 0 and our regular input diff magnitude is less than this, the input diff goes to 0
-    private boolean highReduction = true;
     private PID tankAnglePID;
     public boolean assisted = false;
     public double driveMultiplier = 1;
@@ -51,37 +44,28 @@ public class DriveSubsystem extends Subsystem {
         return new CANSparkMax(port, MotorType.kBrushless);
     }
 
-    public PID getTankAnglePID() {
-        return tankAnglePID;
-    }
+    public PID getTankAnglePID()   {return this.tankAnglePID;}
+    public double getMaxOmegaGoal(){return MAX_OMEGA_GOAL;}
 
-    public double[] getMaxOmegaGoal() {
-        return maxOmegaGoal;
-    }
-
-
-    /**
-     * Initialize robot's motors
-     */
     public DriveSubsystem(){
 
 
-		lf = newMotorObject(PortMap.LEFT_FRONT_SPARK);
-		lm = newMotorObject(PortMap.LEFT_MIDDLE_SPARK);
-        lb = newMotorObject(PortMap.LEFT_BACK_SPARK);
+		this.lf = newMotorObject(PortMap.LEFT_FRONT_SPARK);
+		this.lm = newMotorObject(PortMap.LEFT_MIDDLE_SPARK);
+        this.lb = newMotorObject(PortMap.LEFT_BACK_SPARK);
         
-		rf = newMotorObject(PortMap.RIGHT_FRONT_SPARK);
-		rm = newMotorObject(PortMap.RIGHT_MIDDLE_SPARK);
-        rb = newMotorObject(PortMap.RIGHT_BACK_SPARK);
+		this.rf = newMotorObject(PortMap.RIGHT_FRONT_SPARK);
+		this.rm = newMotorObject(PortMap.RIGHT_MIDDLE_SPARK);
+        this.rb = newMotorObject(PortMap.RIGHT_BACK_SPARK);
 
-        lm.follow(lf);
-        lb.follow(lf);
+        this.lm.follow(this.lf);
+        this.lb.follow(this.lf);
 
-        rm.follow(rf);
-        rb.follow(rf);
+        this.rm.follow(this.rf);
+        this.rb.follow(this.rf);
 
-        tankAnglePID = new PID(TANK_ANGLE_P, TANK_ANGLE_I, TANK_ANGLE_D);
-        Robot.logger.logFinalPIDConstants(this.fileName, "tank angle PID", tankAnglePID);
+        this.tankAnglePID = new PID(TANK_ANGLE_P, TANK_ANGLE_I, TANK_ANGLE_D);
+        Robot.logger.logFinalPIDConstants(this.fileName, "tank angle PID", this.tankAnglePID);
         Robot.logger.logFinalField(this.fileName, "input deadzone", INPUT_DEADZONE);
 	}
     
@@ -92,18 +76,6 @@ public class DriveSubsystem extends Subsystem {
         return new CANSparkMax[]{lf, lm, lb, rf, rm, rb};
     }
 
-    /**
-     * Processes a given joystick axis value to match the given deadzone and shape as determined by the given exponent.
-     *
-     * The equations were made by Bowen.
-     * @param x raw axis input
-     * @return the processed axis value. Send this to the motors.
-     */
-    private double processAxis(double x) {
-        double sign = (x == 0) ? 1 : (Math.abs(x) / x);
-        return sign * (MAX_JOYSTICK / axisFunction(MAX_JOYSTICK)) * axisFunction(Math.abs(x));
-    }
-
     // Used by processAxis as the main function of the curves.
     private double axisFunction(double x) {
         if (x < INPUT_DEADZONE){
@@ -112,66 +84,30 @@ public class DriveSubsystem extends Subsystem {
         double adjustedX = x - ALEJANDROS_CONSTANT;
         return Math.pow(adjustedX, EXPONENT) * ((adjustedX) / (MAX_JOYSTICK - ALEJANDROS_CONSTANT));
     }
+
+    /**
+     * Processes a given joystick axis value to match the given deadzone and shape as determined by the given exponent.
+     *
+     * The equations were made by Bowen.
+     * @param x raw axis input
+     * @return the processed axis value. Send this to the motors.
+     */
+    private double processAxis(double x) {
+        return Utils.signOf(x) * Utils.signOf(MAX_JOYSTICK) * axisFunction(Math.abs(x));
+    }
     
     public double processStick(Joystick stick){
         return processAxis(-stick.getY());
     }
 
-    public double processFunc(double x){
-        return (1 + GEAR_SHIFT_OFFSET) * Math.pow(Math.abs(x - GEAR_SHIFT_DEADZONE), GEAR_SHIFT_FUNC_POWER)
-                / Math.pow((1 - GEAR_SHIFT_DEADZONE),GEAR_SHIFT_FUNC_POWER);
-    }
-
-    public double processStickHighReduction(double input){
-        highReduction = true;
-        if(input >= GEAR_SHIFT_DEADZONE){
-            return processFunc(input);
-        }else if(input <= -GEAR_SHIFT_DEADZONE){
-            return -Math.abs(processFunc(input + 2 * GEAR_SHIFT_DEADZONE));
-        }
-        return 0;
-    }
-
-    public double processStickLowReduction(double input){
-        highReduction = false;
-        if(input >= LOW_REDUCTION_START){
-            return processFunc(input) - GEAR_SHIFT_OFFSET;
-        }else if(input <= -LOW_REDUCTION_START){
-            return -Math.abs(processFunc(input + 2 * GEAR_SHIFT_DEADZONE)) + GEAR_SHIFT_OFFSET;
-        }else{
-            System.out.println("[ [ [ LOW REDUCTION JOYSTICK ERROR ] ] ]");
-        }
-        return 0;
-    }
-
-    public double processStickGearShift(Joystick stick){
-        double input = -stick.getY();
-        if(highReduction){
-            if(Math.abs(input) >= HIGH_REDUCTION_END){
-                return processStickLowReduction(input);
-            }
-            return processStickHighReduction(input);
-        }else{
-            if(Math.abs(input) <= LOW_REDUCTION_START){
-                return processStickHighReduction(input);
-            }
-            return processStickLowReduction(input);
-        }
-    }
-
-    public void assistedDriveMode(){assisted = true;}
-    public void manualDriveMode(){assisted = false;}
+    public void assistedDriveMode(){this.assisted = true;}
+    public void manualDriveMode()  {this.assisted = false;}
 
     public void setSpeed(Joystick leftStick, Joystick rightStick) {
-        if (!assisted) {
-            double left  = processStick(leftStick);
-            double right = processStick(rightStick);
-            //double left = processStickGearShift(leftStick);
-            //double right = processStickGearShift(rightStick);
-
-            //System.out.println("Left: " + leftStick.getY() + " " + left + " Right: " + rightStick.getY() + " " + right);
-            setSpeedTankAngularControl(left, right);
-            //setSpeedTank(left,right);
+        if (!this.assisted) {
+            double leftInput  = processStick(leftStick);
+            double rightInput = processStick(rightStick);
+            setSpeedTankAngularControl(leftInput, rightInput);
         }
     }
 	
@@ -180,10 +116,11 @@ public class DriveSubsystem extends Subsystem {
     }
 
     public double avgMotorInput(){
-        return (lf.get() + rf.get())/2.0;
+        return (this.lf.get() + this.rf.get())/2.0;
     }
 
     public double limitJerk(double oldSpeed, double newSpeed, double maxJerk){
+        // Makes sure that the change in input for a motor is not more than maxJerk
         if (oldSpeed - newSpeed > maxJerk){
             return oldSpeed - maxJerk;
         } else if (newSpeed - oldSpeed > maxJerk){
@@ -193,78 +130,62 @@ public class DriveSubsystem extends Subsystem {
         }
     }
 
-    public void setMotorSpeed(CANSparkMax motor, double speed){
-        setMotorSpeed(motor, speed, DEFAULT_MAX_JERK);
-    }
+    public void setMotorSpeed(CANSparkMax motor, double speed){setMotorSpeed(motor, speed, DEFAULT_MAX_JERK);}
+    public void setMotorSpeed(TalonSRX motor, double speed)   {setMotorSpeed(motor, speed, DEFAULT_MAX_JERK);}
+
     public void setMotorSpeed(CANSparkMax motor, double speed, double maxJerk){
         speed = limitJerk(motor.get(), speed, maxJerk);
-        //System.System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
+        //System.out.println("setting spark " + motor.getDeviceId() + " to " + speed);
         motor.set(speed);
-    }
-
-    public void setMotorSpeed(TalonSRX motor, double speed){
-        setMotorSpeed(motor, speed, DEFAULT_MAX_JERK);
     }
     public void setMotorSpeed(TalonSRX motor, double speed, double maxJerk){
         speed = limitJerk(motor.getMotorOutputPercent(), speed, maxJerk);
         //System.out.println("setting talon to " + speed);
         motor.set(ControlMode.PercentOutput, speed);
-        //System.out.println("checking: " + motor.getMotorOutputPercent());
     }
 
-    public void defaultTankMultilpier(){driveMultiplier = 1;}
-    public void setTankMultiplier(double driveMultiplier){
+    public void defaultDriveMultilpier(){this.driveMultiplier = 1;}
+    public void setDriveMultiplier(double driveMultiplier){
         this.driveMultiplier = driveMultiplier;
     }
         	
 	public void setSpeedTank(double leftSpeed, double rightSpeed) {
-        /*if(Math.abs(leftSpeed) == 1){
-            System.out.println("[   [   [   SPARK SPEED LEFT     ]   ]   ]");
-            System.out.println(lf.getEncoder().getVelocity() / 4096);
-            //System.out.println(Robot.positioningSubsystem.getWheelSpeed(lf));
-        }
-        if(Math.abs(rightSpeed) == 1){
-            System.out.println("[   [   [   SPARK SPEED RIGHT     ]   ]   ]");
-            System.out.println(rf.getEncoder().getVelocity() / 4096);
-            //System.out.println(Robot.positioningSubsystem.getWheelSpeed(rf));
-        }*/
-        setMotorSpeed(lf, leftSpeed * driveMultiplier);
-        setMotorSpeed(rf, -rightSpeed * driveMultiplier); // Possible needs to be negated
-        Robot.logger.addData(this.fileName, "wheel output", lf.get(), DefaultValue.Previous);
+        setMotorSpeed(this.lf,  leftSpeed * this.driveMultiplier);
+        setMotorSpeed(this.rf, -rightSpeed * this.driveMultiplier); // Possible needs to be negated
+        Robot.logger.addData(this.fileName, "wheel output", this.lf.get(), DefaultValue.Previous);
     }
 	
 	public void setSpeedTankAngularControl(double leftSpeed, double rightSpeed) {
 		double averageOutput = (leftSpeed + rightSpeed) / 2;
-        double goalOmega = goalOmegaConstant * (rightSpeed - leftSpeed);
+        double goalOmega = GOAL_OMEGA_CONSTANT * (rightSpeed - leftSpeed);
+        // Makes it so if the two joysticks are close enough, it will try to go straight
         if (Math.abs(goalOmega) < STRAIGHT_DEADZONE){
             goalOmega = 0;
-        } else if (goalOmega < 0) {
-            goalOmega += STRAIGHT_DEADZONE;
         } else {
-            goalOmega -= STRAIGHT_DEADZONE;
+            goalOmega -= Utils.signOf(goalOmega) * STRAIGHT_DEADZONE;
         }
-        goalOmega = Utils.limitOutput(goalOmega, maxOmegaGoal[0]);
-        //System.out.println("angular speed: " + Robot.positioningSubsystem.getAngularSpeed());
-        //System.out.println("desired angular speed: " + goalOmega);
+        goalOmega = Utils.limitOutput(goalOmega, MAX_OMEGA_GOAL);
         double error = goalOmega - Robot.robotPosition.getAngularSpeed();
         tankAnglePID.add_measurement(error);
         double inputDiff = tankAnglePID.getOutput();
+        // If you are going almost straight and goalOmega is 0, it will simply give the same input to both wheels
+        // We should test if this is beneficial
         if (goalOmega == 0 && (Math.abs(inputDiff) < STRAIGHT_EQUAL_INPUT_DEADZONE)){
             inputDiff = 0;
         }
         Robot.logger.addData(this.fileName, "input diff", inputDiff, DefaultValue.Empty);
         Robot.logger.addData(this.fileName, "error", error, DefaultValue.Empty);
-        //System.out.println("Output: " + change);
 		setSpeedTank(averageOutput - inputDiff, averageOutput + inputDiff); 
 	}
 	
-	public void setSpeedTankForwardManual(double leftSpeed, double rightSpeed, double turnMagnitude) {
-		double avg = .5 * (leftSpeed + rightSpeed);
-		setSpeedTank(avg * (1 + turnMagnitude), avg * (1 - turnMagnitude));
+	public void setSpeedTankForwardTurningPercentage(double forward, double turnMagnitude) {
+        // Note: this controls dtheta/dx rather than dtheta/dt
+		setSpeedTank(forward * (1 + turnMagnitude), forward * (1 - turnMagnitude));
     }
     
-    public void setTurningPercentage(double turnMagnitude){
-        setSpeedTankForwardManual(processStick(Robot.oi.leftStick),processStick(Robot.oi.rightStick),turnMagnitude);
+    public void setSpeedTankTurningPercentage(double turnMagnitude){
+        double forward = (processStick(Robot.oi.leftStick) + processStick(Robot.oi.rightStick)) / 2;
+        setSpeedTankForwardTurningPercentage(forward, turnMagnitude);
 	}
 
     @Override

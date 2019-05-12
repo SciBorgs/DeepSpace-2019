@@ -18,7 +18,7 @@ public class ReleaseHatchCommand extends InstantCommand {
         System.out.println("Release Hatch command");
         Robot.intakeSubsystem.releaseHatch();
         Robot.intakeSubsystem.closeArm();
-        Robot.driveSubsystem.setTankMultiplier(RELEASE_HATCH_DRIVE_MULTIPLIER);
+        Robot.driveSubsystem.setDriveMultiplier(RELEASE_HATCH_DRIVE_MULTIPLIER);
         //Robot.gearShiftSubsystem.shiftUp();
     }
 }

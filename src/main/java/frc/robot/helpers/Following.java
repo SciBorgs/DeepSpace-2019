@@ -30,7 +30,7 @@ public class Following {
             pid.add_measurement(tx);
         }
         double turnMagnitude = pid.getOutput();
-        Robot.driveSubsystem.setTurningPercentage(turnMagnitude);  
+        Robot.driveSubsystem.setSpeedTankTurningPercentage(turnMagnitude);  
     }
 
     public void lineup(){

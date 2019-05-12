@@ -129,7 +129,7 @@ public class Lineup {
             // Not at all tuned
         	shiftPID.add_measurement_with_derivative(shiftError(),Math.sin(deltaTheta())); // We use the sine of our change in angle as the derivative (that's the secret!)
 	        double output =  shiftPID.getOutput();
-	        Robot.driveSubsystem.setTurningPercentage(output); // The output changes the percentage that goes to each side which makes it turn
+	        Robot.driveSubsystem.setSpeedTankTurningPercentage(output); // The output changes the percentage that goes to each side which makes it turn
         }
     	else if (retroFound) {
     		Robot.driveSubsystem.setSpeedTank(0, 0);

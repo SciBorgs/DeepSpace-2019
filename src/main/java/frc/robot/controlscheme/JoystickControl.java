@@ -95,7 +95,7 @@ public class JoystickControl implements ControlScheme {
     */
 
     @Override
-    public ShuffleboardCommand getShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, PID cargoPID, PID drivePID, double[] maxOmegaGoal, PID liftArmPID, PID liftLiftPID, PID lineupPID) {
+    public ShuffleboardCommand getShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, PID cargoPID, PID drivePID, double maxOmegaGoal, PID liftArmPID, PID liftLiftPID, PID lineupPID) {
         return new ShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, canSparkMaxs, talonSRXs, cascadeSpark, null, null, null, cargoPID, drivePID, maxOmegaGoal, liftArmPID, liftLiftPID, lineupPID);
     }
 
