@@ -136,7 +136,7 @@ public class LiftSubsystem extends Subsystem {
 		Robot.logger.addData(this.fileName, "target lift height (m)", targetLiftHeight, DefaultValue.Empty);
 		double error = targetLiftHeight - getLiftHeight();
 		boolean hitCorrectHeight = Math.abs(error) < HEIGHT_PRECISION;
-		liftPID.add_measurement(error);
+		liftPID.addMeasurement(error);
 		double output = liftPID.getOutput();
 		if (hitCorrectHeight && targetLiftHeight == INITIAL_HEIGHT){
 			setLiftSpeedRaw(0);
@@ -147,7 +147,7 @@ public class LiftSubsystem extends Subsystem {
 	public void moveArmToAngle(double targetAngle){
 		double error = targetAngle - getArmAngle();
 		boolean hitCorrectAngle  = Math.abs(error) < ANGLE_PRECISION;
-		armPID.add_measurement(error);
+		armPID.addMeasurement(error);
 		double output = armPID.getLimitedOutput(ARM_OUTPUT_LIMIT);
 		if (targetAngle == ARM_MAX_ANGLE && !armAtMaxAngle()){
 			output += MAX_CARRIAGE_ADDED_SPEED;

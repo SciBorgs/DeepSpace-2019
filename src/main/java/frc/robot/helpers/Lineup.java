@@ -127,7 +127,7 @@ public class Lineup {
     public void move(){
     	if (retroFound && parallelCoordinate() < desiredForward) {
             // Not at all tuned
-        	shiftPID.add_measurement_with_derivative(shiftError(),Math.sin(deltaTheta())); // We use the sine of our change in angle as the derivative (that's the secret!)
+        	shiftPID.addMeasurementWithDerivative(shiftError(),Math.sin(deltaTheta())); // We use the sine of our change in angle as the derivative (that's the secret!)
 	        double output =  shiftPID.getOutput();
 	        Robot.driveSubsystem.setSpeedTankTurningPercentage(output); // The output changes the percentage that goes to each side which makes it turn
         }

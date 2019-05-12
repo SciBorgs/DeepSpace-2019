@@ -41,17 +41,17 @@ public class PID {
 	
 	public void setSmoother(int maxSize) {this.maxSize = maxSize;}
 	  
-	public void add_measurement(double error) {
+	public void addMeasurement(double error) {
 		double dd_dt = 0;
 		if (!this.errors.isEmpty()) {
 			double dd = error - this.errors.get(0);
 			double dt = this.timer.get() - this.times.get(0);
-			add_measurement_with_derivative(error, dd / dt);
+			dd_dt = dd / dt;
 		}
-		add_measurement_with_derivative(error, dd_dt);
+		addMeasurementWithDerivative(error, dd_dt);
 	}
 	  
-	public void add_measurement_with_derivative(double error, double derivative) {
+	public void addMeasurementWithDerivative(double error, double derivative) {
 		// This is split up into two functions because often we will have a better estimate of the derivative of the error
 		// The split up allows us to use that better estimate by calling this step directly
 		double currentTime = timer.get();

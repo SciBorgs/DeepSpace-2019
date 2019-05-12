@@ -27,7 +27,7 @@ public class Following {
 
     public void followObject(PID pid, double tx){
         if (Robot.limelightSubsystem.contourExists()){
-            pid.add_measurement(tx);
+            pid.addMeasurement(tx);
         }
         double turnMagnitude = pid.getOutput();
         Robot.driveSubsystem.setSpeedTankTurningPercentage(turnMagnitude);  
