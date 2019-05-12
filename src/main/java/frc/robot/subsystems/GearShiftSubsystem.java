@@ -20,7 +20,7 @@ public class GearShiftSubsystem extends Subsystem {
 	public static final DoubleSolenoid.Value LOW_GEAR_VALUE = Utils.oppositeDoubleSolenoidValue(HIGH_GEAR_VALUE);
 
     public GearShiftSubsystem() {
-        this.gearShiftSolenoid = Utils.newDoubleSolenoid(0, PortMap.GEAR_SHIFTER_SOLENOID);
+        this.gearShiftSolenoid = Utils.newDoubleSolenoid(PortMap.GEAR_SHIFTER_SOLENOID_PDP, PortMap.GEAR_SHIFTER_SOLENOID);
         shiftUp();
     }
     
