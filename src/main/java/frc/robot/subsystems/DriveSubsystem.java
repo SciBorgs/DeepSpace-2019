@@ -165,7 +165,7 @@ public class DriveSubsystem extends Subsystem {
             goalOmega -= Utils.signOf(goalOmega) * STRAIGHT_DEADZONE;
         }
         goalOmega = Utils.limitOutput(goalOmega, MAX_OMEGA_GOAL);
-        double error = goalOmega - Robot.robotPosition.getAngularSpeed();
+        double error = goalOmega - Robot.robotPosition.getAngularVelocity();
         tankAnglePID.add_measurement(error);
         double inputDiff = tankAnglePID.getOutput();
         // If you are going almost straight and goalOmega is 0, it will simply give the same input to both wheels

@@ -122,8 +122,11 @@ public class RobotPosition {
         return xStatic() && yStatic() && angleStatic();
     }
     
-    public double getAngularSpeed() {
-    	return Utils.averageRange(this.robotAngles) / INTERVAL_LENGTH;
+    public double getAngularVelocity(){return Utils.averageRange(this.robotAngles) / INTERVAL_LENGTH;}
+    public double getXVelocity()      {return Utils.averageRange(this.robotXs)     / INTERVAL_LENGTH;}
+    public double getYVelocity()      {return Utils.averageRange(this.robotYs)     / INTERVAL_LENGTH;}
+    public double getSpeed(){
+        return Math.sqrt(Math.pow(getXVelocity(), 2) + Math.pow(getYVelocity(), 2));
     }
     
     public double lastWheelPosition(CANSparkMax spark)  {
@@ -177,7 +180,7 @@ public class RobotPosition {
         Robot.logger.addData(this.fileName, "robot X", getX(), DefaultValue.Previous);
         Robot.logger.addData(this.fileName, "robot y", getY(), DefaultValue.Previous);
         Robot.logger.addData(this.fileName, "robot angle", getAngle(), DefaultValue.Previous);
-        Robot.logger.addData(this.fileName, "angular speed", getAngularSpeed(), DefaultValue.Previous);
+        Robot.logger.addData(this.fileName, "angular speed", getAngularVelocity(), DefaultValue.Previous);
 	}
 
     public void printPosition(){
