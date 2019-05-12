@@ -107,4 +107,11 @@ public class Utils{
     public static void toggleDoubleSolenoid(DoubleSolenoid doubleSolenoid){
         doubleSolenoid.set(oppositeDoubleSolenoidValue(doubleSolenoid.get()));
     }
+
+    public static DoubleSolenoid newDoubleSolenoid(int[] ports){
+        return new DoubleSolenoid(ports[0], ports[1]);
+    }
+    public static DoubleSolenoid newDoubleSolenoid(int pdpPort, int[] ports){
+        return new DoubleSolenoid(pdpPort, ports[0], ports[1]);
+    }
 }

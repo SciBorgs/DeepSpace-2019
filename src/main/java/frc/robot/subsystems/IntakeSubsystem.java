@@ -39,9 +39,9 @@ public class IntakeSubsystem extends Subsystem {
 		this.intakeTalon.configPeakCurrentLimit(10);
 		this.intakeTalon.enableCurrentLimit(true);
 		this.holdingCargo = false;
-		this.secureHatchSolenoid = new DoubleSolenoid(1, PortMap.SECURE_HATCH_SOLENOID[0], PortMap.SECURE_HATCH_SOLENOID[1]);
-		this.armSolenoid = new DoubleSolenoid(0, PortMap.ARM_SOLENOID[0], PortMap.ARM_SOLENOID[1]);
-		this.popHatchSolenoid = new DoubleSolenoid(0, PortMap.POP_HATCH_SOLENOID[0], PortMap.POP_HATCH_SOLENOID[1]);
+		this.secureHatchSolenoid = Utils.newDoubleSolenoid(1, PortMap.SECURE_HATCH_SOLENOID);
+		this.armSolenoid         = Utils.newDoubleSolenoid(0, PortMap.ARM_SOLENOID);
+		this.popHatchSolenoid    = Utils.newDoubleSolenoid(0, PortMap.POP_HATCH_SOLENOID);
 	}
     
 	public void periodicLog(){
