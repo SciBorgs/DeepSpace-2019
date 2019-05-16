@@ -109,10 +109,10 @@ public class LiftSubsystem extends Subsystem {
     public  CANSparkMax[] getSparks()                 {return new CANSparkMax[]{this.liftSpark};}
     public  TalonSRX[]    getTalons()                 {return new TalonSRX[]{this.armTiltTalon};}
 
-    public  void 		  manualArmMode()             {this.manualArmMode = true;}
-    public  void 		  autoArmMode()               {this.manualArmMode = false;}
-    public  void 		  manualCascadeMode()         {this.manualCascadeMode = true;}
-    public  void 		  autoCascadeMode()           {this.manualCascadeMode = false;}
+    public  void          manualArmMode()             {this.manualArmMode = true;}
+    public  void          autoArmMode()               {this.manualArmMode = false;}
+    public  void          manualCascadeMode()         {this.manualCascadeMode = true;}
+    public  void          autoCascadeMode()           {this.manualCascadeMode = false;}
 
     public  void          moveLevelCounter(int change){setLevelCounter(this.levelCounter + change);}
     public  boolean       updateLevelCounterWidget()  {return levelCounterWidget.getEntry().setNumber(this.levelCounter);}
