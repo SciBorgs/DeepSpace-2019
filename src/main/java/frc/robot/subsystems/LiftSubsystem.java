@@ -55,15 +55,15 @@ public class LiftSubsystem extends Subsystem {
     private final double LIFT_STATIC_INPUT = 0.018;
     private final double ARM_STATIC_INPUT  = 0.065;
     private final double MAX_CARRIAGE_ADDED_SPEED = .18;
-    private final double MINIMUM_CARRIAGE_INPUT   = 0.025;
-    private final double MINIMUM_CASCADE_INPUT    = .005;
+    private final double MINIMUM_CARRIAGE_INPUT = 0.025;
+    private final double MINIMUM_CASCADE_INPUT  = .005;
     private final double ROCKET_HATCH_GAP = Utils.inchesToMeters(28);
     private final double LOW_HATCH_HEIGHT = Utils.inchesToMeters(17);
     private final double MAX_HINGE_HEIGHT = .97;
     private final double HATCH_TO_CARGO_DEPOSIT = Utils.inchesToMeters(8.5);
     private final double ARM_MAX_ANGLE    = Math.toRadians(67);
     private final double ARM_TARGET_ANGLE = Math.toRadians(30);
-    private final double ARM_LENGTH    = Utils.inchesToMeters(20);
+    private final double ARM_LENGTH = Utils.inchesToMeters(20);
     private final double BOTTOM_HEIGHT = Utils.inchesToMeters(9); // In meters, the height at the lift's lowest point
     private final double INITIAL_GAP_TO_GROUND = Utils.inchesToMeters(0); // How far up the intake should be when it's
                                                                           // sucking in cargo
@@ -84,12 +84,12 @@ public class LiftSubsystem extends Subsystem {
     public LiftSubsystem() {
         this.cascadeAtBottomLimitSwitch = new DigitalInput(PortMap.CASCADE_AT_BOTTOM_LIMIT_SWITCH);
         this.armAtTopSwitch             = new DigitalInput(PortMap.ARM_AT_TOP_LIMIT_SWITCH);
-        this.armPID                     = new PID(ARM_P, ARM_I, ARM_D);
-        this.armTiltTalon               = new TalonSRX(PortMap.ARM_TILT_TALON);
+        this.armTiltTalon = new TalonSRX(PortMap.ARM_TILT_TALON);
         this.armTiltTalon.setNeutralMode(NeutralMode.Brake);
+        this.armPID = new PID(ARM_P, ARM_I, ARM_D);
         this.armPID.setSmoother(ARM_PID_SMOOTHNESS);
         this.liftSpark = new CANSparkMax(PortMap.LIFT_SPARK, MotorType.kBrushless);
-        this.liftPID   = new PID(LIFT_P, LIFT_I, LIFT_D);
+        this.liftPID = new PID(LIFT_P, LIFT_I, LIFT_D);
         this.liftPID.setSmoother(LIFT_PID_SMOOTHNESS);
 
         ShuffleboardTab levelCounterTab = Shuffleboard.getTab("Level Counter");
@@ -103,22 +103,22 @@ public class LiftSubsystem extends Subsystem {
         Robot.logger.logFinalPIDConstants(FILENAME, "lift PID", this.liftPID);
     }
 
-    public  PID           getArmPID()                 {return this.armPID;}
-    public  PID           getLiftPID()                {return this.liftPID;}
-    public  CANSparkMax   getLiftSpark()              {return this.liftSpark;}
-    public  CANSparkMax[] getSparks()                 {return new CANSparkMax[]{this.liftSpark};}
-    public  TalonSRX[]    getTalons()                 {return new TalonSRX[]{this.armTiltTalon};}
+    public PID           getArmPID()   {return this.armPID;}
+    public PID           getLiftPID()  {return this.liftPID;}
+    public CANSparkMax   getLiftSpark(){return this.liftSpark;}
+    public CANSparkMax[] getSparks()   {return new CANSparkMax[]{this.liftSpark};}
+    public TalonSRX[]    getTalons()   {return new TalonSRX[]{this.armTiltTalon};}
 
-    public  void          manualArmMode()             {this.manualArmMode = true;}
-    public  void          autoArmMode()               {this.manualArmMode = false;}
-    public  void          manualCascadeMode()         {this.manualCascadeMode = true;}
-    public  void          autoCascadeMode()           {this.manualCascadeMode = false;}
+    public void manualArmMode()    {this.manualArmMode = true;}
+    public void autoArmMode()      {this.manualArmMode = false;}
+    public void manualCascadeMode(){this.manualCascadeMode = true;}
+    public void autoCascadeMode()  {this.manualCascadeMode = false;}
 
-    public  void          moveLevelCounter(int change){setLevelCounter(this.levelCounter + change);}
-    public  boolean       updateLevelCounterWidget()  {return levelCounterWidget.getEntry().setNumber(this.levelCounter);}
+    public void    moveLevelCounter(int change){setLevelCounter(this.levelCounter + change);}
+    public boolean updateLevelCounterWidget()  {return levelCounterWidget.getEntry().setNumber(this.levelCounter);}
 
-    public  void          currentlyTiltingArm()       {this.tiltingArm = true;}
-    public  boolean       isStatic()                  {return !(this.tiltingArm || this.movingLift);}
+    public void    currentlyTiltingArm(){this.tiltingArm = true;}
+    public boolean isStatic()           {return !(this.tiltingArm || this.movingLift);}
 
     public void periodicLog() {
         Robot.logger.addData(FILENAME, "carriage angle", getArmAngle(), DefaultValue.Previous);
@@ -130,10 +130,8 @@ public class LiftSubsystem extends Subsystem {
         double cargoTargetHeight = hatchTargetHeight + HATCH_TO_CARGO_DEPOSIT;
         // Target height will go to the defualt cargo_height if it is holding a cargo,
         // otherwise it will go to the hatch height
-        if (Robot.intakeSubsystem.holdingCargo()) {
-            return cargoTargetHeight;
-        }
-        return hatchTargetHeight;
+        if (Robot.intakeSubsystem.holdingCargo()){return cargoTargetHeight;}
+        else{return hatchTargetHeight;}
     }
 
     private void setLiftSpeedRaw(double speed){Robot.driveSubsystem.setMotorSpeed(this.liftSpark, speed);}
@@ -143,15 +141,12 @@ public class LiftSubsystem extends Subsystem {
     public void moveLiftToHeight(double targetLiftHeight) {
         Robot.logger.addData(FILENAME, "target lift height (m)", targetLiftHeight, DefaultValue.Empty);
 
-        double error             = targetLiftHeight - getLiftHeight();
+        double error = targetLiftHeight - getLiftHeight();
         boolean hitCorrectHeight = Math.abs(error) < HEIGHT_PRECISION;
         liftPID.addMeasurement(error);
 
-        if (hitCorrectHeight && targetLiftHeight == INITIAL_HEIGHT) {
-            setLiftSpeedRaw(0);
-        } else {
-            setLiftSpeed(liftPID.getOutput());
-        }
+        if (hitCorrectHeight && targetLiftHeight == INITIAL_HEIGHT){setLiftSpeedRaw(0);}
+        else{setLiftSpeed(liftPID.getOutput());}
     }
 
     private void moveArmToMaxAngle(){conditionalSetArmTiltSpeed(SLOW_ARM_INPUT, !armAtMaxAngle());}
@@ -159,11 +154,11 @@ public class LiftSubsystem extends Subsystem {
     public void moveArmToAngle(double targetAngle) {
         Robot.logger.addData(FILENAME, "target angle (deg)", Math.toDegrees(targetAngle), DefaultValue.Empty);
 
-        double  error            = targetAngle - getArmAngle();
-        boolean hitCorrectAngle  = Math.abs(error) < ANGLE_PRECISION;
-        double  output           = armPID.getLimitedOutput(ARM_OUTPUT_LIMIT);
+        double error = targetAngle - getArmAngle();
+        boolean hitCorrectAngle = Math.abs(error) < ANGLE_PRECISION;
         armPID.addMeasurement(error);
-
+        double output = armPID.getLimitedOutput(ARM_OUTPUT_LIMIT);
+        
         if (targetAngle == ARM_MAX_ANGLE && !armAtMaxAngle()) {
             output += MAX_CARRIAGE_ADDED_SPEED;
             output  = Math.max(SLOW_ARM_INPUT, output);
@@ -171,7 +166,7 @@ public class LiftSubsystem extends Subsystem {
         setArmTiltSpeed(output);
 
         // TODO: I do not believe that we need what is below. We need to test it
-        if (hitCorrectAngle && (targetAngle == ARM_MAX_ANGLE)) moveArmToMaxAngle();
+        if (hitCorrectAngle && (targetAngle == ARM_MAX_ANGLE)){moveArmToMaxAngle();}
     }
 
     public void moveToPosition(double targetAngle, double targetLiftHeight) {
@@ -179,42 +174,52 @@ public class LiftSubsystem extends Subsystem {
         moveLiftToHeight(targetLiftHeight);
     }
 
-    private boolean needsCascade(double height){return height > (ARM_LENGTH * Math.sin(ARM_TARGET_ANGLE) + BOTTOM_HEIGHT);}
+    private boolean needsCascade(double height) {
+        return height > (ARM_LENGTH * Math.sin(ARM_TARGET_ANGLE) + BOTTOM_HEIGHT);
+    }
 
     public double getTargetLiftHeight(double depositHeight) {
         if (needsCascade(depositHeight)) {
             return Math.min(depositHeight - ARM_LENGTH * Math.sin(ARM_TARGET_ANGLE), MAX_HINGE_HEIGHT);
+        } else {
+            return BOTTOM_HEIGHT;
         }
-        return BOTTOM_HEIGHT;
     }
 
     public void moveToHeight(double targetHeight) {
         double targetLiftHeight = getTargetLiftHeight(targetHeight);
-        double targetAngle      = Math.asin((targetHeight - targetLiftHeight) / ARM_LENGTH);
+        double targetAngle = Math.asin((targetHeight - targetLiftHeight) / ARM_LENGTH);
         moveToPosition(targetAngle, targetLiftHeight);
     }
 
     public void moveArmToTarget(Target target) {
         double targetHeight;
-        // Ground - 0; Low(hatch) - 19 inches; High(cargo) - 27 inches;
-        if (target == Target.Ground) {
-            targetHeight = 0;
-        } else if (target == Target.Low) {
-            targetHeight = Utils.inchesToMeters(14.5);
-        } else {
-            targetHeight = Utils.inchesToMeters(29);
+        
+        switch (target) {
+            case Ground: 
+                targetHeight = 0;
+                break;
+            case Low:
+                targetHeight = Utils.inchesToMeters(14.5);
+                break;
+            case Mid:
+                targetHeight = ARM_MAX_ANGLE;
+                break;
+            default:
+                targetHeight = Utils.inchesToMeters(29);
+                break;
         }
-
-        double targetAngle = Math.asin((targetHeight - BOTTOM_HEIGHT) / ARM_LENGTH);
-        if (target == Target.Mid) targetAngle = ARM_MAX_ANGLE;
+        
+        double targetAngle = (targetHeight == ARM_MAX_ANGLE)
+                               ? ARM_MAX_ANGLE
+                               : Math.asin((targetHeight - BOTTOM_HEIGHT) / ARM_LENGTH);
         moveArmToAngle(targetAngle);
     }
 
     public void moveToTarget(Target target) {
         if (target == Target.Ground) {
             moveToPosition(RESTING_ANGLE, BOTTOM_HEIGHT);
-        }
-        else if (target == Target.Initial) {
+        } else if (target == Target.Initial) {
             moveToInitial();
         } else {
             moveToHeight(getTargetHeight(target));
@@ -263,8 +268,9 @@ public class LiftSubsystem extends Subsystem {
         if (liftAtBottom()) {
             realLiftHeightIs(BOTTOM_HEIGHT);
             return BOTTOM_HEIGHT;
+        } else {
+            return getUnadjustedLiftHeight();
         }
-        return getUnadjustedLiftHeight();
     }
 
     public double getUnadjustedArmAngle() {
@@ -285,22 +291,23 @@ public class LiftSubsystem extends Subsystem {
         if (armAtMaxAngle()) {
             realArmAngleIs(INITIAL_ANGLE);
             return INITIAL_ANGLE;
+        } else {
+            return getUnadjustedArmAngle();
         }
-        return getUnadjustedArmAngle();
     }
 
     private void conditionalSetLiftSpeed(double speed, boolean b) {
         // If the boolean is true it will simply do a set lift speed. Otherwise, it will
         // set it to zero
-        if (b) setLiftSpeed(speed);
-        else   setLiftSpeed(0);
+        if (b){setLiftSpeed(speed);}
+        else  {setLiftSpeed(0);}
     }
 
     private void conditionalSetArmTiltSpeed(double speed, boolean b) {
         // If the boolean is true it will simply do a set arm tilt speed. Otherwise, it
         // will set it to zero
-        if (b) setArmTiltSpeed(speed);
-        else   setArmTiltSpeed(0);
+        if (b){setArmTiltSpeed(speed);}
+        else  {setArmTiltSpeed(0);}
     }
 
     public void setLiftSpeed(double speed) {
@@ -316,7 +323,7 @@ public class LiftSubsystem extends Subsystem {
         Robot.logger.addData(FILENAME, "arm input", speed, DefaultValue.Previous);
 
         this.tiltingArm = Math.abs(speed) > MINIMUM_CARRIAGE_INPUT;
-        if (armAtMaxAngle() && speed > 0) speed = 0;
+        if (armAtMaxAngle() && speed > 0){speed = 0;}
         Robot.driveSubsystem.setMotorSpeed(this.armTiltTalon, speed + ARM_STATIC_INPUT, 1);
     }
 }
