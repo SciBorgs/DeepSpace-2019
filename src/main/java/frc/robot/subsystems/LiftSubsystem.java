@@ -41,7 +41,6 @@ public class LiftSubsystem extends Subsystem {
     private final String FILENAME = "LiftSubsystem.java";
     private final Hashtable<Target, Integer> HATCH_POSITIONS = // Gives how many hatches above the lowest one for each
     new Hashtable<>() {
-        private static final long serialVersionUID = 5134778529966511317L;
         {
             put(Target.High, 2);
             put(Target.Mid,  1);
@@ -78,6 +77,8 @@ public class LiftSubsystem extends Subsystem {
     private final int ARM_PID_SMOOTHNESS  = 7;
     private final int MIN_LEVEL = 0;
     private final int MAX_LEVEL = 2;
+    private final double GROUND_ARM_HEIGHT = 0;
+    private final double LOW_ARM_HEIGHT    = Utils.inchesToMeters(14.5);
 
     public void initDefaultCommand(){}
 
@@ -192,28 +193,14 @@ public class LiftSubsystem extends Subsystem {
         moveToPosition(targetAngle, targetLiftHeight);
     }
 
+    private double getTargetAngle(double targetHeight){return Math.asin((targetHeight - BOTTOM_HEIGHT) / ARM_LENGTH);} 
+    
     public void moveArmToTarget(Target target) {
-        double targetHeight;
-        
         switch (target) {
-            case Ground: 
-                targetHeight = 0;
-                break;
-            case Low:
-                targetHeight = Utils.inchesToMeters(14.5);
-                break;
-            case Mid:
-                targetHeight = ARM_MAX_ANGLE;
-                break;
-            default:
-                targetHeight = Utils.inchesToMeters(29);
-                break;
+            case Ground: moveArmToAngle(getTargetAngle(GROUND_ARM_HEIGHT)); break;
+            case Low:    moveArmToAngle(getTargetAngle(LOW_ARM_HEIGHT));    break;
+            default:     moveArmToAngle(ARM_MAX_ANGLE);                     break;
         }
-        
-        double targetAngle = (targetHeight == ARM_MAX_ANGLE)
-                               ? ARM_MAX_ANGLE
-                               : Math.asin((targetHeight - BOTTOM_HEIGHT) / ARM_LENGTH);
-        moveArmToAngle(targetAngle);
     }
 
     public void moveToTarget(Target target) {
