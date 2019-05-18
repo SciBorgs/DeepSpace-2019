@@ -298,10 +298,7 @@ public class LiftSubsystem extends Subsystem {
     }
 
     public void setLiftSpeed(double speed) {
-        if (liftAtTop()) {
-            System.out.println("preventing you from going up");
-            speed = Math.min(speed, 0);
-        }
+        if (liftAtTop()){speed = Math.min(speed, 0);}
         this.movingLift = Math.abs(speed) > MINIMUM_CASCADE_INPUT;
         setLiftSpeedRaw(speed + LIFT_STATIC_INPUT);
     }
