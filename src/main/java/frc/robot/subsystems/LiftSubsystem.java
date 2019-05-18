@@ -73,12 +73,12 @@ public class LiftSubsystem extends Subsystem {
     private final double INITIAL_HEIGHT = BOTTOM_HEIGHT;
     private final double SLOW_LIFT_INPUT = .3; // An input that should move the lift slowly, not for in game purposes
     private final double SLOW_ARM_INPUT  = .3;  // An input that should move the arm slowly, not for in game purposes
+    private final double GROUND_ARM_HEIGHT = 0;
+    private final double LOW_ARM_HEIGHT    = Utils.inchesToMeters(14.5);
     private final int LIFT_PID_SMOOTHNESS = 3; // Probably change to 4
     private final int ARM_PID_SMOOTHNESS  = 7;
     private final int MIN_LEVEL = 0;
     private final int MAX_LEVEL = 2;
-    private final double GROUND_ARM_HEIGHT = 0;
-    private final double LOW_ARM_HEIGHT    = Utils.inchesToMeters(14.5);
 
     public void initDefaultCommand(){}
 
