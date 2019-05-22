@@ -16,12 +16,11 @@ import frc.robot.logging.Logger.CommandStatus;
 import frc.robot.logging.Logger.DefaultValue;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
-public class TankDriveCommand extends InstantCommand {
+public class swerveTankDriveCommand extends InstantCommand {
     private final String fileName = "TankDriveCommand.java";
     private Joystick rightStick, leftStick;
     
-    public TankDriveCommand() {
-        rightStick = Robot.oi.rightStick;
+    public swerveTankDriveCommand() {
         leftStick  = Robot.oi.leftStick;
     }
 
@@ -30,8 +29,11 @@ public class TankDriveCommand extends InstantCommand {
         Robot.driveSubsystem.setSpeedTank(0, 0);
     }
     @Override protected void execute() {
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
-        Robot.driveSubsystem.setSpeed(leftStick, leftStick);
+        Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
+
+        double forward = Robot.driveSubsystem.processStick(this.leftStick);
+        Robot.driveSubsystem.setSpeedTankForwardTurningPercentage(forward, this.leftStick.getX());
+
         
         //System.out.println("talon current: " + Robot.intakeSubsystem.intakeTalon.getOutputCurrent());
         //System.out.println("omega: " + Robot.positioningSubsystem.getAngularSpeed());
