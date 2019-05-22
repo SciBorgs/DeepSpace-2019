@@ -123,7 +123,6 @@ public class Robot extends TimedRobot {
         
     public void autonomousInit() {
         following.modeToCargo();
-        new TankDriveCommand().start();
         (new LiftCommand()).start();
         //(new LiftCommand()).start();
         pneumaticsSubsystem.startCompressor();
@@ -131,7 +130,7 @@ public class Robot extends TimedRobot {
 
     public void autonomousPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
-        
+        new SwerveTankDriveCommand().start();
         manualArmAndCascade();
         //allPeriodicLogs();
         //logDataPeriodic();
@@ -140,7 +139,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         liftSubsystem.setLiftSpeed(0);
-        new TankDriveCommand().start();
         (new LiftCommand()).start();
     }
 
@@ -161,6 +159,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         manualArmAndCascade();
+        new TankDriveCommand().start();
 
         boolean targetLightButton = oi.xboxController.getBButton();
 
