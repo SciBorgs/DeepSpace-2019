@@ -25,10 +25,6 @@ public class TankDriveCommand extends InstantCommand {
         leftStick  = Robot.oi.leftStick;
     }
 
-    @Override protected void initialize() {
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
-        Robot.driveSubsystem.setSpeedTank(0, 0);
-    }
     @Override protected void execute() {
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         Robot.driveSubsystem.setSpeed(leftStick, leftStick);
@@ -41,15 +37,4 @@ public class TankDriveCommand extends InstantCommand {
         //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(leftStick));
     }
         
-    @Override protected boolean isFinished() {
-        return false;
-    }
-    @Override protected void end() {
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
-        Robot.driveSubsystem.setSpeedTank(0, 0);
-    }
-    @Override protected void interrupted() {
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Interrupted);
-        end();
-    }
 }

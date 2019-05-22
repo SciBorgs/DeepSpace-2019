@@ -16,18 +16,14 @@ import frc.robot.logging.Logger.CommandStatus;
 import frc.robot.logging.Logger.DefaultValue;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
-public class swerveTankDriveCommand extends InstantCommand {
+public class SwerveTankDriveCommand extends InstantCommand {
     private final String fileName = "TankDriveCommand.java";
     private Joystick rightStick, leftStick;
     
-    public swerveTankDriveCommand() {
+    public SwerveTankDriveCommand() {
         leftStick  = Robot.oi.leftStick;
     }
 
-    @Override protected void initialize() {
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
-        Robot.driveSubsystem.setSpeedTank(0, 0);
-    }
     @Override protected void execute() {
         Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
 
@@ -41,17 +37,5 @@ public class swerveTankDriveCommand extends InstantCommand {
         //Robot.positioningSubsystem.printPosition();
         //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(leftStick));
         //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(leftStick));
-    }
-        
-    @Override protected boolean isFinished() {
-        return false;
-    }
-    @Override protected void end() {
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
-        Robot.driveSubsystem.setSpeedTank(0, 0);
-    }
-    @Override protected void interrupted() {
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Interrupted);
-        end();
     }
 }

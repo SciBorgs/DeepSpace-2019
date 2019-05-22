@@ -130,7 +130,7 @@ public class Robot extends TimedRobot {
 
     public void autonomousPeriodic() {
         //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
-        new swerveTankDriveCommand().start();
+        new SwerveTankDriveCommand().start();
         manualArmAndCascade();
         //allPeriodicLogs();
         //logDataPeriodic();
