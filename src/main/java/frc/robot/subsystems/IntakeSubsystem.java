@@ -19,7 +19,7 @@ public class IntakeSubsystem extends Subsystem {
 	public static final DoubleSolenoid.Value SECURE_HATCH_VALUE = Utils.oppositeDoubleSolenoidValue(RELEASE_HATCH_VALUE);
 	public static final DoubleSolenoid.Value OPEN_ARM_VALUE = Value.kForward;
 	public static final DoubleSolenoid.Value CLOSE_ARM_VALUE = Utils.oppositeDoubleSolenoidValue(OPEN_ARM_VALUE);
-	public static final DoubleSolenoid.Value EXTEND_POP_PISTONS = Value.kForward;
+	public static final DoubleSolenoid.Value EXTEND_POP_PISTONS = Value.kReverse;
 	public static final DoubleSolenoid.Value RETRACT_POP_PISTONS = Utils.oppositeDoubleSolenoidValue(EXTEND_POP_PISTONS);
 	private Timer timer;
 	private final String filename = "IntakeSubsystem.java";

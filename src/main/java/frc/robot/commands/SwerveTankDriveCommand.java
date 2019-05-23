@@ -22,13 +22,14 @@ public class SwerveTankDriveCommand extends InstantCommand {
     
     public SwerveTankDriveCommand() {
         leftStick  = Robot.oi.leftStick;
+        rightStick = Robot.oi.rightStick;
     }
 
     @Override protected void execute() {
         Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
 
         double forward = Robot.driveSubsystem.processStick(this.leftStick);
-        Robot.driveSubsystem.setSpeedTankForwardTurningPercentage(forward, this.leftStick.getX());
+        Robot.driveSubsystem.setSpeedTankForwardTurningPercentage(forward, this.rightStick.getX());
 
         
         //System.out.println("talon current: " + Robot.intakeSubsystem.intakeTalon.getOutputCurrent());

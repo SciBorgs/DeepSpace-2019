@@ -95,9 +95,17 @@ public class DriveSubsystem extends Subsystem {
     private double processAxis(double x) {
         return Utils.signOf(x) * Utils.signOf(MAX_JOYSTICK) * axisFunction(Math.abs(x));
     }
+
+    public double deadzone(double output){
+        if (Math.abs(output) < INPUT_DEADZONE){
+            return 0;
+        } else {
+            return output;
+        }
+    }
     
     public double processStick(Joystick stick){
-        return processAxis(-stick.getY());
+        return deadzone(-stick.getY());
     }
 
     public void assistedDriveMode(){this.assisted = true;}

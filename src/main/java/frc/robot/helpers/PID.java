@@ -55,11 +55,7 @@ public class PID {
 		// This is split up into two functions because often we will have a better estimate of the derivative of the error
 		// The split up allows us to use that better estimate by calling this step directly
 		double currentTime = timer.get();
-		double dt = 0;
-		if (!(errors.isEmpty())) {
-			dt = currentTime - Utils.last(this.times);
-		}
-		this.integral += .5 * dt * (error + this.errors.get(0));
+		this.integral += error;
 		this.u = this.p * error + this.d * derivative + this.i * this.integral;
 		Utils.trimAdd(this.times, currentTime, this.maxSize);
 		Utils.trimAdd(this.errors, error, this.maxSize);

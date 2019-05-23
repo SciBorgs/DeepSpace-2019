@@ -27,9 +27,9 @@ public class TankDriveCommand extends InstantCommand {
 
     @Override protected void execute() {
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
-        Robot.driveSubsystem.setSpeed(leftStick, leftStick);
+        Robot.driveSubsystem.setSpeed(leftStick, rightStick);
         
-        //System.out.println("talon current: " + Robot.intakeSubsystem.intakeTalon.getOutputCurrent());
+        System.out.println("left stick current: " + leftStick);
         //System.out.println("omega: " + Robot.positioningSubsystem.getAngularSpeed());
         //Robot.zLiftSubsystem.lift(Robot.driveSubsystem.processStick(leftStick));
         //Robot.positioningSubsystem.printPosition();
