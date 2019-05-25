@@ -21,8 +21,8 @@ public class TankDriveCommand extends InstantCommand {
     private Joystick rightStick, leftStick;
     
     public TankDriveCommand() {
-        rightStick = Robot.oi.rightStick;
-        leftStick  = Robot.oi.leftStick;
+        this.rightStick = Robot.oi.rightStick;
+        this.leftStick  = Robot.oi.leftStick;
     }
 
     @Override protected void execute() {
@@ -30,11 +30,7 @@ public class TankDriveCommand extends InstantCommand {
         Robot.driveSubsystem.setSpeed(leftStick, rightStick);
         
         System.out.println("left stick current: " + leftStick);
-        //System.out.println("omega: " + Robot.positioningSubsystem.getAngularSpeed());
-        //Robot.zLiftSubsystem.lift(Robot.driveSubsystem.processStick(leftStick));
-        //Robot.positioningSubsystem.printPosition();
-        //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(leftStick));
-        //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(leftStick));
+        System.out.println("right stick current: " + rightStick);
     }
         
 }
