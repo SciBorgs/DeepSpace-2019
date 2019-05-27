@@ -32,7 +32,6 @@ public class LiftCommand extends Command {
 
 	@Override protected void execute(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
-		//System.out.println("lifting command");
 		//Robot.liftSubsystem.moveToTarget(Robot.liftSubsystem.getTarget()); // Comment for regular auto-carriage
 		Robot.liftSubsystem.moveArmToTarget(Robot.liftSubsystem.getTarget()); // Uncomment for regular auto-carriage
 	}
