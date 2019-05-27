@@ -15,7 +15,6 @@ public class SuckCommand extends InstantCommand {
 
     @Override protected void execute() {
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
-        System.out.println("suck");
         Robot.intakeSubsystem.openArm();
         Robot.intakeSubsystem.suck();
     }
