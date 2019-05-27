@@ -39,6 +39,7 @@ public class LiftCommand extends Command {
 
 	@Override protected void interrupted(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Interrupted);
+		end();
 		return;
 	}
 }
