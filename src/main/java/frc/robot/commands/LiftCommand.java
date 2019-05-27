@@ -27,9 +27,7 @@ public class LiftCommand extends Command {
 		Robot.liftSubsystem.moveArmToTarget(Robot.liftSubsystem.getTarget()); // Uncomment for regular auto-carriage
 	}
 
-	@Override protected boolean isFinished(){
-		return false;
-	}
+	@Override protected boolean isFinished(){ return false; }
 
 	@Override protected void end(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
