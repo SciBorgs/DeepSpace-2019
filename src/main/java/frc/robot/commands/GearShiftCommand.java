@@ -2,44 +2,40 @@ package frc.robot.commands;
 
 import frc.robot.Robot;
 
-import edu.wpi.first.wpilibj.command.ConditionalCommand;
-import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-
-
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.logging.Logger.CommandStatus;
-import frc.robot.logging.Logger.DefaultValue;
 
+import frc.robot.logging.Logger.CommandStatus;
 
 public class GearShiftCommand extends Command {
 
-    private final String fileName = "GearShiftCommand.java";
+    private final String FILENAME = "GearShiftCommand.java";
 
-	public GearShiftCommand() {
-        requires(Robot.gearShiftSubsystem);
-	}
+    public GearShiftCommand(){requires(Robot.gearShiftSubsystem);}
 
-    @Override protected void initialize(){
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
+    @Override
+    protected void initialize() {
+        Robot.logger.logCommandStatus(FILENAME, CommandStatus.Initializing);
         Robot.gearShiftSubsystem.gearShiftSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-	@Override protected void execute(){
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
-        //Robot.gearShiftSubsystem.shiftGear();
-        
+    @Override
+    protected void execute() {
+        Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
     }
-    
-    @Override protected boolean isFinished(){
-        return false;
-    }
-    @Override protected void end(){
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
+
+    @Override
+    protected boolean isFinished(){return false;}
+
+    @Override
+    protected void end() {
+        Robot.logger.logCommandStatus(FILENAME, CommandStatus.Ending);
         Robot.gearShiftSubsystem.gearShiftSolenoid.set(DoubleSolenoid.Value.kForward);
     }
-    @Override protected void interrupted(){
-        Robot.logger.logCommandStatus(this.fileName, CommandStatus.Interrupted);
+
+    @Override
+    protected void interrupted() {
+        Robot.logger.logCommandStatus(FILENAME, CommandStatus.Interrupted);
         end();
     }
 }
