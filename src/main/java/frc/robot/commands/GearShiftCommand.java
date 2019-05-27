@@ -1,10 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
-
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Command;
-
 import frc.robot.logging.Logger.CommandStatus;
 
 public class GearShiftCommand extends Command {
@@ -16,7 +13,7 @@ public class GearShiftCommand extends Command {
     @Override
     protected void initialize() {
         Robot.logger.logCommandStatus(FILENAME, CommandStatus.Initializing);
-        Robot.gearShiftSubsystem.gearShiftSolenoid.set(DoubleSolenoid.Value.kReverse);
+        Robot.gearShiftSubsystem.gearShiftSolenoid.set(Robot.gearShiftSubsystem.LOW_GEAR_VALUE);
     }
 
     @Override
@@ -30,7 +27,7 @@ public class GearShiftCommand extends Command {
     @Override
     protected void end() {
         Robot.logger.logCommandStatus(FILENAME, CommandStatus.Ending);
-        Robot.gearShiftSubsystem.gearShiftSolenoid.set(DoubleSolenoid.Value.kForward);
+        Robot.gearShiftSubsystem.gearShiftSolenoid.set(Robot.gearShiftSubsystem.HIGH_GEAR_VALUE);
     }
 
     @Override
