@@ -8,12 +8,11 @@ import frc.robot.logging.Logger.CommandStatus;
 public class SecureHatchCommand extends InstantCommand {
     private final String fileName = "SecureHatchCommand.java";
 
-    public SecureHatchCommand(){}
+    public SecureHatchCommand() {}
 
-    @Override protected void execute(){
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
+    @Override protected void execute() {
+        Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         Robot.driveSubsystem.defaultDriveMultilpier();
         Robot.intakeSubsystem.secureHatch();
-        //Robot.gearShiftSubsystem.shiftDown();
     }
 }
