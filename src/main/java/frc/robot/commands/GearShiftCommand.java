@@ -13,13 +13,12 @@ public class GearShiftCommand extends Command {
     @Override
     protected void initialize() {
         Robot.logger.logCommandStatus(FILENAME, CommandStatus.Initializing);
-        Robot.gearShiftSubsystem.gearShiftSolenoid.set(Robot.gearShiftSubsystem.LOW_GEAR_VALUE);
+        Robot.gearShiftSubsystem.shiftDown();
     }
 
     @Override
     protected void execute() {
         Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
-        Robot.gearShiftSubsystem.autoShift();
     }
 
     @Override
@@ -28,7 +27,7 @@ public class GearShiftCommand extends Command {
     @Override
     protected void end() {
         Robot.logger.logCommandStatus(FILENAME, CommandStatus.Ending);
-        Robot.gearShiftSubsystem.gearShiftSolenoid.set(Robot.gearShiftSubsystem.HIGH_GEAR_VALUE);
+        Robot.gearShiftSubsystem.shiftUp();
     }
 
     @Override
