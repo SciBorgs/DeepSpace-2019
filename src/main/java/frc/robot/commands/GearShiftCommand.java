@@ -19,6 +19,7 @@ public class GearShiftCommand extends Command {
     @Override
     protected void execute() {
         Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
+        Robot.gearShiftSubsystem.autoShift();
     }
 
     @Override
