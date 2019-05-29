@@ -10,40 +10,24 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.TimedCommand;
 import frc.robot.Robot;
 
-/**
- * Add your docs here.
- */
 public class PopHatchCommand extends TimedCommand {
-  public static final double timeout = .2;
-  /**
-   * Add your docs here.
-   */
+  public static final double TIMEOUT = .2;
   public PopHatchCommand() {
-    super(timeout);
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
+    super("pop hatch", TIMEOUT);
   }
 
-  // Called just before this Command runs the first time
   @Override
   protected void initialize() {
     System.out.println("popping");
     Robot.intakeSubsystem.extendPopHatchPistons();
   }
 
-  // Called repeatedly when this Command is scheduled to run
-  @Override
-  protected void execute() {
-  }
-
-  // Called once after timeout
   @Override
   protected void end() {
+    System.out.println("retracting")
     Robot.intakeSubsystem.retractPopHatchPistons();
   }
 
-  // Called when another command which requires one or more of the same
-  // subsystems is scheduled to run
   @Override
   protected void interrupted() {
     end();
