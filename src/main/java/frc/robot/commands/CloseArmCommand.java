@@ -8,9 +8,10 @@ import frc.robot.logging.Logger.DefaultValue;
 public class CloseArmCommand extends InstantCommand {
     private final String fileName = "CloseArmCommand.java";
 
-    public CloseArmCommand(){}
+    public CloseArmCommand(){ requires(Robot.intakeSubsystem) }
 
-    @Override protected void execute(){
+    @Override 
+    protected void execute(){
 	Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         Robot.intakeSubsystem.closeArm();
     }
