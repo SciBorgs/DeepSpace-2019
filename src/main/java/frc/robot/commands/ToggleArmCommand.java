@@ -5,12 +5,12 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.logging.Logger.CommandStatus;
 
 public class ToggleArmCommand extends InstantCommand {
-    private final String fileName = "ToggleArmCommand.java";
+    private final String FILENAME = "ToggleArmCommand.java";
 
     public ToggleArmCommand(){}
 
     @Override protected void execute(){
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
+		Robot.logger.logCommandStatus(this.FILENAME, CommandStatus.Executing);
         Robot.intakeSubsystem.toggleArm();
     }
 }
