@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.logging.Logger.CommandStatus;
 
 public class LineupCommand extends Command {
-    private final String FILENAME = "LineupCommand.java";
+    private static final String FILENAME = "LineupCommand.java";
     
     public LineupCommand() {}
 
