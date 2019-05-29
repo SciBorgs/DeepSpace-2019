@@ -6,13 +6,13 @@ import frc.robot.logging.Logger.CommandStatus;
 import frc.robot.logging.Logger.DefaultValue;
 
 public class CloseArmCommand extends InstantCommand {
-    private final String FILE_NAME = "CloseArmCommand.java";
+    private final String FILENAME = "CloseArmCommand.java";
 
     public CloseArmCommand(){ requires(Robot.intakeSubsystem) }
 
     @Override 
     protected void execute(){
-	Robot.logger.logCommandStatus(FILE_NAME, CommandStatus.Executing);
+	Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
         Robot.intakeSubsystem.closeArm();
     }
 }
