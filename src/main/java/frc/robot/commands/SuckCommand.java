@@ -6,14 +6,14 @@ import frc.robot.logging.Logger.CommandStatus;
 
 
 public class SuckCommand extends InstantCommand {
-	private final static String fileName = "SuckCommand.java";
+	private final static String FILE_NAME = "SuckCommand.java";
 
     public SuckCommand() {
         requires(Robot.intakeSubsystem);
     }
 
     @Override protected void execute() {
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
+		Robot.logger.logCommandStatus(FILE_NAME, CommandStatus.Executing);
         Robot.intakeSubsystem.openArm();
         Robot.intakeSubsystem.suck();
     }
