@@ -7,14 +7,15 @@ import frc.robot.logging.Logger.CommandStatus;
 
 
 public class StopIntakeWheelsCommand extends InstantCommand {
-    private final String fileName = "StilIntakeWheelsCommand.java";
+    private final String FILENAME = "StilIntakeWheelsCommand.java";
 
     public StopIntakeWheelsCommand() {
         requires(Robot.intakeSubsystem);
     }
 
-    @Override protected void execute() {
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
+    @Override 
+    protected void execute() {
+	Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
         Robot.intakeSubsystem.setIntakeSpeed(0);
     }
 }
