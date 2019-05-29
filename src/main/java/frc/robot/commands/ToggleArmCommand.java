@@ -10,7 +10,7 @@ public class ToggleArmCommand extends InstantCommand {
     public ToggleArmCommand(){}
 
     @Override protected void execute(){
-		Robot.logger.logCommandStatus(this.FILENAME, CommandStatus.Executing);
+		Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
         Robot.intakeSubsystem.toggleArm();
     }
 }
