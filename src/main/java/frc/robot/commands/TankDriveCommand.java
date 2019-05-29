@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
-import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.logging.Logger.CommandStatus;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
