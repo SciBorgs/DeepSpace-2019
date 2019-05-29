@@ -3,7 +3,6 @@ package frc.robot.commands;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.logging.Logger.CommandStatus;
-import frc.robot.logging.Logger.DefaultValue;
 
 public class CloseArmCommand extends InstantCommand {
     private final String FILENAME = "CloseArmCommand.java";
