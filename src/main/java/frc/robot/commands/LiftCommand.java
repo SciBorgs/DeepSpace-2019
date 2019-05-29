@@ -7,37 +7,33 @@ import frc.robot.logging.Logger.CommandStatus;
 
 public class LiftCommand extends Command {
 
-	private final String FILE_NAME = "LiftCommand.java";
-
-	private boolean lastStatic;
+	private final String FILENAME = "LiftCommand.java";
 
 	public LiftCommand() {
 		requires(Robot.liftSubsystem);
-		lastStatic = false;
 	}
 
 	@Override protected void initialize(){
-		Robot.logger.logCommandStatus(FILE_NAME, CommandStatus.Initializing);
+		Robot.logger.logCommandStatus(FILENAME, CommandStatus.Initializing);
 		Robot.liftSubsystem.autoArmMode();
 		Robot.liftSubsystem.currentlyTiltingArm();
 	}
 
 	@Override protected void execute(){
-		Robot.logger.logCommandStatus(FILE_NAME, CommandStatus.Executing);
-		Robot.liftSubsystem.moveArmToTarget(Robot.liftSubsystem.getTarget()); // Uncomment for regular auto-carriage
+		Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
+		Robot.liftSubsystem.moveArmToTarget(Robot.liftSubsystem.getTarget()); 
 	}
 
 	@Override protected boolean isFinished(){ return false; }
 
 	@Override protected void end(){
-		Robot.logger.logCommandStatus(FILE_NAME, CommandStatus.Ending);
+		Robot.logger.logCommandStatus(FILENAME, CommandStatus.Ending);
 		Robot.liftSubsystem.manualArmMode();
 		Robot.liftSubsystem.manualCascadeMode();
 	}
 
 	@Override protected void interrupted(){
-		Robot.logger.logCommandStatus(FILE_NAME, CommandStatus.Interrupted);
+		Robot.logger.logCommandStatus(FILENAME, CommandStatus.Interrupted);
 		end();
-		return;
 	}
 }
