@@ -3,8 +3,6 @@ package frc.robot.commands;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.logging.Logger.CommandStatus;
-import frc.robot.logging.Logger.DefaultValue;
-
 
 public class ToggleArmCommand extends InstantCommand {
     private final String fileName = "ToggleArmCommand.java";
