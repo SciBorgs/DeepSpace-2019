@@ -5,32 +5,30 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.logging.Logger.CommandStatus;
 
 public class LineupCommand extends Command {
-
     private final String FILENAME = "LineupCommand.java";
     
-    public LineupCommand(){}
+    public LineupCommand() {}
 
     @Override protected void initialize() {
 		Robot.logger.logCommandStatus(FILENAME, CommandStatus.Initializing);
 		Robot.following.resetLineupPID();
     }
 
-
-    @Override protected void execute(){
+    @Override protected void execute() {
 		Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
         Robot.following.lineup();
         Robot.driveSubsystem.assistedDriveMode();
     }
 
-	@Override protected boolean isFinished(){ return !Robot.oi.lineupButton.get(); }
+	@Override protected boolean isFinished() { return !Robot.oi.lineupButton.get(); }
 
-	@Override protected void end(){
+	@Override protected void end() {
 		Robot.logger.logCommandStatus(FILENAME, CommandStatus.Ending);
         Robot.driveSubsystem.manualDriveMode();
         Robot.following.modeToCargo();
 	}
 
-	@Override protected void interrupted(){
+	@Override protected void interrupted() {
 		Robot.logger.logCommandStatus(FILENAME, CommandStatus.Interrupted);
 		end();
 	}
