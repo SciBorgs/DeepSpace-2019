@@ -6,7 +6,7 @@ import frc.robot.logging.Logger.CommandStatus;
 
 
 public class SuckCommand extends InstantCommand {
-	private final String fileName = "SuckCommand.java";
+	private final static String fileName = "SuckCommand.java";
 
     public SuckCommand() {
         requires(Robot.intakeSubsystem);
