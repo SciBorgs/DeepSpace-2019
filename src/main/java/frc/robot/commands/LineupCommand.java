@@ -19,7 +19,6 @@ public class LineupCommand extends Command {
 
     @Override protected void execute(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
-        System.out.println("lining up");
         Robot.following.lineup();
         Robot.driveSubsystem.assistedDriveMode();
     }
