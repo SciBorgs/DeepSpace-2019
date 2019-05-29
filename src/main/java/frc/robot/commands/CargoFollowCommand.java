@@ -6,7 +6,7 @@ import frc.robot.logging.Logger.CommandStatus;
 
 public class CargoFollowCommand extends CommandGroup {
 
-    private final String FILE_NAME = "CargoFollowCommand.java";
+    private final String FILENAME = "CargoFollowCommand.java";
 
     public CargoFollowCommand() {
         requires(Robot.driveSubsystem);
@@ -15,7 +15,7 @@ public class CargoFollowCommand extends CommandGroup {
 
     @Override
     protected void initialize() {
-	Robot.logger.logCommandStatus(FILE_NAME, CommandStatus.Initializing);
+	Robot.logger.logCommandStatus(FILENAME, CommandStatus.Initializing);
 	System.out.println("following cargo");
 	Robot.following.resetCargoPID();
     }
@@ -23,7 +23,7 @@ public class CargoFollowCommand extends CommandGroup {
     @Override
     protected void execute(){
 	Robot.following.modeToCargo();
-	Robot.logger.logCommandStatus(FILE_NAME, CommandStatus.Executing);
+	Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
 	System.out.println("following cargo");
 	if (Robot.oi.cargoFollowButton.get()){
 		Robot.driveSubsystem.assistedDriveMode();
@@ -40,13 +40,13 @@ public class CargoFollowCommand extends CommandGroup {
 
     @Override
     protected void end(){
-	Robot.logger.logCommandStatus(FILE_NAME, CommandStatus.Ending);
+	Robot.logger.logCommandStatus(FILENAME, CommandStatus.Ending);
 	Robot.driveSubsystem.manualDriveMode();
     }
 
     @Override
     protected void interrupted(){
-	Robot.logger.logCommandStatus(FILE_NAME, CommandStatus.Interrupted);
+	Robot.logger.logCommandStatus(FILENAME, CommandStatus.Interrupted);
 	end();
     }
 }
