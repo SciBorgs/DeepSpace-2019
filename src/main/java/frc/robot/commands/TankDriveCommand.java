@@ -9,7 +9,7 @@ import frc.robot.logging.Logger.DefaultValue;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class TankDriveCommand extends InstantCommand {
-    private final String FILE_NAME = "TankDriveCommand.java";
+    private final String FILENAME = "TankDriveCommand.java";
     private Joystick rightStick, leftStick;
     
     public TankDriveCommand() {
@@ -19,7 +19,7 @@ public class TankDriveCommand extends InstantCommand {
 
     @Override 
     protected void execute() {
-	Robot.logger.logCommandStatus(FILE_NAME, CommandStatus.Executing);
+	Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
         Robot.driveSubsystem.setSpeed(leftStick, rightStick);
     }   
 }
