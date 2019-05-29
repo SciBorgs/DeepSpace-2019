@@ -22,9 +22,7 @@ public class LineupCommand extends Command {
         Robot.driveSubsystem.assistedDriveMode();
     }
 
-	@Override protected boolean isFinished(){
-		return !Robot.oi.lineupButton.get();
-	}
+	@Override protected boolean isFinished(){ return !Robot.oi.lineupButton.get(); }
 
 	@Override protected void end(){
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
