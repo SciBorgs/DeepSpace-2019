@@ -6,18 +6,18 @@ import frc.robot.logging.Logger.CommandStatus;
 
 public class LineupCommand extends Command {
 
-    private final String fileName = "LineupCommand.java";
+    private final String FILENAME = "LineupCommand.java";
     
     public LineupCommand(){}
 
     @Override protected void initialize() {
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
+		Robot.logger.logCommandStatus(this.FILENAME, CommandStatus.Initializing);
 		Robot.following.resetLineupPID();
     }
 
 
     @Override protected void execute(){
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
+		Robot.logger.logCommandStatus(this.FILENAME, CommandStatus.Executing);
         Robot.following.lineup();
         Robot.driveSubsystem.assistedDriveMode();
     }
@@ -25,13 +25,13 @@ public class LineupCommand extends Command {
 	@Override protected boolean isFinished(){ return !Robot.oi.lineupButton.get(); }
 
 	@Override protected void end(){
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
+		Robot.logger.logCommandStatus(this.FILENAME, CommandStatus.Ending);
         Robot.driveSubsystem.manualDriveMode();
         Robot.following.modeToCargo();
 	}
 
 	@Override protected void interrupted(){
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Interrupted);
+		Robot.logger.logCommandStatus(this.FILENAME, CommandStatus.Interrupted);
 		end();
 	}
 }
