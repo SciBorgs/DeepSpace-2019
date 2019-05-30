@@ -12,6 +12,7 @@ public class ReleaseHatchCommand extends InstantCommand {
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         Robot.intakeSubsystem.releaseHatch();
         Robot.intakeSubsystem.closeArm();
-        Robot.driveSubsystem.setDriveMultiplier(this.RELEASE_HATCH_DRIVE_MULTIPLIER);   
+        Robot.driveSubsystem.setDriveMultiplier(this.RELEASE_HATCH_DRIVE_MULTIPLIER);           
+
     }
 }
