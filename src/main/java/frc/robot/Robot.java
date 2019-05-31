@@ -15,8 +15,6 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import frc.robot.Utils;
 
-import java.util.*;
-
 // FILE HAS NOT BEEN CLEANED UP //
 public class Robot extends TimedRobot {
     public static Logger logger = new Logger();
