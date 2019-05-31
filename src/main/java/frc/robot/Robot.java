@@ -6,28 +6,19 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import frc.robot.controlscheme.ControlScheme;
 import frc.robot.controlscheme.XboxControl;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.LiftSubsystem.Target;
 import frc.robot.commands.*;
 import frc.robot.helpers.*;
 import frc.robot.logging.*;
 import frc.robot.logging.Logger.DefaultValue;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import frc.robot.Utils;
 
 import java.util.*;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 // FILE HAS NOT BEEN CLEANED UP //
 public class Robot extends TimedRobot {
-    private String m_autoSelected;
     public static Logger logger = new Logger();
     public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
@@ -35,7 +26,6 @@ public class Robot extends TimedRobot {
     public static RobotPosition robotPosition = new RobotPosition();
     public static LiftSubsystem liftSubsystem = new LiftSubsystem();
     public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
-    private final SendableChooser<String> m_chooser = new SendableChooser<>();
     public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     public static Following following = new Following();
     public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
@@ -47,11 +37,11 @@ public class Robot extends TimedRobot {
     private boolean lightOn = false;
     private boolean prevLightButton = false;
     private int attemptsSinceLastLog;
-    public static double MANUAL_CASCADE_INPUT = 1;
+    public static double MANUAL_CASCADE_INPUT  = 1;
     public static double MANUAL_CARRIAGE_INPUT = .55;
     public static final int LOG_PERIOD = 5;
 
-    private void allPeriodicLogs(){
+    private void allPeriodicLogs() {
         driveSubsystem.periodicLog();
         gearShiftSubsystem.periodicLog();
         intakeSubsystem.periodicLog();
@@ -64,35 +54,30 @@ public class Robot extends TimedRobot {
     }
 
     private CANSparkMax[] getSparks() {
-        List<CANSparkMax> list = new ArrayList<>(); // this is inefficient but the code should be temporary
-        Collections.addAll(list, driveSubsystem.getSparks());
-        Collections.addAll(list, liftSubsystem.getSparks());
-        return list.toArray(new CANSparkMax[0]);
+        CANSparkMax[] driveSparksArray = driveSubsystem.getSparks();
+        CANSparkMax[] liftSparksArray  = liftSubsystem.getSparks();
+        CANSparkMax[] allSparks = Utils.combineArray(driveSparksArray, liftSparksArray);
+        return allSparks;
     }
 
     private TalonSRX[] getTalons() {
-        List<TalonSRX> list = new ArrayList<>();
-        Collections.addAll(list, robotPosition.getTalons());
-        Collections.addAll(list, liftSubsystem.getTalons());
-        Collections.addAll(list, intakeSubsystem.getTalons());
-        return list.toArray(new TalonSRX[0]);
+        TalonSRX[] positionTalonArray = robotPosition.getTalons();
+        TalonSRX[] liftTalonArray     = liftSubsystem.getTalons();
+        TalonSRX[] intakeTalonArray   = intakeSubsystem.getTalons();
+        TalonSRX[] allTalons = Utils.combineArray(positionTalonArray, Utils.combineArray(liftTalonArray, intakeTalonArray));
+        return allTalons;
     }
 
     public void robotInit() {
         xboxControl.getShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, getSparks(), getTalons(), liftSubsystem.getLiftSpark(), following.getPid(), driveSubsystem.getTankAnglePID(), driveSubsystem.getMaxOmegaGoal(), liftSubsystem.getArmPID(), liftSubsystem.getLiftPID(), lineup.getShiftPID()).start();
         attemptsSinceLastLog = 0;
-        // positioningSubsystem.getPigeon().getPigeon().setYaw(0., 5);
-        System.out.println("roboinited");
         robotPosition.updatePositionTank();
-
-        //pneumaticsSubsystem.stopCompressor();
-
+        pneumaticsSubsystem.stopCompressor();
         intakeSubsystem.closeArm();
         following.modeToCargo();
-
         logger.incrementPrevious("robot.java", "deploy", DefaultValue.Previous);
 
-           /* STARTS THE LIDAR     
+        /* STARTS THE LIDAR     
         try {
             System.out.println("LIDAR status: starting");
             boolean started = LidarServer.getInstance().start();
@@ -104,11 +89,10 @@ public class Robot extends TimedRobot {
         }*/
 
         logger.logData();
-
     }
 
-    public void logDataPeriodic(){
-        if (LOG_PERIOD == attemptsSinceLastLog){
+    public void logDataPeriodic() {
+        if (LOG_PERIOD == attemptsSinceLastLog) {
             attemptsSinceLastLog = 0;
             logger.logData();
         } else {
@@ -124,16 +108,12 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         following.modeToCargo();
         (new LiftCommand()).start();
-        //(new LiftCommand()).start();
         pneumaticsSubsystem.startCompressor();
     }
 
     public void autonomousPeriodic() {
-        //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         new SwerveTankDriveCommand().start();
         manualArmAndCascade();
-        //allPeriodicLogs();
-        //logDataPeriodic();
     }
     
     @Override
@@ -142,34 +122,29 @@ public class Robot extends TimedRobot {
         (new LiftCommand()).start();
     }
 
-    public void manualArmAndCascade(){
-        if(Robot.oi.leftStick.getPOV() == 0){
-            //System.out.println("up");
+    public void manualArmAndCascade() {
+        if(Robot.oi.leftStick.getPOV() == 0) {
             Robot.liftSubsystem.setLiftSpeed(MANUAL_CASCADE_INPUT);
-        }else if(Robot.oi.leftStick.getPOV() == 180){
-            //System.out.println("down");
+        }else if(Robot.oi.leftStick.getPOV() == 180) {
             Robot.liftSubsystem.setLiftSpeed(-MANUAL_CASCADE_INPUT);
-        //}else{
-        }else if(liftSubsystem.manualCascadeMode){
-            //System.out.println("stopping");
+        }else if(liftSubsystem.manualCascadeMode) {
             Robot.liftSubsystem.setLiftSpeed(0);
         }
     }
 
     public void teleopPeriodic() {
-        //SmartDashboard.putNumber("Pressure Sensor PSI", pneumaticsSubsystem.getPressure());
         manualArmAndCascade();
         new TankDriveCommand().start();
 
         boolean targetLightButton = oi.xboxController.getBButton();
 
-        if(!lightOn){
-            if(targetLightButton && !prevLightButton){
+        if(!lightOn) {
+            if(targetLightButton && !prevLightButton) {
                 targetingLight.set(true);
                 lightOn = true;
             }
-        }else{
-            if(targetLightButton && !prevLightButton){
+        } else {
+            if(targetLightButton && !prevLightButton) {
                 targetingLight.set(false);
                 lightOn = false;
             }
@@ -177,21 +152,9 @@ public class Robot extends TimedRobot {
         prevLightButton = targetLightButton;
 
         pneumaticsSubsystem.startCompressor();
-        //allPeriodicLogs();
-        //logDataPeriodic();
     }
 
-    public void testPeriodic() {
-        //liftSubsystem.moveToTarget(Target.Initial);
-        liftSubsystem.moveToInitial();
-        following.modeToCargo();
-        //liftSubsystem.moveLiftToHeight(Utils.inchesToMeters(40));
-        System.out.println("leftPOV: " + Robot.oi.leftStick.getPOV());
-        //liftSubsystem.currentlAtInitial();
-        //allPeriodicLogs();
-        //logDataPeriodic();
-    }
+    public void testPeriodic() {}
 
-    public void disabledInit() {
-    }
+    public void disabledInit() {}
 }

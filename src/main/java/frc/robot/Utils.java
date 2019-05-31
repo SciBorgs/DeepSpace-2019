@@ -94,6 +94,13 @@ public class Utils{
         return end;
     }
 
+    // Generic function to merge 2 arrays of same type in Java
+    public static<T> T[] combineArray(T[] arr1, T[] arr2) {
+	    T[] result = Arrays.copyOf(arr1, arr1.length + arr2.length);
+	    System.arraycopy(arr2, 0, result, arr1.length, arr2.length);
+	    return result;
+    }
+
     public static Value oppositeDoubleSolenoidValue(Value val){
         switch (val) {
             case kForward:
