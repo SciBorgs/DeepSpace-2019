@@ -20,23 +20,28 @@ import java.util.*;
 // FILE HAS NOT BEEN CLEANED UP //
 public class Robot extends TimedRobot {
     public static Logger logger = new Logger();
-    public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-    public static DriveSubsystem driveSubsystem = new DriveSubsystem();
-    public static EncoderSubsystem encoderSubsystem = new EncoderSubsystem();
-    public static RobotPosition robotPosition = new RobotPosition();
-    public static LiftSubsystem liftSubsystem = new LiftSubsystem();
-    public static GearShiftSubsystem gearShiftSubsystem = new GearShiftSubsystem();
-    public static LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-    public static Following following = new Following();
-    public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
-    public static Lineup lineup = new Lineup();
-    private final ControlScheme xboxControl = new XboxControl();
-    private final PowerDistributionPanel pdp = new PowerDistributionPanel();
-    private final DigitalOutput targetingLight = new DigitalOutput(5);
     public static OI oi = new OI();
-    private boolean lightOn = false;
+    
+    public static IntakeSubsystem     intakeSubsystem     = new IntakeSubsystem();
+    public static DriveSubsystem      driveSubsystem      = new DriveSubsystem();
+    public static EncoderSubsystem    encoderSubsystem    = new EncoderSubsystem();
+    public static RobotPosition       robotPosition       = new RobotPosition();
+    public static LiftSubsystem       liftSubsystem       = new LiftSubsystem();
+    public static GearShiftSubsystem  gearShiftSubsystem  = new GearShiftSubsystem();
+    public static LimelightSubsystem  limelightSubsystem  = new LimelightSubsystem();
+    public static PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
+    
+    public static Following following = new Following();
+    public static Lineup    lineup    = new Lineup();
+    
+    private final ControlScheme xboxControl    = new XboxControl();
+    private final PowerDistributionPanel pdp   = new PowerDistributionPanel();
+    private final DigitalOutput targetingLight = new DigitalOutput(5);
+
+    private boolean lightOff = true;
     private boolean prevLightButton = false;
     private int attemptsSinceLastLog;
+    
     public static double MANUAL_CASCADE_INPUT  = 1;
     public static double MANUAL_CARRIAGE_INPUT = .55;
     public static final int LOG_PERIOD = 5;
@@ -108,12 +113,11 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         following.modeToCargo();
         (new LiftCommand()).start();
-        pneumaticsSubsystem.startCompressor();
     }
 
     public void autonomousPeriodic() {
         new SwerveTankDriveCommand().start();
-        manualArmAndCascade();
+        manualCascade();
     }
     
     @Override
@@ -122,7 +126,7 @@ public class Robot extends TimedRobot {
         (new LiftCommand()).start();
     }
 
-    public void manualArmAndCascade() {
+    public void manualCascade() {
         if(Robot.oi.leftStick.getPOV() == 0) {
             Robot.liftSubsystem.setLiftSpeed(MANUAL_CASCADE_INPUT);
         }else if(Robot.oi.leftStick.getPOV() == 180) {
@@ -133,28 +137,28 @@ public class Robot extends TimedRobot {
     }
 
     public void teleopPeriodic() {
-        manualArmAndCascade();
+        manualCascade();
         new TankDriveCommand().start();
 
         boolean targetLightButton = oi.xboxController.getBButton();
 
-        if(!lightOn) {
-            if(targetLightButton && !prevLightButton) {
+        if(targetLightButton && !prevLightButton) {
+            if(lightOff){
                 targetingLight.set(true);
-                lightOn = true;
-            }
-        } else {
-            if(targetLightButton && !prevLightButton) {
+                lightOff = false;
+            } else {
                 targetingLight.set(false);
-                lightOn = false;
+                lightOff = true;
             }
         }
         prevLightButton = targetLightButton;
-
+        
         pneumaticsSubsystem.startCompressor();
     }
 
-    public void testPeriodic() {}
+    public void testPeriodic() {
+        liftSubsystem.moveToInitial();
+    }
 
     public void disabledInit() {}
 }
