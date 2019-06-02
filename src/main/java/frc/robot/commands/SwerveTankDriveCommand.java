@@ -15,7 +15,7 @@ public class SwerveTankDriveCommand extends InstantCommand {
     public SwerveTankDriveCommand(){}
 
     @Override protected void execute() {
-        Robot.logger.logCommandStatus(this.FILENAME, CommandStatus.Executing);
+        Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
 
         double forward = Robot.driveSubsystem.processStick(this.leftStick);
         Robot.driveSubsystem.setSpeedTankForwardTurningPercentage(forward, this.rightStick.getX());
