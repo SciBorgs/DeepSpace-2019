@@ -8,18 +8,17 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class SwerveTankDriveCommand extends InstantCommand {
     private final String FILENAME = "SwerveTankDriveCommand.java";
-    private Joystick leftStick, rightStick;
+    private Joystick leftStick = Robot.oi.leftStick;
+    private Joystick rightStick = Robot.oi.rightStick;
+
     
-    public SwerveTankDriveCommand() {
-        leftStick  = Robot.oi.leftStick;
-        rightStick = Robot.oi.rightStick;
-    }
+    public SwerveTankDriveCommand(){}
 
     @Override protected void execute() {
         Robot.logger.logCommandStatus(this.FILENAME, CommandStatus.Executing);
 
         double forward = Robot.driveSubsystem.processStick(this.leftStick);
-        Robot.driveSubsystem.setSpeedTankForwardTurningPercentage(forward, this.rightStick.getY());
+        Robot.driveSubsystem.setSpeedTankForwardTurningPercentage(forward, this.rightStick.getX());
 
         
     }
