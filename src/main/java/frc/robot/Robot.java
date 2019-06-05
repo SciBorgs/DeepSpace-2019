@@ -140,14 +140,12 @@ public class Robot extends TimedRobot {
 
         boolean targetLightButton = oi.xboxController.getBButton();
 
-        if(targetLightButton && !prevLightButton) {
-            if(lightOff){
-                targetingLight.set(true);
-                lightOff = false;
-            } else {
-                targetingLight.set(false);
-                lightOff = true;
-            }
+        if(targetLightButton && !prevLightButton && lightOff) {
+            targetingLight.set(true);
+            lightOff = false;
+        } else {
+            targetingLight.set(false);
+            lightOff = true;
         }
         prevLightButton = targetLightButton;
         
