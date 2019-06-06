@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
     private final PowerDistributionPanel pdp   = new PowerDistributionPanel();
     private final DigitalOutput targetingLight = new DigitalOutput(5);
 
-    private boolean lightOff = true;
+    private boolean lightOn = false;
     private boolean prevLightButton = false;
     private int attemptsSinceLastLog;
     
@@ -56,23 +56,8 @@ public class Robot extends TimedRobot {
         following.periodicLog();
     }
 
-    private CANSparkMax[] getSparks() {
-        CANSparkMax[] driveSparksArray = driveSubsystem.getSparks();
-        CANSparkMax[] liftSparksArray  = liftSubsystem.getSparks();
-        CANSparkMax[] allSparks = Utils.combineArray(driveSparksArray, liftSparksArray);
-        return allSparks;
-    }
-
-    private TalonSRX[] getTalons() {
-        TalonSRX[] positionTalonArray = robotPosition.getTalons();
-        TalonSRX[] liftTalonArray     = liftSubsystem.getTalons();
-        TalonSRX[] intakeTalonArray   = intakeSubsystem.getTalons();
-        TalonSRX[] allTalons = Utils.combineArray(positionTalonArray, Utils.combineArray(liftTalonArray, intakeTalonArray));
-        return allTalons;
-    }
-
     public void robotInit() {
-        xboxControl.getShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, getSparks(), getTalons(), liftSubsystem.getLiftSpark(), following.getPid(), driveSubsystem.getTankAnglePID(), driveSubsystem.getMaxOmegaGoal(), liftSubsystem.getArmPID(), liftSubsystem.getLiftPID(), lineup.getShiftPID()).start();
+        xboxControl.getShuffleboardCommand(pdp, liftSubsystem, pneumaticsSubsystem, liftSubsystem.getLiftSpark(), following.getPid(), driveSubsystem.getTankAnglePID(), driveSubsystem.getMaxOmegaGoal(), liftSubsystem.getArmPID(), liftSubsystem.getLiftPID(), lineup.getShiftPID()).start();
         attemptsSinceLastLog = 0;
         robotPosition.updatePositionTank();
         pneumaticsSubsystem.stopCompressor();
@@ -140,12 +125,12 @@ public class Robot extends TimedRobot {
 
         boolean targetLightButton = oi.xboxController.getBButton();
 
-        if(targetLightButton && !prevLightButton && lightOff) {
+        if(!lightOn && !prevLightButton && targetLightButton) {
             targetingLight.set(true);
-            lightOff = false;
-        } else {
+            lightOn = true;
+        }else if(!prevLightButton && targetLightButton) {
             targetingLight.set(false);
-            lightOff = true;
+            lightOn = false;
         }
         prevLightButton = targetLightButton;
         

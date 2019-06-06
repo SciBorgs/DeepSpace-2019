@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -13,7 +12,6 @@ import frc.robot.controlscheme.ControlButton;
 import frc.robot.helpers.PID;
 import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
-import frc.robot.logging.Logger.DefaultValue;
 import frc.robot.logging.Logger.CommandStatus;
 
 import java.util.ArrayList;
@@ -32,7 +30,6 @@ public class ShuffleboardCommand extends Command {
     private final ShuffleboardLayout voltageList;
     private final SimpleWidget totalVoltage;
     private final SimpleWidget isVoltageOk;
-    private final SimpleWidget totalMotorCurrent;
     private final SimpleWidget liftTemperature;
     private final SimpleWidget liftPosition;
     private final SimpleWidget airPressure;
@@ -52,19 +49,15 @@ public class ShuffleboardCommand extends Command {
     private final PID liftArmPID;
     private final PID liftLiftPID;
     private final PID lineupPID;
-    private final CANSparkMax[] canSparkMaxs;
-    private final TalonSRX[] talonSRXs;
     private final CANSparkMax cascadeSpark;
 
     // needed for cargo selection
     private int cargoSelection;
 
-    public ShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax[] canSparkMaxs, TalonSRX[] talonSRXs, CANSparkMax cascadeSpark, ControlButton buttonLeft, ControlButton buttonRight, ControlButton buttonToggle, PID cargoPID, PID drivePID, double maxOmegaGoal, PID liftArmPID, PID liftLiftPID,  PID lineupPID) {
+    public ShuffleboardCommand(PowerDistributionPanel pdp, LiftSubsystem liftSubsystem, PneumaticsSubsystem pneumaticsSubsystem, CANSparkMax cascadeSpark, ControlButton buttonLeft, ControlButton buttonRight, ControlButton buttonToggle, PID cargoPID, PID drivePID, double maxOmegaGoal, PID liftArmPID, PID liftLiftPID,  PID lineupPID) {
         this.pdp = pdp;
         this.liftSubsystem = liftSubsystem;
         this.pneumaticsSubsystem = pneumaticsSubsystem;
-        this.canSparkMaxs = canSparkMaxs;
-        this.talonSRXs = talonSRXs;
         this.cascadeSpark = cascadeSpark;
         this.buttonLeft = buttonLeft;
         this.buttonRight = buttonRight;
@@ -83,8 +76,6 @@ public class ShuffleboardCommand extends Command {
         voltageList = driverStationTab.getLayout("Voltage", "List Layout").withPosition(8, 0).withSize(1, 2);
         isVoltageOk = voltageList.add("Above 8 volts?", false).withWidget("Boolean Box").withSize(1, 1);
         totalVoltage = voltageList.add("Current voltage", "-1 Volts").withWidget("Text View").withSize(1, 1);
-
-        totalMotorCurrent = driverStationTab.add("Motor Current", "-1 Amps").withWidget("Text View").withPosition(9, 0).withSize(1, 1);
 
         liftPosition = driverStationTab.add("Lift Position", "Ground").withWidget("Text View").withPosition(9, 2).withSize(1, 1);
         liftTemperature = driverStationTab.add("Lift Temp", "-1 C\u00B0").withWidget("Text View").withPosition(8, 2).withSize(1, 1);
@@ -112,7 +103,6 @@ public class ShuffleboardCommand extends Command {
 		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
         updateTimer();
         updatePowerOutput();
-        updateMotorCurrent();
         updateCascadeMotorTemp();
         updateLiftPosition();
         updateAirPressure();
@@ -147,19 +137,6 @@ public class ShuffleboardCommand extends Command {
         } else {
             return isVoltageOk.getEntry().setBoolean(false);
         }
-    }
-
-    private boolean updateMotorCurrent() {
-        double motorCurrent = 0;
-        for (CANSparkMax canSparkMax : canSparkMaxs) {
-            motorCurrent += canSparkMax.getOutputCurrent();
-        }
-
-        for (TalonSRX talon : talonSRXs) {
-            motorCurrent += talon.getOutputCurrent();
-        }
-
-        return totalMotorCurrent.getEntry().setString(motorCurrent + " Amps");
     }
 
     private boolean updateCascadeMotorTemp() {
