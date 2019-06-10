@@ -26,15 +26,11 @@ public class CargoFollowCommand extends CommandGroup {
 	if (Robot.oi.cargoFollowButton.get()){
 		Robot.driveSubsystem.assistedDriveMode();
 		Robot.following.followBall();
-	} else {
-		Robot.driveSubsystem.manualDriveMode();
-	}
+	} else { Robot.driveSubsystem.manualDriveMode(); }
     }
 
     @Override
-    protected boolean isFinished(){
-	return !Robot.oi.suckButton.get();
-    }
+    protected boolean isFinished() { return !Robot.oi.suckButton.get(); }
 
     @Override
     protected void end(){
