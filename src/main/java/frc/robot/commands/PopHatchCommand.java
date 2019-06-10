@@ -1,6 +1,4 @@
-
 package frc.robot.commands;
-
 import edu.wpi.first.wpilibj.command.TimedCommand;
 import frc.robot.Robot;
 
@@ -18,6 +16,5 @@ public class PopHatchCommand extends TimedCommand {
     Robot.intakeSubsystem.retractPopHatchPistons();
   }
 
-  @Override
-  protected void interrupted() { end(); }
+  @Override protected void interrupted() { end(); }
 }
