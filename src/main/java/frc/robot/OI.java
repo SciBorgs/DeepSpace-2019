@@ -10,6 +10,7 @@ import frc.robot.commands.LevelCounterUpdateCommand.LevelChange;
 public class OI {
     public Joystick leftStick, rightStick;
     public JoystickButton gearShiftButton, cargoFollowButton, lineupButton, startZLiftButton, liftLevelUpButton, liftLevelDownButton, suckButton, spitButton, depositPanelButton, hatchSecureModeButton, armModeButton, climbFrontButton, climbBackButton;
+    public XboxButton targetingLightButton;
     public XboxController xboxController;
 
     public OI() {
@@ -25,7 +26,6 @@ public class OI {
 
         liftLevelUpButton = new JoystickButton(leftStick, PortMap.JOYSTICK_CENTER_BUTTON);
         liftLevelUpButton.whenPressed(new LevelCounterUpdateCommand(LevelChange.Up));
-        //liftLevelUpButton.whenPressed(new LiftCommand());
 
         liftLevelDownButton = new JoystickButton(leftStick, PortMap.JOYSTICK_TRIGGER);
         cargoFollowButton = liftLevelDownButton; // Only works if we are at the lowest level
@@ -56,6 +56,7 @@ public class OI {
         gearShiftButton = new JoystickButton(rightStick, PortMap.JOYSTICK_RIGHT_BUTTON);
         gearShiftButton.whileHeld(new GearShiftCommand());
 
-
+        targetingLightButton = xboxController.getBButton();
+        targetingLightButton.whenPressed(new ToggleArmCommand());
     }
 }

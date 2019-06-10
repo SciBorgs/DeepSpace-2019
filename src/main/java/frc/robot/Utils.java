@@ -6,6 +6,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
+import edu.wpi.first.wpilibj.DigitalOutput;
+
 import java.util.*;
 import java.util.Collections;
 
@@ -113,6 +115,14 @@ public class Utils{
 
     public static void toggleDoubleSolenoid(DoubleSolenoid doubleSolenoid){
         doubleSolenoid.set(oppositeDoubleSolenoidValue(doubleSolenoid.get()));
+    }
+
+    public static boolean oppositeDigitalOutput(boolean bool){
+        return !bool;
+    }
+
+    public static void toggleDigitalOutput(DigitalOutput digitalOutput){
+        DigitalOutput.set(oppositeDigitalOutput(digitalOutput.get));
     }
 
     public static DoubleSolenoid newDoubleSolenoid(int[] ports){

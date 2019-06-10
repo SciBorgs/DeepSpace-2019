@@ -10,7 +10,6 @@ import frc.robot.logging.*;
 import frc.robot.logging.Logger.DefaultValue;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.DigitalOutput;
 
 // FILE HAS NOT BEEN CLEANED UP //
 public class Robot extends TimedRobot {
@@ -31,14 +30,8 @@ public class Robot extends TimedRobot {
     
     private final ControlScheme xboxControl    = new XboxControl();
     private final PowerDistributionPanel pdp   = new PowerDistributionPanel();
-    private final DigitalOutput targetingLight = new DigitalOutput(5);
 
-    private boolean lightOn = false;
-    private boolean prevLightButton = false;
-    private int attemptsSinceLastLog;
-    
-    public static double MANUAL_CASCADE_INPUT  = 1;
-    public static double MANUAL_CARRIAGE_INPUT = .55;
+    private int attemptsSinceLastLog;    
     public static final int LOG_PERIOD = 5;
 
     private void allPeriodicLogs() {
@@ -92,43 +85,23 @@ public class Robot extends TimedRobot {
         
     public void autonomousInit() {
         following.modeToCargo();
-        (new LiftCommand()).start();
+        new LiftCommand().start();
     }
 
     public void autonomousPeriodic() {
         new SwerveTankDriveCommand().start();
-        manualCascade();
+        new ManualCascadeCommand().start();
     }
     
     @Override
     public void teleopInit() {
         liftSubsystem.setLiftSpeed(0);
-        (new LiftCommand()).start();
-    }
-
-    public void manualCascade() {
-        if(Robot.oi.leftStick.getPOV() == 0) {
-            Robot.liftSubsystem.setLiftSpeed(MANUAL_CASCADE_INPUT);
-        }else if(Robot.oi.leftStick.getPOV() == 180) {
-            Robot.liftSubsystem.setLiftSpeed(-MANUAL_CASCADE_INPUT);
-        }else if(liftSubsystem.manualCascadeMode) {
-            Robot.liftSubsystem.setLiftSpeed(0);
-        }
+        new LiftCommand().start();
     }
 
     public void teleopPeriodic() {
-        manualCascade();
+        new ManualCascadeCommand().start();
         new TankDriveCommand().start();
-
-        boolean targetLightButton = oi.xboxController.getBButton();
-        //conditions to toggle light
-        boolean toggleLight = !this.prevLightButton && targetLightButton;             
-        if(toggleLight) {
-            this.targetingLight.set(this.lightOn);
-            this.lightOn = !this.lightOn;
-        }
-        this.prevLightButton = targetLightButton;
-        
         pneumaticsSubsystem.startCompressor();
     }
 
