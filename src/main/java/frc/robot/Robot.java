@@ -121,13 +121,10 @@ public class Robot extends TimedRobot {
         new TankDriveCommand().start();
 
         boolean targetLightButton = oi.xboxController.getBButton();
-        //conditions to turn light on
+        //conditions to toggle light
         boolean toggleLight = !this.prevLightButton && targetLightButton;             
-        if(toggleLight && !this.lightOn) {
-            this.targetingLight.set(toggleLight);
-            this.lightOn = toggleLight;
-        } else if (toggleLight) {
-            this.targetingLight.set(!toggleLight);
+        if(toggleLight) {
+            this.targetingLight.set(this.lightOn);
             this.lightOn = !this.lightOn;
         }
         this.prevLightButton = targetLightButton;
