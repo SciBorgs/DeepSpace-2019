@@ -20,7 +20,7 @@ public class CargoFollowCommand extends CommandGroup {
     }
 	
     @Override
-    protected void execute(){
+    protected void execute() {
         Robot.following.modeToCargo();
         Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
         if (Robot.oi.cargoFollowButton.get()){
@@ -33,13 +33,13 @@ public class CargoFollowCommand extends CommandGroup {
     protected boolean isFinished() { return !Robot.oi.suckButton.get(); }
     
     @Override
-    protected void end(){
+    protected void end() {
         Robot.logger.logCommandStatus(FILENAME, CommandStatus.Ending);
         Robot.driveSubsystem.manualDriveMode();
     }
     
     @Override
-    protected void interrupted(){
+    protected void interrupted() {
         Robot.logger.logCommandStatus(FILENAME, CommandStatus.Interrupted);
         end();
     }
