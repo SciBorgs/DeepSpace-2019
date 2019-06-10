@@ -6,7 +6,7 @@ import frc.robot.logging.Logger.CommandStatus;
 
 public class CargoFollowCommand extends CommandGroup {
 
-    private final String FILENAME = "CargoFollowCommand.java";
+    private static final String FILENAME = "CargoFollowCommand.java";
 
     public CargoFollowCommand() {
         requires(Robot.driveSubsystem);
