@@ -1,7 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import frc.robot.controlscheme.ControlScheme;
 import frc.robot.controlscheme.XboxControl;
@@ -13,7 +11,6 @@ import frc.robot.logging.Logger.DefaultValue;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.DigitalOutput;
-import frc.robot.Utils;
 
 // FILE HAS NOT BEEN CLEANED UP //
 public class Robot extends TimedRobot {
@@ -124,13 +121,15 @@ public class Robot extends TimedRobot {
         new TankDriveCommand().start();
 
         boolean targetLightButton = oi.xboxController.getBButton();
-
-        if(!lightOn && !prevLightButton && targetLightButton) {
-            targetingLight.set(true);
-            lightOn = true;
-        }else if(!prevLightButton && targetLightButton) {
-            targetingLight.set(false);
-            lightOn = false;
+        
+        //conditions to turn light on
+        boolean turnLightOn  = !lightOn && !prevLightButton && targetLightButton;             
+        if(turnLightOn && !lightOn) {
+            targetingLight.set(turnLightOn);
+            lightOn = turnLightOn;
+        }else if(turnLightOn) {
+            targetingLight.set(!turnLightOn);
+            lightOn = !turnLightOn;
         }
         prevLightButton = targetLightButton;
         
