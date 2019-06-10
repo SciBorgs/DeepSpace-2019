@@ -128,7 +128,7 @@ public class Robot extends TimedRobot {
             this.lightOn = toggleLight;
         } else if (toggleLight) {
             this.targetingLight.set(!toggleLight);
-            this.lightOn = !toggleLight;
+            this.lightOn = !this.lightOn;
         }
         this.prevLightButton = targetLightButton;
         
