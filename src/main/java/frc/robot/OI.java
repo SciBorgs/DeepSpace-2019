@@ -5,13 +5,16 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.commands.LevelCounterUpdateCommand.LevelChange;
+import frc.robot.controlscheme.XboxControlButton;
+import frc.robot.controlscheme.XboxControlButton.Button;
 
 // FILE HAS NOT BEEN CLEANED UP //
 public class OI {
     public Joystick leftStick, rightStick;
     public JoystickButton gearShiftButton, cargoFollowButton, lineupButton, startZLiftButton, liftLevelUpButton, liftLevelDownButton, suckButton, spitButton, depositPanelButton, hatchSecureModeButton, armModeButton, climbFrontButton, climbBackButton;
     public XboxController xboxController;
-
+    public XboxControlButton targetingLightButton;
+    
     public OI() {
         System.out.println("OI constructor");
         leftStick = new Joystick(PortMap.JOYSTICK_LEFT);
@@ -25,7 +28,6 @@ public class OI {
 
         liftLevelUpButton = new JoystickButton(leftStick, PortMap.JOYSTICK_CENTER_BUTTON);
         liftLevelUpButton.whenPressed(new LevelCounterUpdateCommand(LevelChange.Up));
-        //liftLevelUpButton.whenPressed(new LiftCommand());
 
         liftLevelDownButton = new JoystickButton(leftStick, PortMap.JOYSTICK_TRIGGER);
         cargoFollowButton = liftLevelDownButton; // Only works if we are at the lowest level
@@ -56,6 +58,7 @@ public class OI {
         gearShiftButton = new JoystickButton(rightStick, PortMap.JOYSTICK_RIGHT_BUTTON);
         gearShiftButton.whileHeld(new GearShiftCommand());
 
-
+        targetingLightButton = new XboxControlButton(xboxController, Button.B);
+        targetingLightButton.whenPressed(new ToggleArmCommand());
     }
 }
