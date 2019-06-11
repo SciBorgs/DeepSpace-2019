@@ -11,7 +11,6 @@ import frc.robot.logging.Logger.DefaultValue;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
-// FILE HAS NOT BEEN CLEANED UP //
 public class Robot extends TimedRobot {
     public static Logger logger = new Logger();
     public static OI oi = new OI();
@@ -91,11 +90,11 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         new SwerveTankDriveCommand().start();
         new ManualCascadeCommand().start();
+        pneumaticsSubsystem.startCompressor();
     }
     
     @Override
     public void teleopInit() {
-        liftSubsystem.setLiftSpeed(0);
         new LiftCommand().start();
     }
 

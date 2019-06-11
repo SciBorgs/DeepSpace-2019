@@ -122,7 +122,7 @@ public class Utils{
     }
 
     public static void toggleDigitalOutput(DigitalOutput digitalOutput){
-        DigitalOutput.set(oppositeDigitalOutput(digitalOutput.get));
+        oppositeDigitalOutput(digitalOutput.get());
     }
 
     public static DoubleSolenoid newDoubleSolenoid(int[] ports){

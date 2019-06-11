@@ -86,4 +86,5 @@ public class PortMap {
     //*******************MISC********************//
 
     public static final int PRESSURE_SENSOR = 0;
+    public static final int TARGETING_LIGHT_DIGITAL_OUTPUT = 5;
 }
