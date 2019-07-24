@@ -13,12 +13,14 @@ import frc.robot.PortMap;
 import frc.robot.Robot;
 import frc.robot.Utils;
 import frc.robot.helpers.PID;
+import frc.robot.helpers.Pigeon;
 import frc.robot.logging.Logger.DefaultValue;
 
 public class LiftSubsystem extends Subsystem {
     public enum Target { High, Mid, Low, Ground, Initial }
     public CANSparkMax liftSpark;
     public TalonSRX    armTiltTalon;
+    public Pigeon      armTiltPigeon;
     public boolean manualArmMode     = true;
     public boolean manualCascadeMode = true;
 
@@ -30,6 +32,7 @@ public class LiftSubsystem extends Subsystem {
     private boolean previousArmLimitSwitch  = false;
     private boolean movingLift = false;
     private boolean tiltingArm = false;
+    public final boolean USE_ENCODER = true;
     private double ARM_OUTPUT_LIMIT = 1;
     private double ARM_P = 0.62, ARM_I = 0.0, ARM_D = 0, LIFT_P = 1, LIFT_I = 0.0, LIFT_D = 0.05;
     private double offsetCascadeHeight = 0;
@@ -72,6 +75,7 @@ public class LiftSubsystem extends Subsystem {
         this.armAtTopSwitch             = new DigitalInput(PortMap.ARM_AT_TOP_LIMIT_SWITCH);
         this.armTiltTalon = new TalonSRX(PortMap.ARM_TILT_TALON);
         this.armTiltTalon.setNeutralMode(NeutralMode.Brake);
+        this.armTiltPigeon = new Pigeon(this.armTiltTalon);
         this.armPID = new PID(ARM_P, ARM_I, ARM_D);
         this.armPID.setSmoother(ARM_PID_SMOOTHNESS);
         this.liftSpark = new CANSparkMax(PortMap.LIFT_SPARK, MotorType.kBrushless);
@@ -136,7 +140,7 @@ public class LiftSubsystem extends Subsystem {
         Robot.driveSubsystem.setMotorSpeed(this.liftSpark, speed);
     }
     
-    private void moveArmToMaxAngle(){conditionalSetArmTiltSpeed(SLOW_ARM_INPUT, !armAtMaxAngle());}
+    private void moveArmToMaxAngle(){setArmTiltSpeed(SLOW_ARM_INPUT);}
     private void moveLiftToBottom() {conditionalSetLiftSpeed(-SLOW_LIFT_INPUT, !liftAtBottom());}
 
     public void moveArmToAngle(double targetAngle) {
@@ -197,9 +201,21 @@ public class LiftSubsystem extends Subsystem {
                 + BOTTOM_HEIGHT + this.offsetCascadeHeight;
     }
 
-    public double getUnadjustedArmAngle() {
+    public double getUnadjustedArmAngleEncoder() {
         return TALON_ENCODER_WHEEL_RATIO * Robot.encoderSubsystem.getTalonAngle(this.armTiltTalon) + RESTING_ANGLE
                 + this.offsetArmAngle;
+    }
+
+    public double getUnadjustedArmAnglePigeon(){
+        return this.armTiltPigeon.getAngle() + this.offsetArmAngle;
+    }
+
+    public double getUnadjustedArmAngle(){
+        if (this.USE_ENCODER){
+            return getUnadjustedArmAngleEncoder();
+        } else {
+            return getUnadjustedArmAnglePigeon();
+        }
     }
 
     public boolean armAtMaxAngle() {
@@ -229,7 +245,6 @@ public class LiftSubsystem extends Subsystem {
 
     public void setArmTiltSpeed(double speed) {
         Robot.logger.addData(FILENAME, "arm input", speed, DefaultValue.Previous);
-
         this.tiltingArm = Math.abs(speed) > MINIMUM_CARRIAGE_INPUT;
         if (armAtMaxAngle() && speed > 0){speed = 0;}
         Robot.driveSubsystem.setMotorSpeed(this.armTiltTalon, speed + ARM_STATIC_INPUT, 1);
