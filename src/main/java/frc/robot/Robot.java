@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
     }
 
     public void autonomousPeriodic() {
-        new SwerveTankDriveCommand().start();
+        new TorqueControlDriveCommand().start();
         new ManualCascadeCommand().start();
         pneumaticsSubsystem.startCompressor();
     }
