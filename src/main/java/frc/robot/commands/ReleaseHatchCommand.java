@@ -3,22 +3,16 @@ package frc.robot.commands;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.logging.Logger.CommandStatus;
-import frc.robot.logging.Logger.CommandStatus;
-import frc.robot.logging.Logger.DefaultValue;
 
 public class ReleaseHatchCommand extends InstantCommand {
-    private final String fileName = "ReleaseHatchCommand.java";
-    
-    private double RELEASE_HATCH_DRIVE_MULTIPLIER = 0.5;
-
-    public ReleaseHatchCommand(){}
+    private final String FILENAME = "ReleaseHatchCommand.java";
+    private final double RELEASE_HATCH_DRIVE_MULTIPLIER = 0.5;
 
     @Override protected void execute(){
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
-        System.out.println("Release Hatch command");
+		Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
         Robot.intakeSubsystem.releaseHatch();
         Robot.intakeSubsystem.closeArm();
-        Robot.driveSubsystem.setDriveMultiplier(RELEASE_HATCH_DRIVE_MULTIPLIER);
-        //Robot.gearShiftSubsystem.shiftUp();
+        Robot.driveSubsystem.setDriveMultiplier(RELEASE_HATCH_DRIVE_MULTIPLIER);           
+
     }
 }

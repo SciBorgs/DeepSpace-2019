@@ -1,42 +1,23 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
-import frc.robot.Utils;
-import frc.robot.subsystems.LiftSubsystem.Target;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
-
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.logging.Logger.CommandStatus;
-import frc.robot.logging.Logger.DefaultValue;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class SwerveTankDriveCommand extends InstantCommand {
-    private final String fileName = "TankDriveCommand.java";
-    private Joystick rightStick, leftStick;
+    private final String FILENAME = "SwerveTankDriveCommand.java";
+   
     
-    public SwerveTankDriveCommand() {
-        leftStick  = Robot.oi.leftStick;
-        rightStick = Robot.oi.rightStick;
-    }
+    public SwerveTankDriveCommand(){}
 
     @Override protected void execute() {
-        Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
+        Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
 
-        double forward = Robot.driveSubsystem.processStick(this.leftStick);
-        Robot.driveSubsystem.setSpeedTankForwardTurningPercentage(forward, this.rightStick.getX());
+        double forward = Robot.driveSubsystem.processStick(Robot.oi.leftStick);
+        double turnAmount = Robot.oi.rightStick.getX();
+        Robot.driveSubsystem.setSpeedTankForwardTurningPercentage(forward, turnAmount);
 
         
-        //System.out.println("talon current: " + Robot.intakeSubsystem.intakeTalon.getOutputCurrent());
-        //System.out.println("omega: " + Robot.positioningSubsystem.getAngularSpeed());
-        //Robot.zLiftSubsystem.lift(Robot.driveSubsystem.processStick(leftStick));
-        //Robot.positioningSubsystem.printPosition();
-        //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(leftStick));
-        //Robot.liftSubsystem.setArmTiltSpeed(Robot.driveSubsystem.processStick(leftStick));
     }
 }

@@ -5,43 +5,42 @@ import frc.robot.Robot;
 import frc.robot.logging.Logger.CommandStatus;
 
 public class CargoFollowCommand extends CommandGroup {
-
-	private final String fileName = "CargoFollowCommand.java";
-
+    
+    private static final String FILENAME = "CargoFollowCommand.java";
+    
     public CargoFollowCommand() {
         requires(Robot.driveSubsystem);
         addParallel(new SuckCommand());
     }
-
-    @Override protected void initialize() {
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Initializing);
-		System.out.println("following cargo");
-		Robot.following.resetCargoPID();
+    
+    @Override
+    protected void initialize() {
+        Robot.logger.logCommandStatus(FILENAME, CommandStatus.Initializing);
+        Robot.following.resetCargoPID();
     }
-
-	@Override protected void execute(){
-		Robot.following.modeToCargo();
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
-		System.out.println("following cargo");
-		if (Robot.oi.cargoFollowButton.get()){
-			Robot.driveSubsystem.assistedDriveMode();
-			Robot.following.followBall();
-		} else {
-			Robot.driveSubsystem.manualDriveMode();
-		}
-	}
-
-	@Override protected boolean isFinished(){
-		return !Robot.oi.suckButton.get();
-	}
-
-	@Override protected void end(){
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Ending);
-		Robot.driveSubsystem.manualDriveMode();
-	}
-
-	@Override protected void interrupted(){
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Interrupted);
-		end();
-	}
+	
+    @Override
+    protected void execute() {
+        Robot.following.modeToCargo();
+        Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
+        if (Robot.oi.cargoFollowButton.get()){
+            Robot.driveSubsystem.assistedDriveMode();
+            Robot.following.followBall();
+        } else { Robot.driveSubsystem.manualDriveMode(); }
+    }
+    
+    @Override
+    protected boolean isFinished() { return !Robot.oi.suckButton.get(); }
+    
+    @Override
+    protected void end() {
+        Robot.logger.logCommandStatus(FILENAME, CommandStatus.Ending);
+        Robot.driveSubsystem.manualDriveMode();
+    }
+    
+    @Override
+    protected void interrupted() {
+        Robot.logger.logCommandStatus(FILENAME, CommandStatus.Interrupted);
+        end();
+    }
 }

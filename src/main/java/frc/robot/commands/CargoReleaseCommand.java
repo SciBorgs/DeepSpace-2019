@@ -6,14 +6,15 @@ import frc.robot.logging.Logger.CommandStatus;
 
 public class CargoReleaseCommand extends InstantCommand {
 
-    private final String fileName = "CargoReleaseCommand.java";
+    private final String FILENAME = "CargoReleaseCommand.java";
 
     public CargoReleaseCommand() {
         requires(Robot.intakeSubsystem);
     }
 
-    @Override protected void execute() {
-		Robot.logger.logCommandStatus(this.fileName, CommandStatus.Executing);
+    @Override 
+    protected void execute() {
+	Robot.logger.logCommandStatus(FILENAME, CommandStatus.Executing);
         Robot.intakeSubsystem.openArm();
         Robot.intakeSubsystem.spit();
     }
