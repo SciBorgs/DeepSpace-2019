@@ -24,7 +24,7 @@ public class DriveSubsystem extends Subsystem {
 
     // deadzones by Alejandro at Chris' request. Graph them with the joystick function to understand the math.
     // https://www.desmos.com/calculator/ch19ahiwol
-    private static final double INPUT_DEADZONE = 0.11; // deadzone because the joysticks are bad and they detect input when there is none
+    private static final double INPUT_DEADZONE = 0.15; // deadzone because the joysticks are bad and they detect input when there is none
     private static final double MOTOR_MOVEPOINT = 0.07; // motor controller output that gets the wheels to turn
     private static final double EXPONENT = 10; // x^exponent to in the graph. x=0 is linear. x>0 gives more control in low inputs
     private static final double MAX_JOYSTICK = 1; // max joystick output value
@@ -194,7 +194,12 @@ public class DriveSubsystem extends Subsystem {
     public void setSpeedTankTurningPercentage(double turnMagnitude){
         double forward = (processStick(Robot.oi.leftStick) + processStick(Robot.oi.rightStick)) / 2;
         setSpeedTankForwardTurningPercentage(forward, turnMagnitude);
-	}
+    }
+	
+	public void setSpeedTankForwardTorque(double forward, double torque) {
+        // Note: this controls dtheta/dx rather than dtheta/dt
+		setSpeedTank(forward + torque, forward - torque);
+    }
 
     @Override
     protected void initDefaultCommand() {
