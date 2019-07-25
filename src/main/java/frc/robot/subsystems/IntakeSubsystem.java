@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.Utils;
 import frc.robot.PortMap;
+import frc.robot.Robot;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -66,16 +67,20 @@ public class IntakeSubsystem extends Subsystem {
 	}
 
 	public void setIntakeSpeed(double speed){
-		Utils.setTalon(this.intakeTalon, speed);
+		System.out.println("setting intake speed to: " + speed);
+		Robot.driveSubsystem.setMotorSpeed(this.intakeTalon, speed, 2);
+		System.out.println("intake speed: " + this.intakeTalon.getMotorOutputPercent());
 	}
 
     public void suck() {
 		this.holdingCargo = true; // We assume that sucknig means we have the cargo. W/o limit switches it is the best we can do
-        setIntakeSpeed(SUCK_SPEED);
+		System.out.println("sucking");
+		setIntakeSpeed(SUCK_SPEED);
     }
 
     public void spit() {
 		this.holdingCargo = false;
+		System.out.println("spitting");
         setIntakeSpeed(SPIT_SPEED);
 	}
 

@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class Robot extends TimedRobot {
     public static Logger logger = new Logger();
-    public static OI oi = new OI();
     
     public static IntakeSubsystem     intakeSubsystem     = new IntakeSubsystem();
     public static DriveSubsystem      driveSubsystem      = new DriveSubsystem();
@@ -29,6 +28,8 @@ public class Robot extends TimedRobot {
     
     private final ControlScheme xboxControl    = new XboxControl();
     private final PowerDistributionPanel pdp   = new PowerDistributionPanel();
+
+    public static OI oi = new OI();
 
     private int attemptsSinceLastLog;    
     public static final int LOG_PERIOD = 5;
@@ -88,6 +89,7 @@ public class Robot extends TimedRobot {
     }
 
     public void autonomousPeriodic() {
+        System.out.println(liftSubsystem.getUnadjustedArmAngle());
         new TorqueControlDriveCommand().start();
         new ManualCascadeCommand().start();
         pneumaticsSubsystem.startCompressor();

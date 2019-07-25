@@ -148,8 +148,11 @@ public class DriveSubsystem extends Subsystem {
     }
     public void setMotorSpeed(TalonSRX motor, double speed, double maxJerk){
         speed = limitJerk(motor.getMotorOutputPercent(), speed, maxJerk);
-        //System.out.println("setting talon to " + speed);
         motor.set(ControlMode.PercentOutput, speed);
+        if (motor.getDeviceID() != 10) {
+            System.out.println("setting talon to: " + speed);
+            System.out.println("talon is set to: " + motor.getMotorOutputPercent());
+        }
     }
 
     public void defaultDriveMultilpier(){this.driveMultiplier = 1;}
