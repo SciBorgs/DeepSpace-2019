@@ -81,6 +81,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         Scheduler.getInstance().run();
         robotPosition.updatePositionTank();
+        System.out.println("[ARM ANGLE] " + liftSubsystem.getArmAngle());
     }
         
     public void autonomousInit() {
